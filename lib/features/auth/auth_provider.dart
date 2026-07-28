@@ -41,7 +41,7 @@ class LoginProvider extends BaseProvider {
     }
   }
 
-  /// 发送验证码业务
+  // 发送验证码业务
   Future<bool> sendVerifyCode(String email, String type) async {
     if (email.trim().isEmpty) {
       setError("Please enter your email first");
@@ -58,7 +58,7 @@ class LoginProvider extends BaseProvider {
     }
   }
 
-  /// 注册业务
+  // 注册业务
   Future<bool> register(String email, String password, String code, String countryCode) async {
     if (email.trim().isEmpty || password.trim().isEmpty || code.trim().isEmpty) {
       setError("Please fill in all fields");
@@ -75,7 +75,7 @@ class LoginProvider extends BaseProvider {
     }
   }
 
-  /// 重置密码业务
+  // 重置密码业务
   Future<bool> resetPassword(String email, String newPassword, String code) async {
     if (email.trim().isEmpty || newPassword.trim().isEmpty || code.trim().isEmpty) {
       setError("Please fill in all fields");

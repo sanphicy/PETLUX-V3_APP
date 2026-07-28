@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:v3/common/providers/base_provider.dart';
 
 class DeviceUsageProvider extends BaseProvider {
@@ -59,7 +58,6 @@ class DeviceUsageProvider extends BaseProvider {
     if (_selectedTimeRangeIndex == index) return;
     _selectedTimeRangeIndex = index;
     notifyListeners();
-    // TODO: 重新请求图表数据
   }
 
   // 模拟网络请求刷新数据
