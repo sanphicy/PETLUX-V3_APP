@@ -14,6 +14,7 @@ class ApiEndpoints {
   static const String homeList = "$_apiV1/me/homes";
   static String homeInfo(String homeId) => "$_apiV1/homes/$homeId";
   static const String userInfo = "$_apiV1/auth/me";
+  static const String uploadAvatar = "$_apiV1/auth/me/avatar";
 
   // --- 设备相关 ---
   static const String devices = '$_apiV1/me/devices';

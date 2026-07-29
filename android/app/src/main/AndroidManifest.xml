@@ -11,6 +11,12 @@
 <!-- 精确位置权限（Android 10及以下蓝牙扫描硬性要求，以及获取Wi-Fi SSID要求） -->
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+<uses-permission android:name="android.permission.CAMERA"/>
+<!-- Android 13 (API 33) 及以上相册权限 -->
+<uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+<!-- Android 12 及以下存储读取权限 -->
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <application
         android:label="petlux-v3"
         android:name="${applicationName}"

@@ -1,11 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:v3/features/user/user_provider.dart';
 import 'package:v3/common/widgets/app_avatar.dart';
+import 'package:v3/features/user/user_provider.dart';
 
 class PersonalInfoPage extends StatelessWidget {
   const PersonalInfoPage({super.key});
+
+  /// 弹出相册/相机选择底栏
+  void _showImagePicker(BuildContext context, UserProvider provider) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Choose from Gallery'),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  await provider.uploadAvatar(ImageSource.gallery);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Take a Photo'),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  await provider.uploadAvatar(ImageSource.camera);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,76 +61,94 @@ class PersonalInfoPage extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Column(
-          children: [
-            _buildListItem(
-              title: 'profile image',
-              textColor: textColor,
-              trailing: AppAvatar(avatarUrl: provider.avatarUrl, radius: 20),
-            ),
-            const Divider(height: 1, color: dividerColor),
-            _buildListItem(
-              title: 'nickname',
-              textColor: textColor,
-              trailingText: provider.userName,
-              valueColor: valueColor,
-              showArrow: true,
-            ),
-            const Divider(height: 1, color: dividerColor),
-            _buildListItem(
-              title: 'email',
-              textColor: textColor,
-              trailingText: '***@***.com', // 目前数据结构无 email，此处作占位
-              valueColor: valueColor,
-              showArrow: true,
-            ),
-            const Divider(height: 1, color: dividerColor),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Column(
+              children: [
+                // 1. 头像行（加了 onTap 触发选择头像）
+                _buildListItem(
+                  title: 'profile image',
+                  textColor: textColor,
+                  showArrow: true,
+                  onTap: () => _showImagePicker(context, provider),
+                  trailing: AppAvatar(avatarUrl: provider.avatarUrl, radius: 20),
+                ),
+                const Divider(height: 1, color: dividerColor),
 
-            const Spacer(),
+                // 2. 昵称行
+                _buildListItem(
+                  title: 'nickname',
+                  textColor: textColor,
+                  trailingText: provider.userName,
+                  valueColor: valueColor,
+                  showArrow: true,
+                ),
+                const Divider(height: 1, color: dividerColor),
 
-            // Log off 按钮
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF37474), // 红色注销按钮
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  elevation: 0,
+                // 3. 邮箱行
+                _buildListItem(
+                  title: 'email',
+                  textColor: textColor,
+                  trailingText: '***@***.com',
+                  valueColor: valueColor,
+                  showArrow: true,
                 ),
-                onPressed: () {
-                  // TODO: 注销账户的逻辑
-                },
-                child: const Text(
-                  'Log off',
-                  style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
+                const Divider(height: 1, color: dividerColor),
 
-            // Log out 按钮
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF3D14B), // 黄色退出登录按钮
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  elevation: 0,
+                const Spacer(),
+
+                // 4. Log off 按钮（注销账号）
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFF37474),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      elevation: 0,
+                    ),
+                    onPressed: () {
+                      // TODO: 处理注销逻辑
+                    },
+                    child: const Text(
+                      'Log off',
+                      style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
-                onPressed: () => provider.logout(),
-                child: const Text(
-                  'Log out',
-                  style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold),
+                const SizedBox(height: 15),
+
+                // 5. Log out 按钮（退出登录）
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFF3D14B),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      elevation: 0,
+                    ),
+                    onPressed: () => provider.logout(),
+                    child: const Text(
+                      'Log out',
+                      style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 40),
+              ],
             ),
-            const SizedBox(height: 40),
-          ],
-        ),
+          ),
+
+          // 上传图像时的遮罩与加载动画
+          if (provider.isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.2),
+              child: const Center(child: CircularProgressIndicator(color: Color(0xFFF3D14B))),
+            ),
+        ],
       ),
     );
   }
@@ -107,20 +160,24 @@ class PersonalInfoPage extends StatelessWidget {
     bool showArrow = false,
     required Color textColor,
     Color? valueColor,
+    VoidCallback? onTap,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Row(
-        children: [
-          Text(title, style: TextStyle(fontSize: 16, color: textColor)),
-          const Spacer(),
-          if (trailing != null) trailing,
-          if (trailingText != null) Text(trailingText, style: TextStyle(fontSize: 16, color: valueColor)),
-          if (showArrow) ...[
-            const SizedBox(width: 8),
-            const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Row(
+          children: [
+            Text(title, style: TextStyle(fontSize: 16, color: textColor)),
+            const Spacer(),
+            if (trailing != null) trailing,
+            if (trailingText != null) Text(trailingText, style: TextStyle(fontSize: 16, color: valueColor)),
+            if (showArrow) ...[
+              const SizedBox(width: 8),
+              const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

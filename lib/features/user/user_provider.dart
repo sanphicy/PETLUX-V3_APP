@@ -1,10 +1,12 @@
-import 'package:v3/common/providers/base_provider.dart';
-import 'package:v3/core/utils/token_manager.dart';
-import 'package:v3/core/navigation/nav_service.dart';
-import 'package:v3/routes/app_router.dart';
+import 'package:dio/dio.dart';
 import 'package:v3/locator.dart';
-import 'package:v3/core/network/api_endpoints.dart';
+import 'package:v3/routes/app_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:v3/core/network/http_client.dart';
+import 'package:v3/core/utils/token_manager.dart';
+import 'package:v3/core/network/api_endpoints.dart';
+import 'package:v3/core/navigation/nav_service.dart';
+import 'package:v3/common/providers/base_provider.dart';
 
 class UserProvider extends BaseProvider {
   String _userName = 'Unknown User';
@@ -22,8 +24,8 @@ class UserProvider extends BaseProvider {
   int get dayCount => _dayCount;
   int get deviceCount => _deviceCount;
 
-  /// 拉取用户信息
-  /// [isSilent] 为 true 时，不展示加载动画，且不向上抛出阻断性错误（冷启动/后台切入适用）
+  // 拉取用户信息
+  // isSilent 为 true 时，不展示加载动画，且不向上抛出阻断性错误 用于冷启动/后台切入
   Future<void> fetchUserInfo({bool isSilent = false}) async {
     final isLoggedIn = await TokenManager.isLoggedIn();
     if (!isLoggedIn) {
@@ -43,12 +45,11 @@ class UserProvider extends BaseProvider {
 
         final newName = data['nickname']?.toString() ?? 'Unknown User';
         final newId = data['userId']?.toString() ?? '-';
-        final newAvatar = data['avatar']?.toString() ?? _avatarUrl;
+        final newAvatar = data['avatarDisplay']?.toString() ?? _avatarUrl;
         if (_userName != newName || _userId != newId) {
           _userName = newName;
           _userId = newId;
           _avatarUrl = newAvatar;
-          print(_avatarUrl);
           notifyListeners();
         }
       } else if (result.code == 401) {
@@ -65,6 +66,44 @@ class UserProvider extends BaseProvider {
     }
   }
 
+  // 上传并更新用户头像
+  Future<bool> uploadAvatar(ImageSource source) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: source,
+        imageQuality: 80, // 压缩质量
+        maxWidth: 800,
+      );
+
+      if (image == null) return false; // 用户取消选择
+
+      setLoading(true);
+
+      final formData = FormData.fromMap({'file': await MultipartFile.fromFile(image.path, filename: image.name)});
+
+      final result = await locator<HttpClient>().post<Map<String, dynamic>>(ApiEndpoints.uploadAvatar, data: formData);
+
+      if (result.data != null && (result.code == 0 || result.code == 200)) {
+        final data = result.data!;
+        final newAvatar = data['avatarDisplay']?.toString() ?? data['avatar']?.toString();
+        if (newAvatar != null && newAvatar.isNotEmpty) {
+          _avatarUrl = newAvatar;
+          notifyListeners();
+          return true;
+        }
+      } else {
+        setError(result.message);
+      }
+    } catch (e) {
+      setError("Avatar upload failed: $e");
+    } finally {
+      setLoading(false);
+    }
+    return false;
+  }
+
+  // 登出
   Future<void> logout() async {
     try {
       await locator<HttpClient>().post<Map<String, dynamic>>(ApiEndpoints.logout);
