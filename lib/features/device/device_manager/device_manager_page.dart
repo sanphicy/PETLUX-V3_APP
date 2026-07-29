@@ -165,7 +165,7 @@ class DeviceManagerPage extends StatelessWidget {
                         isActive: device.isDndEnabled,
                         activeColor: primaryYellow,
                         inactiveColor: pillGray,
-                        onTap: () => provider.toggleDnd(),
+                        onTap: () => provider.toggleDnd(false),
                       ),
                       _buildModePill(
                         title: 'Timing\nmode',

@@ -12,15 +12,25 @@ import 'package:v3/features/device/models/device_dto.dart';
 import 'package:v3/features/device/models/device_thing_model.dart';
 
 class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
+  /// 设备数据仓库实例
   final DeviceRepository _deviceRepo = locator<DeviceRepository>();
+
+  /// 设备更新事件订阅
   StreamSubscription<String>? _repoSubscription;
 
+  /// 当前选中的设备对象
   DeviceDto? _currentDevice;
+
+  /// 获取当前选中的设备对象
   DeviceDto? get currentDevice => _currentDevice;
 
+  /// 自动模式延迟时间选项列表（单位：分钟）
   final List<String> _autoModeOptions = ['1', '2', '3', '4', '5'];
+
+  /// 获取自动模式延迟时间选项列表
   List<String> get autoModeOptions => _autoModeOptions;
 
+  /// 获取当前设备对应的自动模式选项索引
   int get autoModeIndex {
     if (_currentDevice == null) return 0;
     int mins = _currentDevice!.autoModeDelaySeconds ~/ 60;
@@ -28,24 +38,46 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     return idx == -1 ? 0 : idx;
   }
 
+  /// 是否有新固件可供升级
   bool _hasNewFirmware = false;
+
+  /// 新固件版本号
   String _newFirmwareVersion = '';
+
+  /// 获取是否有新固件
   bool get hasNewFirmware => _hasNewFirmware;
+
+  /// 获取新固件版本号
   String get newFirmwareVersion => _newFirmwareVersion;
 
+  /// 当前设备时区标识标识（如：Asia/Shanghai）
   String _currentTimeZoneId = 'Asia/Shanghai';
+
+  /// 当前设备时区偏移量字符串（如：UTC+08:00）
   String _currentTimeZoneOffset = 'UTC+08:00';
+
+  /// 获取当前时区标识
   String get currentTimeZoneId => _currentTimeZoneId;
+
+  /// 获取当前时区偏移量字符串
   String get currentTimeZoneOffset => _currentTimeZoneOffset;
 
+  /// 本地保存的校准砝码重量（单位：克）
   int _savedCalibrationWeight = 5000;
+
+  /// 获取保存的校准砝码重量
   int get savedCalibrationWeight => _savedCalibrationWeight;
 
+  /// 获取网络状态是否良好
   bool get isNetworkGood => true;
 
+  /// 本地定时任务时间列表（格式："HH:mm"）
   List<String> _localTimerList = [];
+
+  /// 获取定时任务时间列表
   List<String> get timerList => _localTimerList;
 
+  /// 构造函数，监听设备仓库数据更新与应用生命周期
   ActiveDeviceProvider() {
     _repoSubscription = _deviceRepo.onDeviceUpdated.listen((updatedDeviceId) {
       if (_currentDevice != null && _currentDevice!.deviceId == updatedDeviceId) {
@@ -56,6 +88,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
   }
 
+  /// 资源释放，取消订阅和监听
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -63,6 +96,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     super.dispose();
   }
 
+  /// 监听应用生命周期切换（从后台切回前台时自动刷新设备属性）
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -76,6 +110,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     }
   }
 
+  /// 选择并切换当前操作的设备
   Future<void> selectDevice(String id) async {
     if (_currentDevice?.deviceId == id) return;
     _currentDevice = _deviceRepo.getDevice(id);
@@ -101,26 +136,38 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     }
   }
 
+  /// 设置设备工作模式（自动/定时/手动等）
   Future<void> setMode(WorkMode mode) async {
     if (_currentDevice == null) return;
     if (_currentDevice!.workMode == mode) return;
+    if (mode == WorkMode.timer || mode == WorkMode.manual) {
+      if (_currentDevice!.isDndEnabled) {
+        toggleDnd(false);
+      }
+    }
     final success = await _deviceRepo.setWorkMode(_currentDevice!.deviceId, mode);
     if (!success) setError("Failed to set mode");
   }
 
-  Future<void> toggleDnd() async {
+  /// 切换免打扰模式开关
+  Future<void> toggleDnd(bool isBool) async {
     if (_currentDevice == null) return;
     final targetState = !_currentDevice!.isDndEnabled;
     final success = await _deviceRepo.setDndStatus(_currentDevice!.deviceId, targetState);
+    if (!isBool && (_currentDevice!.workMode != WorkMode.auto)) {
+      setMode(WorkMode.auto);
+    }
     if (!success) setError("Failed to toggle Do Not Disturb");
   }
 
+  /// 执行设备指定动作（如铲屎、平砂等）
   Future<void> executeAction(ExecuteAction action) async {
     if (_currentDevice == null) return;
     final success = await _deviceRepo.executeAction(_currentDevice!.deviceId, action);
     if (!success) setError("Failed to execute action");
   }
 
+  /// 切换童锁功能开关
   Future<void> toggleChildLock() async {
     if (_currentDevice == null) return;
     final targetState = !_currentDevice!.isChildLockEnabled;
@@ -128,6 +175,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     if (!success) setError("Failed to toggle child lock");
   }
 
+  /// 更新自动模式下的延迟等待时长
   void updateAutoMode(int index) async {
     if (_currentDevice == null) return;
     int minutes = int.parse(_autoModeOptions[index]);
@@ -141,6 +189,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     }
   }
 
+  /// 设置免打扰模式的时间段范围
   void setDndTime(String start, String end) async {
     if (_currentDevice == null) return;
     int startSec = _timeToSeconds(start);
@@ -149,23 +198,27 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     if (!success) setError("Failed to set DND time");
   }
 
+  /// 更新本地设置的时区信息
   void setTimeZone(String tzId, String offsetStr) {
     _currentTimeZoneId = tzId;
     _currentTimeZoneOffset = offsetStr;
     notifyListeners();
   }
 
+  /// 在本地定时列表中添加一个新的定时时间
   void addTimer(String timeStr) {
     _localTimerList.add(timeStr);
     _localTimerList.sort();
     notifyListeners();
   }
 
+  /// 从本地定时列表中移除指定索引的定时
   void removeTimer(int index) {
     _localTimerList.removeAt(index);
     notifyListeners();
   }
 
+  /// 提交并保存本地定时任务列表到云端/设备
   Future<void> submitTimers() async {
     if (_currentDevice == null) return;
     setLoading(true);
@@ -178,6 +231,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     setLoading(false);
   }
 
+  /// 开始称重校准的第一步（准备校准/去皮）
   Future<bool> startCalibrationStep1() async {
     if (_currentDevice == null) return false;
     setLoading(true);
@@ -187,6 +241,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     return success;
   }
 
+  /// 提交称重校准的第三步（传入参照物重量完成校准）
   Future<bool> submitCalibrationStep3(int weightGrams) async {
     if (_currentDevice == null) return false;
     setLoading(true);
@@ -201,6 +256,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     return success;
   }
 
+  /// 发送重置 Wi-Fi 指令
   Future<void> resetWifi() async {
     if (_currentDevice == null) return;
     setLoading(true);
@@ -212,10 +268,12 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       setError("Failed to reset Wi-Fi");
   }
 
+  /// 发起设备固件升级指令
   Future<bool> startFirmwareUpgrade() async {
     return true;
   }
 
+  /// 更新设备自定义名称
   Future<bool> updateDeviceName(String newName) async {
     if (_currentDevice == null) return false;
     _currentDevice!.deviceName = newName;
@@ -223,10 +281,12 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     return true;
   }
 
+  /// 显示操作成功的应用 Toast 提示
   void showSuccessToast(String message) {
     NavService.rootNavigatorKey.currentContext?.showAppToast(message: message, type: AppToastType.success);
   }
 
+  /// 将 "HH:mm" 格式的时间字符串转为一天内的总秒数
   int _timeToSeconds(String hhmm) {
     final parts = hhmm.split(':');
     if (parts.length != 2) return 0;
@@ -235,6 +295,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     return h * 3600 + m * 60;
   }
 
+  /// 根据时区名称（如 Asia/Shanghai）计算格式化的时区偏移量字符串
   String _calculateOffsetStr(String tzName) {
     try {
       final location = tz.getLocation(tzName);
