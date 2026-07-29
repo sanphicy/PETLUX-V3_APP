@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:v3/features/user/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:v3/routes/app_router.dart';
+import 'package:v3/common/widgets/app_avatar.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
@@ -30,7 +31,7 @@ class UserPage extends StatelessWidget {
                     clipBehavior: Clip.none,
                     alignment: Alignment.bottomCenter,
                     children: [
-                      CircleAvatar(radius: 35, backgroundImage: AssetImage(provider.avatarUrl)),
+                      AppAvatar(avatarUrl: provider.avatarUrl, radius: 35),
                       Positioned(
                         bottom: -5,
                         child: Container(

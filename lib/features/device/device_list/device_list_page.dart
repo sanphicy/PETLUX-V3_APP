@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:v3/features/device/device_provider.dart';
 import 'package:v3/features/device/device_list/device_card.dart';
 import 'package:v3/routes/app_router.dart';
+import 'package:v3/common/widgets/app_avatar.dart';
+import 'package:v3/features/user/user_provider.dart';
 
 class DeviceListPage extends StatefulWidget {
   const DeviceListPage({super.key});
@@ -24,6 +26,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<DeviceProvider>();
+    final userProider = context.watch<UserProvider>();
     final screenWidth = MediaQuery.of(context).size.width;
 
     final double topImageHeight = screenWidth * 0.32;
@@ -96,16 +99,16 @@ class _DeviceListPageState extends State<DeviceListPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const CircleAvatar(radius: 18, backgroundImage: AssetImage('assets/images/petlux-top_bg.png')),
+                    AppAvatar(avatarUrl: userProider.avatarUrl, radius: 25),
                     const SizedBox(width: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
+                      children: [
                         Text(
-                          'CHEN',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
+                          userProider.userName,
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
                         ),
-                        Text('Device online...', style: TextStyle(fontSize: 12, color: Color(0xFF555555))),
+                        Text('Device online', style: TextStyle(fontSize: 12, color: Color(0xFF555555))),
                       ],
                     ),
                   ],

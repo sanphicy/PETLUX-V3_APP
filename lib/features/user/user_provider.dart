@@ -9,7 +9,7 @@ import 'package:v3/core/network/http_client.dart';
 class UserProvider extends BaseProvider {
   String _userName = 'Unknown User';
   String _userId = '-';
-  String _avatarUrl = 'assets/images/petlux-top_bg.png';
+  String _avatarUrl = '';
   int _catCount = 0;
   int _dayCount = 0;
   int _deviceCount = 0;
@@ -48,6 +48,7 @@ class UserProvider extends BaseProvider {
           _userName = newName;
           _userId = newId;
           _avatarUrl = newAvatar;
+          print(_avatarUrl);
           notifyListeners();
         }
       } else if (result.code == 401) {

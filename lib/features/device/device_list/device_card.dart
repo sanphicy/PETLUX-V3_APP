@@ -47,11 +47,7 @@ class DeviceCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
               child: const Text(
                 'Rename',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(width: 8), // 按钮之间的间距
@@ -62,11 +58,7 @@ class DeviceCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
               child: const Text(
                 'Delete',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -92,11 +84,7 @@ class DeviceCard extends StatelessWidget {
                     children: [
                       Text(
                         deviceName,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF333333),
-                        ),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
                         // 2. 设置最大行数和溢出省略号
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -104,10 +92,7 @@ class DeviceCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         deviceId,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Color(0xFF888888),
-                        ),
+                        style: const TextStyle(fontSize: 15, color: Color(0xFF888888)),
                         // 同样给 ID 也加上溢出保护，以防万一
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -132,8 +117,7 @@ class DeviceCard extends StatelessWidget {
                   width: 80,
                   height: 80,
                   fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.devices, size: 80, color: Colors.grey),
+                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.devices, size: 80, color: Colors.grey),
                 ),
               ],
             ),

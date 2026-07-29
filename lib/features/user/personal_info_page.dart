@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:v3/features/user/user_provider.dart';
+import 'package:v3/common/widgets/app_avatar.dart';
 
 class PersonalInfoPage extends StatelessWidget {
   const PersonalInfoPage({super.key});
@@ -32,7 +33,7 @@ class PersonalInfoPage extends StatelessWidget {
             _buildListItem(
               title: 'profile image',
               textColor: textColor,
-              trailing: CircleAvatar(radius: 20, backgroundImage: AssetImage(provider.avatarUrl)),
+              trailing: AppAvatar(avatarUrl: provider.avatarUrl, radius: 20),
             ),
             const Divider(height: 1, color: dividerColor),
             _buildListItem(
