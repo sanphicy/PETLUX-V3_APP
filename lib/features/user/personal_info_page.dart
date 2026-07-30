@@ -8,7 +8,50 @@ import 'package:v3/features/user/user_provider.dart';
 class PersonalInfoPage extends StatelessWidget {
   const PersonalInfoPage({super.key});
 
-  /// 弹出相册/相机选择底栏
+  /// 弹出修改昵称弹窗
+  void _showEditNicknameDialog(BuildContext context, UserProvider provider) {
+    final TextEditingController controller = TextEditingController(text: provider.userName);
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          title: const Text('Edit Nickname', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: const InputDecoration(
+              hintText: 'Enter new nickname',
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFF3D14B))),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () async {
+                FocusManager.instance.primaryFocus?.unfocus();
+                final newName = controller.text.trim();
+                Navigator.pop(ctx);
+                if (newName.isNotEmpty && newName != provider.userName) {
+                  await provider.updateNickname(newName);
+                }
+              },
+              child: const Text(
+                'Confirm',
+                style: TextStyle(color: Color(0xFFF3D14B), fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// 弹出图片选择器底栏
   void _showImagePicker(BuildContext context, UserProvider provider) {
     showModalBottomSheet(
       context: context,
@@ -67,7 +110,7 @@ class PersonalInfoPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Column(
               children: [
-                // 1. 头像行（加了 onTap 触发选择头像）
+                // 1. 头像行
                 _buildListItem(
                   title: 'profile image',
                   textColor: textColor,
@@ -76,17 +119,16 @@ class PersonalInfoPage extends StatelessWidget {
                   trailing: AppAvatar(avatarUrl: provider.avatarUrl, radius: 20),
                 ),
                 const Divider(height: 1, color: dividerColor),
-
-                // 2. 昵称行
+                // 2. 昵称行（关联点击弹窗修改事件）
                 _buildListItem(
                   title: 'nickname',
                   textColor: textColor,
                   trailingText: provider.userName,
                   valueColor: valueColor,
                   showArrow: true,
+                  onTap: () => _showEditNicknameDialog(context, provider),
                 ),
                 const Divider(height: 1, color: dividerColor),
-
                 // 3. 邮箱行
                 _buildListItem(
                   title: 'email',
@@ -96,10 +138,8 @@ class PersonalInfoPage extends StatelessWidget {
                   showArrow: true,
                 ),
                 const Divider(height: 1, color: dividerColor),
-
                 const Spacer(),
-
-                // 4. Log off 按钮（注销账号）
+                // 4. Log off 按钮
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -110,7 +150,7 @@ class PersonalInfoPage extends StatelessWidget {
                       elevation: 0,
                     ),
                     onPressed: () {
-                      // TODO: 处理注销逻辑
+                      // TODO:
                     },
                     child: const Text(
                       'Log off',
@@ -119,8 +159,7 @@ class PersonalInfoPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 15),
-
-                // 5. Log out 按钮（退出登录）
+                // 5. Log out 按钮
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -141,8 +180,7 @@ class PersonalInfoPage extends StatelessWidget {
               ],
             ),
           ),
-
-          // 上传图像时的遮罩与加载动画
+          // 全局 Loading
           if (provider.isLoading)
             Container(
               color: Colors.black.withOpacity(0.2),

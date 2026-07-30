@@ -89,6 +89,12 @@ class HttpClient {
     }
   }
 
+  Future<ResultEntity<T>> patch<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? headers,
+    T Function(dynamic)? fromJson,
+  }) => request<T>(path, method: 'PATCH', data: data, headers: headers, fromJson: fromJson);
   Future<ResultEntity<T>> get<T>(String path, {Map<String, dynamic>? query, T Function(dynamic)? fromJson}) =>
       request<T>(path, method: 'GET', queryParameters: query, fromJson: fromJson);
 

@@ -12,6 +12,9 @@ class UserProvider extends BaseProvider {
   String _userName = 'Unknown User';
   String _userId = '-';
   String _avatarUrl = '';
+  String _countryCode = '';
+  String _timezone = '';
+
   int _catCount = 0;
   int _dayCount = 0;
   int _deviceCount = 0;
@@ -20,6 +23,8 @@ class UserProvider extends BaseProvider {
   String get userName => _userName;
   String get userId => _userId;
   String get avatarUrl => _avatarUrl;
+  String get countryCode => _countryCode;
+  String get timezone => _timezone;
   int get catCount => _catCount;
   int get dayCount => _dayCount;
   int get deviceCount => _deviceCount;
@@ -42,14 +47,17 @@ class UserProvider extends BaseProvider {
       final result = await locator<HttpClient>().get<Map<String, dynamic>>(ApiEndpoints.userInfo);
       if (result.data != null && (result.code == 0 || result.code == 200)) {
         final data = result.data!;
-
         final newName = data['nickname']?.toString() ?? 'Unknown User';
         final newId = data['userId']?.toString() ?? '-';
         final newAvatar = data['avatarDisplay']?.toString() ?? _avatarUrl;
+        final newCountryCode = data['countryCode']?.toString() ?? 'CN';
+        final newTimezone = data['timezone']?.toString() ?? 'UTC';
         if (_userName != newName || _userId != newId) {
           _userName = newName;
           _userId = newId;
           _avatarUrl = newAvatar;
+          _countryCode = newCountryCode;
+          _timezone = newTimezone;
           notifyListeners();
         }
       } else if (result.code == 401) {
@@ -64,6 +72,38 @@ class UserProvider extends BaseProvider {
     } finally {
       if (isLoading) setLoading(false);
     }
+  }
+
+  //修改用户昵称
+  Future<bool> updateNickname(String newName) async {
+    final trimmedName = newName.trim();
+    if (trimmedName.isEmpty || trimmedName == _userName) {
+      return false;
+    }
+
+    setLoading(true);
+    try {
+      final payload = {
+        "nickname": trimmedName,
+        "countryCode": _countryCode.isNotEmpty ? _countryCode : "CN",
+        "timezone": _timezone.isNotEmpty ? _timezone : "Asia/Shanghai",
+      };
+
+      final result = await locator<HttpClient>().patch<Map<String, dynamic>>(ApiEndpoints.userInfo, data: payload);
+
+      if (result.code == 0 || result.code == 200) {
+        _userName = trimmedName;
+        notifyListeners();
+        return true;
+      } else {
+        setError(result.message);
+      }
+    } catch (e) {
+      setError("Failed to update nickname: $e");
+    } finally {
+      setLoading(false);
+    }
+    return false;
   }
 
   // 上传并更新用户头像
