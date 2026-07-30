@@ -1,76 +1,128 @@
+import 'dart:math';
 import 'package:v3/common/providers/base_provider.dart';
+import 'package:v3/core/network/api_endpoints.dart';
+import 'package:v3/core/network/http_client.dart';
+import 'package:v3/features/device/device_provider.dart';
+import 'package:v3/locator.dart';
+
+class DailyUsageData {
+  final DateTime date;
+  final String weekDay;
+  final String dayStr;
+  int times;
+  int duration;
+
+  DailyUsageData({required this.date, required this.weekDay, required this.dayStr, this.times = 0, this.duration = 0});
+}
 
 class DeviceUsageProvider extends BaseProvider {
-  // --- 状态数据 ---
+  final HttpClient _httpClient = locator<HttpClient>();
+
   int _selectedDeviceIndex = 0;
-  int _selectedDayIndex = 6; // 默认选中最后一天 (MON 13)
-  int _selectedTimeRangeIndex = 0; // 默认选中 1 month
+  int _selectedDayIndex = 6;
 
-  // --- 模拟静态配置 ---
-  final List<String> _devices = ['Device-A', 'Device-B'];
-  // 日历模拟数据 (实际开发中应动态生成日期)
-  final List<Map<String, String>> _weekDays = [
-    {'week': 'TUE', 'day': '7'},
-    {'week': 'WED', 'day': '8'},
-    {'week': 'THU', 'day': '9'},
-    {'week': 'FRI', 'day': '10'},
-    {'week': 'SAT', 'day': '11'},
-    {'week': 'SUN', 'day': '12'},
-    {'week': 'MON', 'day': '13'},
-  ];
-  final List<String> _timeRanges = ['1 month', '3 months', '6 months', '9 months'];
+  List<DeviceModel> _deviceList = [];
+  List<DailyUsageData> _weekDays = [];
 
-  // --- 模拟统计数据 ---
-  String _todayTimes = '0';
-  String _averageSeconds = '0';
-  String _currentWeigh = '0.0';
-
-  // --- Getters ---
   int get selectedDeviceIndex => _selectedDeviceIndex;
   int get selectedDayIndex => _selectedDayIndex;
-  int get selectedTimeRangeIndex => _selectedTimeRangeIndex;
-  List<String> get devices => _devices;
-  List<Map<String, String>> get weekDays => _weekDays;
-  List<String> get timeRanges => _timeRanges;
-  String get todayTimes => _todayTimes;
-  String get averageSeconds => _averageSeconds;
-  String get currentWeigh => _currentWeigh;
+  List<DeviceModel> get deviceList => _deviceList;
+  List<DailyUsageData> get weekDays => _weekDays;
 
-  // 获取当前选中设备的名称
-  String get currentDeviceName => _devices.isNotEmpty ? _devices[_selectedDeviceIndex] : '';
+  DailyUsageData? get selectedDayData =>
+      _weekDays.isNotEmpty && _selectedDayIndex < _weekDays.length ? _weekDays[_selectedDayIndex] : null;
 
-  // 切换设备
-  void selectDevice(int index) {
-    if (_selectedDeviceIndex == index) return;
-    _selectedDeviceIndex = index;
-    _fetchDataForSelection();
+  void syncDevices(List<DeviceModel> devices) {
+    _deviceList = devices;
+    if (_selectedDeviceIndex >= _deviceList.length) {
+      _selectedDeviceIndex = 0;
+    }
+    _generateRecent7Days();
+    if (_deviceList.isNotEmpty) {
+      fetchDeviceUsageLogs();
+    } else {
+      notifyListeners();
+    }
   }
 
-  // 切换日期
+  void selectDevice(int index) {
+    if (_selectedDeviceIndex == index || index >= _deviceList.length) return;
+    _selectedDeviceIndex = index;
+    _generateRecent7Days();
+    fetchDeviceUsageLogs();
+  }
+
   void selectDay(int index) {
     if (_selectedDayIndex == index) return;
     _selectedDayIndex = index;
-    _fetchDataForSelection();
-  }
-
-  // 切换折线图时间范围
-  void selectTimeRange(int index) {
-    if (_selectedTimeRangeIndex == index) return;
-    _selectedTimeRangeIndex = index;
     notifyListeners();
   }
 
-  // 模拟网络请求刷新数据
-  void _fetchDataForSelection() {
+  void _generateRecent7Days() {
+    final now = DateTime.now();
+    const weekDayMap = {1: '周一', 2: '周二', 3: '周三', 4: '周四', 5: '周五', 6: '周六', 7: '周日'};
+
+    _weekDays = List.generate(7, (i) {
+      final d = now.subtract(Duration(days: 6 - i));
+      return DailyUsageData(date: d, weekDay: weekDayMap[d.weekday] ?? '', dayStr: d.day.toString());
+    });
+    _selectedDayIndex = 6;
+  }
+
+  Future<void> fetchDeviceUsageLogs() async {
+    if (_deviceList.isEmpty) return;
+
+    final deviceId = _deviceList[_selectedDeviceIndex].deviceId;
+    if (deviceId.isEmpty) return;
+
     setLoading(true);
-    // 模拟接口延迟
-    Future.delayed(const Duration(milliseconds: 300), () {
-      // 随机生成一些假数据模拟切换效果
-      _todayTimes = (_selectedDeviceIndex * 2 + _selectedDayIndex).toString();
-      _averageSeconds = (_selectedDayIndex * 15).toString();
-      _currentWeigh = (4.5 + _selectedDeviceIndex).toStringAsFixed(1);
+    clearError();
+
+    try {
+      final now = DateTime.now();
+      final fromDate = now.subtract(const Duration(days: 7)).toUtc();
+      final toDate = now.toUtc();
+
+      final fromStr = "${fromDate.toIso8601String().split('.').first}Z";
+      final toStr = "${toDate.toIso8601String().split('.').first}Z";
+
+      final query = {"from": fromStr, "to": toStr, "dpid": "207,208", "pageSize": "100", "sort": "asc"};
+
+      final result = await _httpClient.get<Map<String, dynamic>>(ApiEndpoints.deviceLogs(deviceId), query: query);
+
+      if (result.data != null) {
+        final List<dynamic> items = result.data!['items'] ?? [];
+
+        for (var item in items) {
+          final String tsStr = item['ts'] ?? '';
+          final List<dynamic> values = item['values'] ?? [];
+          if (tsStr.isEmpty || values.isEmpty) continue;
+
+          final logTime = DateTime.parse(tsStr).toLocal();
+
+          for (var dayData in _weekDays) {
+            if (logTime.year == dayData.date.year &&
+                logTime.month == dayData.date.month &&
+                logTime.day == dayData.date.day) {
+              for (var valObj in values) {
+                final dpid = valObj['dpid']?.toString();
+                final val = int.tryParse(valObj['value']?.toString() ?? '0') ?? 0;
+
+                if (dpid == '207') {
+                  dayData.times = val;
+                } else if (dpid == '208') {
+                  dayData.duration = val;
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      setError("网络请求失败，请稍后重试");
+    } finally {
       setLoading(false);
       notifyListeners();
-    });
+    }
   }
 }
