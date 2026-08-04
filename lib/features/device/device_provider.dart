@@ -1,43 +1,26 @@
-import 'package:v3/common/providers/base_provider.dart';
-import 'package:v3/core/network/api_endpoints.dart';
-import 'package:v3/core/network/http_client.dart';
 import 'package:v3/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:v3/core/mqtt/mqtt_manager.dart';
-
-class DeviceModel {
-  final String deviceId;
-  final String deviceName;
-  final bool isOnline;
-  DeviceModel({required this.deviceId, required this.deviceName, required this.isOnline});
-}
+import 'package:v3/core/network/http_client.dart';
+import 'package:v3/core/network/api_endpoints.dart';
+import 'package:v3/common/providers/base_provider.dart';
+import 'package:v3/features/device/models/device_dto.dart';
+import 'package:v3/features/device/repositories/device_repository.dart';
 
 class DeviceProvider extends BaseProvider {
-  List<DeviceModel> _devices = [];
-  List<DeviceModel> get devices => _devices;
+  //设备仓库实例
+  final DeviceRepository _deviceRepo = locator<DeviceRepository>();
+  List<DeviceDto> _devices = [];
+  List<DeviceDto> get devices => _devices;
 
   // 获取设备列表
   Future<void> fetchDevices() async {
     setLoading(true);
     clearError();
     try {
-      final result = await locator<HttpClient>().get<Map<String, dynamic>>(ApiEndpoints.devices);
-      if (result.data != null) {
-        final List<dynamic> listData = result.data!['items'] ?? [];
-        _devices = listData.map((item) {
-          final json = item as Map<String, dynamic>;
-          return DeviceModel(
-            deviceId: json['deviceId']?.toString() ?? '',
-            deviceName: json['nickname']?.toString() ?? '',
-            isOnline: json['online'] ?? false,
-          );
-        }).toList();
-
-        _initGlobalMqttAndSubscribe();
-        notifyListeners();
-      } else {
-        setError(result.message);
-      }
+      _devices = await _deviceRepo.getDeviceList();
+      _initGlobalMqttAndSubscribe();
+      notifyListeners();
     } catch (e) {
       setError("网络连接失败，请检查网络设置");
     } finally {

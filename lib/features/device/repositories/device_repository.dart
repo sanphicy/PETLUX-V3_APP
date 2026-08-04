@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:v3/locator.dart';
+import 'package:flutter/material.dart';
 import 'package:v3/core/mqtt/mqtt_manager.dart';
 import 'package:v3/core/network/http_client.dart';
 import 'package:v3/core/network/api_endpoints.dart';
+import 'package:v3/common/providers/base_provider.dart';
 import 'package:v3/features/device/models/device_dto.dart';
 import 'package:v3/features/device/models/device_thing_model.dart';
 
-class DeviceRepository {
+class DeviceRepository extends BaseProvider {
   final HttpClient _httpClient = locator<HttpClient>();
   final MqttManager _mqttManager = locator<MqttManager>();
   final Map<String, DeviceDto> _devicePool = {};
@@ -21,6 +22,26 @@ class DeviceRepository {
   final StreamController<String> _deviceUpdateController = StreamController<String>.broadcast();
 
   Stream<String> get onDeviceUpdated => _deviceUpdateController.stream;
+
+  //获取设备列表
+  Future<List<DeviceDto>> getDeviceList() async {
+    List<DeviceDto> devices = [];
+    final result = await locator<HttpClient>().get<Map<String, dynamic>>(ApiEndpoints.devices);
+    if (result.data != null) {
+      final List<dynamic> listData = result.data!['items'] ?? [];
+      devices = listData.map((item) {
+        final json = item as Map<String, dynamic>;
+        return DeviceDto(
+          deviceId: json['deviceId']?.toString() ?? '',
+          deviceName: json['nickname']?.toString() ?? '',
+          isOnline: json['online'] ?? false,
+        );
+      }).toList();
+    } else {
+      setError(result.message);
+    }
+    return devices;
+  }
 
   // 发送设备通用控制指令
   Future<bool> _sendDeviceCommand(String deviceId, List<Map<String, dynamic>> attributes) async {

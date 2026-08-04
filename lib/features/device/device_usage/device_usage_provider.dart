@@ -1,9 +1,8 @@
-import 'dart:math';
-import 'package:v3/common/providers/base_provider.dart';
-import 'package:v3/core/network/api_endpoints.dart';
-import 'package:v3/core/network/http_client.dart';
-import 'package:v3/features/device/device_provider.dart';
 import 'package:v3/locator.dart';
+import 'package:v3/core/network/http_client.dart';
+import 'package:v3/core/network/api_endpoints.dart';
+import 'package:v3/common/providers/base_provider.dart';
+import 'package:v3/features/device/models/device_dto.dart';
 
 class DailyUsageData {
   final DateTime date;
@@ -21,18 +20,18 @@ class DeviceUsageProvider extends BaseProvider {
   int _selectedDeviceIndex = 0;
   int _selectedDayIndex = 6;
 
-  List<DeviceModel> _deviceList = [];
+  List<DeviceDto> _deviceList = [];
   List<DailyUsageData> _weekDays = [];
 
   int get selectedDeviceIndex => _selectedDeviceIndex;
   int get selectedDayIndex => _selectedDayIndex;
-  List<DeviceModel> get deviceList => _deviceList;
+  List<DeviceDto> get deviceList => _deviceList;
   List<DailyUsageData> get weekDays => _weekDays;
 
   DailyUsageData? get selectedDayData =>
       _weekDays.isNotEmpty && _selectedDayIndex < _weekDays.length ? _weekDays[_selectedDayIndex] : null;
 
-  void syncDevices(List<DeviceModel> devices) {
+  void syncDevices(List<DeviceDto> devices) {
     _deviceList = devices;
     if (_selectedDeviceIndex >= _deviceList.length) {
       _selectedDeviceIndex = 0;
