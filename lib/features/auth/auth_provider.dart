@@ -1,15 +1,47 @@
+import 'package:flutter/material.dart';
 import 'package:v3/common/providers/base_provider.dart';
 import 'package:v3/locator.dart';
-import 'models/auth_request.dart';
-import 'repositories/auth_repository.dart';
 import 'package:v3/core/result/result_model.dart';
+import 'package:v3/features/auth/models/auth_request.dart';
+import 'package:v3/features/auth/repositories/auth_repository.dart';
+import 'package:v3/common/models/country_dto.dart';
 
 class LoginProvider extends BaseProvider {
   final AuthRepository _authRepo = locator<AuthRepository>();
 
+  // ================= 国家列表状态管理 =================
+  List<CountryDto> _countryList = [];
+  List<CountryDto> get countryList => _countryList;
+
+  CountryDto? _selectedCountry;
+  CountryDto? get selectedCountry => _selectedCountry;
+
+  Future<void> fetchCountries() async {
+    // 如果内存中已经有数据，直接返回，避免重复渲染
+    if (_countryList.isNotEmpty) return;
+
+    try {
+      _countryList = await _authRepo.getCountryList();
+      if (_countryList.isNotEmpty) {
+        // 默认选中中国，如果没有则选中列表第一项
+        _selectedCountry = _countryList.firstWhere((c) => c.countryCode == 'CN', orElse: () => _countryList.first);
+      }
+      notifyListeners();
+    } catch (e) {
+      debugPrint("获取国家列表失败: $e");
+    }
+  }
+
+  void selectCountry(CountryDto country) {
+    _selectedCountry = country;
+    notifyListeners();
+  }
+
+  // ================= 原有业务逻辑 =================
+
   Future<bool> login(String account, String password, {required bool isEmail}) async {
     if (account.trim().isEmpty || password.trim().isEmpty) {
-      setError("账号或密码不能为空");
+      setError("Please fill in all fields");
       return false;
     }
     setLoading(true);

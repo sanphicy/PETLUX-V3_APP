@@ -22,6 +22,15 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _agreedToTerms = false;
 
   @override
+  void initState() {
+    super.initState();
+    // 页面初始化时触发拉取国家列表
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<LoginProvider>().fetchCountries();
+    });
+  }
+
+  @override
   void dispose() {
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
@@ -30,10 +39,85 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
+  // 构建国家选择器弹窗
+  void _showCountryPicker(BuildContext context, LoginProvider provider) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.r))),
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                child: Text(
+                  "Select Country / Region",
+                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Divider(height: 1, color: Colors.grey.shade200),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: provider.countryList.length,
+                  itemBuilder: (context, index) {
+                    final country = provider.countryList[index];
+                    final isSelected = provider.selectedCountry?.countryCode == country.countryCode;
+                    return ListTile(
+                      title: Text(
+                        country.name,
+                        style: TextStyle(color: isSelected ? const Color(0xFFF3D14B) : Colors.black87),
+                      ),
+                      trailing: Text(country.phoneCountryCode, style: const TextStyle(color: Colors.grey)),
+                      onTap: () {
+                        provider.selectCountry(country);
+                        Navigator.pop(ctx);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCountrySelector(BuildContext context, LoginProvider provider) {
+    return GestureDetector(
+      onTap: () => _showCountryPicker(context, provider),
+      child: Container(
+        height: Dimens.buttonLarge,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF2F2F2),
+          borderRadius: BorderRadius.circular(Dimens.radiusLarge),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              provider.selectedCountry != null
+                  ? '${provider.selectedCountry!.name} (${provider.selectedCountry!.phoneCountryCode})'
+                  : 'Loading...',
+              style: TextStyle(color: const Color(0xFF333333), fontSize: Dimens.fontNormal),
+            ),
+            Icon(Icons.arrow_drop_down, color: const Color(0xFF333333)),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context)!;
     final primaryColor = const Color(0xFFF3D14B);
+    final provider = context.watch<LoginProvider>(); // 监听 Provider 状态更新
 
     return Scaffold(
       backgroundColor: primaryColor,
@@ -62,6 +146,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               padding: EdgeInsets.symmetric(horizontal: Dimens.pagePadding),
               child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -70,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Column(
                         children: [
                           Text(
-                            s.emailLabel,
+                            s.emailLabel, // 或者改为 "Account Registration"
                             style: TextStyle(
                               fontSize: Dimens.fontLarge,
                               fontWeight: FontWeight.bold,
@@ -87,11 +172,17 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     SizedBox(height: Dimens.spacingXLarge),
+
+                    // ======== 插入的国家选择器 ========
+                    _buildCountrySelector(context, provider),
+                    SizedBox(height: Dimens.spacingNormal),
+
+                    // =================================
                     AuthTextField(controller: _emailCtrl, hintText: s.emailHint),
                     SizedBox(height: Dimens.spacingNormal),
                     AuthTextField(controller: _passwordCtrl, hintText: s.passwordHint, isPassword: true),
                     SizedBox(height: Dimens.spacingNormal),
-                    AuthTextField(hintText: s.confirmPassword, isPassword: true), // 新增国际化
+                    AuthTextField(hintText: s.confirmPassword, isPassword: true),
                     SizedBox(height: Dimens.spacingNormal),
                     AuthVerifyCodeField(
                       controller: _codeCtrl,
@@ -139,8 +230,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ],
                     ),
                     SizedBox(height: 60.h),
-
-                    // --- 局部刷新构建提交按钮 ---
                     ValueListenableBuilder<bool>(
                       valueListenable: _isSubmitting,
                       builder: (context, isSubmitting, child) {
@@ -158,17 +247,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                 : () async {
                                     if (!_agreedToTerms) return;
                                     FocusManager.instance.primaryFocus?.unfocus();
-
                                     _isSubmitting.value = true;
-                                    final provider = context.read<LoginProvider>();
+
+                                    // 提交注册时，提取当前选中的国家 Code 传入注册接口
                                     final success = await provider.register(
                                       _emailCtrl.text,
                                       _passwordCtrl.text,
                                       _codeCtrl.text,
-                                      "CN",
+                                      provider.selectedCountry?.countryCode ?? "CN", // 使用动态选中的国家代码
                                     );
-                                    if (mounted) _isSubmitting.value = false;
 
+                                    if (mounted) _isSubmitting.value = false;
                                     if (success && mounted) {
                                       Navigator.pop(this.context);
                                     }

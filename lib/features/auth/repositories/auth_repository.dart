@@ -1,13 +1,61 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v3/core/network/api_endpoints.dart';
 import 'package:v3/core/network/http_client.dart';
 import 'package:v3/core/result/result_model.dart';
 import 'package:v3/core/utils/token_manager.dart';
 import 'package:v3/locator.dart';
 import 'package:v3/features/auth/models/auth_request.dart';
+import 'package:v3/common/models/country_dto.dart';
 
 class AuthRepository {
   final HttpClient _httpClient = locator<HttpClient>();
+
+  static const String _countryCacheKey = 'cache_country_list';
+
+  // ================= 获取国家列表 (带缓存) =================
+  Future<List<CountryDto>> getCountryList() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // 1. 尝试读取本地缓存
+    final cachedData = prefs.getString(_countryCacheKey);
+    if (cachedData != null && cachedData.isNotEmpty) {
+      try {
+        final List<dynamic> jsonList = jsonDecode(cachedData);
+        return jsonList.map((e) => CountryDto.fromJson(e)).toList();
+      } catch (e) {
+        debugPrint("解析本地国家列表缓存失败: $e");
+      }
+    }
+
+    // 2. 如果本地没有缓存，则请求 API
+    try {
+      final response = await _httpClient.get<Map<String, dynamic>>(
+        ApiEndpoints.countries,
+        query: {
+          'locale': 'zh-CN', // 可以根据手机系统语言动态获取，这里先写死中文测试
+          'clientAppId': 'stellapets',
+        },
+      );
+
+      if (response.data != null && (response.code == 0 || response.code == 200)) {
+        final List<dynamic> items = response.data!['items'] ?? [];
+        final List<CountryDto> countries = items.map((e) => CountryDto.fromJson(e)).toList();
+
+        // 3. 获取成功后，异步保存到本地缓存
+        prefs.setString(_countryCacheKey, jsonEncode(items));
+
+        return countries;
+      }
+    } catch (e) {
+      debugPrint("请求国家列表API失败: $e");
+    }
+
+    return [];
+  }
+
+  // ================= 现有的 Auth 业务逻辑 =================
 
   Future<ResultEntity<bool>> loginByphone(PhoneLoginRequest request) async {
     final response = await _httpClient.post<Map<String, dynamic>>(ApiEndpoints.loginByPhone, data: request.toJson());
@@ -15,9 +63,9 @@ class AuthRepository {
       final accessToken = response.data!['accessToken'] as String?;
       if (accessToken != null && accessToken.isNotEmpty) {
         await TokenManager.setToken(accessToken);
-        return ResultEntity.success(true); // 仅返回成功状态
+        return ResultEntity.success(true);
       } else {
-        return ResultEntity.error("获取 Token 失败");
+        return ResultEntity.error("登录失败，未获取到 Token");
       }
     }
     return ResultEntity.error(response.message);
@@ -29,9 +77,9 @@ class AuthRepository {
       final accessToken = response.data!['accessToken'] as String?;
       if (accessToken != null && accessToken.isNotEmpty) {
         await TokenManager.setToken(accessToken);
-        return ResultEntity.success(true); // 仅返回成功状态
+        return ResultEntity.success(true);
       } else {
-        return ResultEntity.error("获取 Token 失败");
+        return ResultEntity.error("登录失败，未获取到 Token");
       }
     }
     return ResultEntity.error(response.message);
@@ -50,7 +98,7 @@ class AuthRepository {
         await TokenManager.setToken(accessToken);
         return ResultEntity.success(true);
       } else {
-        return ResultEntity.error("获取 Token 失败");
+        return ResultEntity.error("注册失败，未获取到 Token");
       }
     }
     return ResultEntity.error(response.message);
