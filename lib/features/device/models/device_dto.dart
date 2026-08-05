@@ -32,6 +32,12 @@ class DeviceDto {
 
   ExecuteAction get executeAction {
     final val = _attributes[DeviceThingModel.deviceExecute.dpid];
+    // ========== PATCH START ==========
+    // 临时补丁解决设备复位完成后不上报状态问题
+    if (val?.toString() == '5') {
+      return ExecuteAction.idle;
+    }
+    // ========== PATCH END ==========
     return ExecuteAction.fromValue(int.tryParse(val?.toString() ?? '') ?? 0);
   }
 
@@ -124,6 +130,12 @@ class DeviceDto {
   bool get isOperating {
     final dpid8 = _attributes[DeviceThingModel.deviceStatus.dpid]?.toString();
     final dpid9 = _attributes[DeviceThingModel.deviceExecute.dpid]?.toString();
+    // ========== PATCH START ==========
+    // 临时补丁解决设备复位完成后不上报状态问题
+    if (dpid9 == '5') {
+      return false;
+    }
+    // ========== PATCH END ==========
     if (dpid8 != '0' || dpid9 != '0') return true;
     return false;
   }
