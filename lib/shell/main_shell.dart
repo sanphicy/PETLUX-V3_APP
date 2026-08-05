@@ -58,7 +58,7 @@ class _MainShellState extends State<MainShell> {
             BottomNavigationBarItem(
               icon: Image.asset('assets/images/cat-black.png', width: iconSize, height: iconSize),
               activeIcon: Image.asset('assets/images/cat-green.png', width: iconSize, height: iconSize),
-              label: "Cat",
+              label: "Data",
             ),
             BottomNavigationBarItem(
               icon: Image.asset('assets/images/user-black.png', width: iconSize, height: iconSize),

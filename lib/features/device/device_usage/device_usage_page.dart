@@ -109,6 +109,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                                 Container(
                                   width: 45,
                                   height: 45,
+                                  padding: const EdgeInsets.all(4),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
@@ -117,18 +118,14 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                                     ),
                                     color: Colors.white,
                                   ),
-                                  child: Icon(
-                                    Icons.pets,
-                                    color: isSelected ? const Color(0xFF8CC152) : Colors.grey,
-                                    size: 24,
-                                  ),
+                                  child: Image.asset('assets/images/device-logo.png', fit: BoxFit.contain),
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
                                   device.deviceName,
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: isSelected ? const Color(0xFF8CC152) : textColor,
+                                    color: isSelected ? const Color(0xFFDBAB3F) : textColor,
                                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                                   ),
                                 ),
