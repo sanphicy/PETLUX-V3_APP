@@ -28,6 +28,26 @@ class DeviceProvider extends BaseProvider {
     }
   }
 
+  // 修改设备名称 (设备列表页调用)
+  Future<bool> renameDevice(String deviceId, String newName) async {
+    setLoading(true);
+    final success = await _deviceRepo.renameDevice(deviceId, newName);
+    setLoading(false);
+
+    if (success) {
+      // 成功后同步更新本地列表中的名称
+      final index = _devices.indexWhere((d) => d.deviceId == deviceId);
+      if (index != -1) {
+        _devices[index].deviceName = newName;
+        notifyListeners();
+      }
+      return true;
+    } else {
+      setError("Failed to update name");
+      return false;
+    }
+  }
+
   // 初始化mqtt
   Future<void> _initGlobalMqttAndSubscribe() async {
     if (_devices.isEmpty) return;

@@ -347,12 +347,23 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     return true;
   }
 
-  // 更新设备自定义名称
+  // 修改设备名称
   Future<bool> updateDeviceName(String newName) async {
     if (_currentDevice == null) return false;
-    _currentDevice!.deviceName = newName;
-    notifyListeners();
-    return true;
+
+    setLoading(true);
+    final success = await _deviceRepo.renameDevice(_currentDevice!.deviceId, newName);
+    setLoading(false);
+
+    if (success) {
+      _currentDevice!.deviceName = newName;
+      notifyListeners();
+      showSuccessToast("Name updated");
+      return true;
+    } else {
+      setError("Failed to update name");
+      return false;
+    }
   }
 
   // 显示操作成功的应用 Toast 提示

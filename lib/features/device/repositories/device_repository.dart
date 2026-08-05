@@ -43,6 +43,18 @@ class DeviceRepository extends BaseProvider {
     return devices;
   }
 
+  //修改设备名称
+  Future<bool> renameDevice(String deviceId, String newName) async {
+    try {
+      final apiPath = ApiEndpoints.deviceName(deviceId);
+      final result = await _httpClient.patch(apiPath, data: {"nickname": newName});
+      return result.code == 0 || result.code == 200;
+    } catch (e) {
+      debugPrint("Rename Device Error [$deviceId]: $e");
+      return false;
+    }
+  }
+
   // 发送设备通用控制指令
   Future<bool> _sendDeviceCommand(String deviceId, List<Map<String, dynamic>> attributes) async {
     final apiPath = ApiEndpoints.deviceInvoke(deviceId);

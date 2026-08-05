@@ -64,6 +64,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
                             onTap: () {
                               context.push('/device_manager/${device.deviceId}');
                             },
+                            onRename: () => _showRenameDialog(context, device.deviceId, device.deviceName),
                             onDelete: () async {
                               await context.read<DeviceProvider>().deleteDevice(device.deviceId);
                               context.read<DeviceProvider>().fetchDevices();
@@ -131,4 +132,45 @@ class _DeviceListPageState extends State<DeviceListPage> {
       ),
     );
   }
+}
+
+void _showRenameDialog(BuildContext context, String deviceId, String currentName) {
+  final TextEditingController controller = TextEditingController(text: currentName);
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: const Text('Rename Device', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(
+            hintText: 'Enter new name',
+            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFF3D14B))),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+          ),
+          TextButton(
+            onPressed: () async {
+              FocusManager.instance.primaryFocus?.unfocus();
+              final newName = controller.text.trim();
+              Navigator.pop(ctx);
+              if (newName.isNotEmpty && newName != currentName) {
+                await context.read<DeviceProvider>().renameDevice(deviceId, newName);
+              }
+            },
+            child: const Text(
+              'Confirm',
+              style: TextStyle(color: Color(0xFFF3D14B), fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }
