@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:v3/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:v3/core/mqtt/mqtt_manager.dart';
@@ -12,6 +13,22 @@ class DeviceProvider extends BaseProvider {
   final DeviceRepository _deviceRepo = locator<DeviceRepository>();
   List<DeviceDto> _devices = [];
   List<DeviceDto> get devices => _devices;
+  StreamSubscription<String>? _repoSubscription;
+
+  DeviceProvider() {
+    // 监听底层设备池的更新，如果变动的设备在列表中，则刷新 UI
+    _repoSubscription = _deviceRepo.onDeviceUpdated.listen((updatedDeviceId) {
+      if (_devices.any((d) => d.deviceId == updatedDeviceId)) {
+        notifyListeners();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _repoSubscription?.cancel();
+    super.dispose();
+  }
 
   // 获取设备列表
   Future<void> fetchDevices() async {
@@ -34,18 +51,10 @@ class DeviceProvider extends BaseProvider {
     final success = await _deviceRepo.renameDevice(deviceId, newName);
     setLoading(false);
 
-    if (success) {
-      // 成功后同步更新本地列表中的名称
-      final index = _devices.indexWhere((d) => d.deviceId == deviceId);
-      if (index != -1) {
-        _devices[index].deviceName = newName;
-        notifyListeners();
-      }
-      return true;
-    } else {
+    if (!success) {
       setError("Failed to update name");
-      return false;
     }
+    return success;
   }
 
   // 初始化mqtt

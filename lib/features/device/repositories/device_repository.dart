@@ -27,16 +27,18 @@ class DeviceRepository extends BaseProvider {
   Future<List<DeviceDto>> getDeviceList() async {
     List<DeviceDto> devices = [];
     final result = await locator<HttpClient>().get<Map<String, dynamic>>(ApiEndpoints.devices);
+
     if (result.data != null) {
       final List<dynamic> listData = result.data!['items'] ?? [];
-      devices = listData.map((item) {
+      for (var item in listData) {
         final json = item as Map<String, dynamic>;
-        return DeviceDto(
-          deviceId: json['deviceId']?.toString() ?? '',
-          deviceName: json['nickname']?.toString() ?? '',
-          isOnline: json['online'] ?? false,
-        );
-      }).toList();
+        final deviceId = json['deviceId']?.toString() ?? '';
+        if (deviceId.isEmpty) continue;
+
+        updateBaseInfo(deviceId, name: json['nickname']?.toString(), isOnline: json['online'] ?? false);
+
+        devices.add(getDevice(deviceId));
+      }
     } else {
       setError(result.message);
     }
@@ -48,7 +50,11 @@ class DeviceRepository extends BaseProvider {
     try {
       final apiPath = ApiEndpoints.deviceName(deviceId);
       final result = await _httpClient.patch(apiPath, data: {"nickname": newName});
-      return result.code == 0 || result.code == 200;
+      if (result.code == 0 || result.code == 200) {
+        updateBaseInfo(deviceId, name: newName);
+        return true;
+      }
+      return false;
     } catch (e) {
       debugPrint("Rename Device Error [$deviceId]: $e");
       return false;
