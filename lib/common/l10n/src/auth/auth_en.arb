@@ -1,0 +1,23 @@
+{
+  "login": "log on",
+  "register": "Register",
+  "createAccount": "Create Account",
+  "forgotPassword": "Forgot Password",
+  "phoneLogin": "Phone",
+  "emailLogin": "Email",
+  "emailTitle": "E-mail",
+  "enterEmailHint": "Please enter your email",
+  "enterPasswordHint": "Enter your password",
+  "newPasswordHint": "Set new password",
+  "confirmPasswordHint": "Confirm password",
+  "enterEmailCodeHint": "Enter code from the email",
+  "sendCode": "Get Code",
+  "emptyAccountOrPassword": "Please fill in all fields",
+  "invalidAccountFormat": "Invalid account format",
+  "passwordMismatch": "Passwords do not match",
+  "resetPasswordSuccess": "Password reset successfully, please log in",
+  "hasAccountGoLogin": "Already have an account? Log In",
+  "rememberPasswordGoLogin": "Remember password? Log In",
+  "submitAndRegister": "Submit and register",
+  "tokenParseError": "Failed to parse login token, please try again"
+}
