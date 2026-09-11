@@ -184,7 +184,7 @@ abstract class S {
   /// No description provided for @invalidAccountFormat.
   ///
   /// In zh, this message translates to:
-  /// **'账号格式不正确'**
+  /// **'请输入正确的邮箱格式'**
   String get invalidAccountFormat;
 
   /// No description provided for @passwordMismatch.
@@ -336,6 +336,24 @@ abstract class S {
   /// In zh, this message translates to:
   /// **'网络连接失败，请检查网络设置'**
   String get networkError;
+
+  /// No description provided for @selectCountryRegion.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择国家/地区'**
+  String get selectCountryRegion;
+
+  /// No description provided for @searchCountryHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索国家或区号'**
+  String get searchCountryHint;
+
+  /// No description provided for @noMatchingRegion.
+  ///
+  /// In zh, this message translates to:
+  /// **'未找到匹配的国家或地区'**
+  String get noMatchingRegion;
 
   /// No description provided for @wifiConfigTitle.
   ///

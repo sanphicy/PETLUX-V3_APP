@@ -6,9 +6,6 @@ import 'package:petlux/common/widgets/web_view_page.dart';
 import 'package:petlux/core/services/nav_service.dart';
 import 'package:petlux/locator.dart';
 
-// Splash
-import 'package:petlux/features/splash/pages/splash_page.dart';
-
 // Auth
 import 'package:petlux/features/auth/page/forgot_password_page.dart';
 import 'package:petlux/features/auth/page/login_page.dart';
@@ -16,7 +13,7 @@ import 'package:petlux/features/auth/page/register_page.dart';
 import 'package:petlux/features/auth/viewmodels/forgot_password_view_model.dart';
 import 'package:petlux/features/auth/viewmodels/login_view_model.dart';
 import 'package:petlux/features/auth/viewmodels/register_view_model.dart';
-
+import 'package:petlux/features/auth/page/country_search_page.dart';
 // Home Shell & Tabs
 import 'package:petlux/features/home/home_shell_page.dart';
 import 'package:petlux/features/device/device_list/device_list_page.dart';
@@ -48,6 +45,7 @@ class AppRoutes {
   static const login = '/login';
   static const register = '/register';
   static const forgotPassword = '/forgot_password';
+  static const countrySearch = '/country_search';
 
   // Shell Tabs
   static const home = '/home';
@@ -111,6 +109,7 @@ class AppRouter {
       builder: (context, state) =>
           ChangeNotifierProvider(create: (_) => ForgotPasswordViewModel(), child: const ForgotPasswordPage()),
     ),
+    GoRoute(path: AppRoutes.countrySearch, builder: (context, state) => const CountrySearchPage()),
   ];
 
   // 管理底部三大 Tab（StatefulShellRoute 自动保活）

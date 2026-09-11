@@ -17,5 +17,8 @@
   "actionAddLitter": "Add Litter",
   "actionEmptyLitter": "Empty Litter",
   "actionResetting": "Resetting",
-  "networkError":"Network Error"
+  "networkError":"Network Error",
+  "selectCountryRegion": "Select Country / Region",
+  "searchCountryHint": "Search country or region code",
+  "noMatchingRegion": "No matching region found"
 }

@@ -17,7 +17,7 @@ class DeviceUsagePage extends StatefulWidget {
 }
 
 class _DeviceUsagePageState extends State<DeviceUsagePage> {
-  final Color _primaryPurple = const Color(0xFF917CEE);
+  final Color _primaryPurple = const Color(0xFFF3C746);
   final Color _bgColor = const Color(0xFFF9F9FC);
   final Color _textColor = const Color(0xFF333333);
   final Color _subTextColor = const Color(0xFF666666);

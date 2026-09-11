@@ -11,17 +11,9 @@ class ForgotPasswordViewModel extends BaseProvider {
   final RegionService _regionService = locator<RegionService>();
 
   CountryDto? get currentCountry => _regionService.currentCountry;
-
   Future<void> switchCountry(CountryDto country) async {
-    // 立即通知 UI 乐观渲染新选中的国家
+    await _regionService.switchCountry(country);
     notifyListeners();
-
-    // 后台异步执行 BaseURL 切换与缓存
-    final success = await _regionService.switchCountry(country);
-    if (!success) {
-      // 若失败则重绘回退
-      notifyListeners();
-    }
   }
 
   Future<int> sendVerifyCode(String account, bool isPhoneMode) async {

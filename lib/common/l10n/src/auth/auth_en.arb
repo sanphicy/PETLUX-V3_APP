@@ -13,7 +13,7 @@
   "enterEmailCodeHint": "Enter code from the email",
   "sendCode": "Get Code",
   "emptyAccountOrPassword": "Please fill in all fields",
-  "invalidAccountFormat": "Invalid account format",
+  "invalidAccountFormat": "Please enter a valid email address",
   "passwordMismatch": "Passwords do not match",
   "resetPasswordSuccess": "Password reset successfully, please log in",
   "hasAccountGoLogin": "Already have an account? Log In",

@@ -168,46 +168,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     letterSpacing: 0.3,
                   ),
                 ),
-                // 右上角保留国家/地区切换胶囊
-                Positioned(
-                  right: 18,
-                  child: Selector<RegisterViewModel, CountryDto?>(
-                    selector: (_, m) => m.currentCountry,
-                    builder: (context, country, _) {
-                      return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () async {
-                          final selected = await CountryPickerSheet.show(context);
-                          if (selected != null && context.mounted) {
-                            vm.switchCountry(selected);
-                          }
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                country?.countryCode ?? 'US',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF222222),
-                                ),
-                              ),
-                              const SizedBox(width: 2),
-                              const Icon(Icons.arrow_drop_down, size: 16, color: Color(0xFF222222)),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
               ],
             ),
           ),
@@ -247,18 +207,72 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   const SizedBox(height: 26),
 
-                  // 1. 邮箱输入框
-                  _buildCapsuleField(
-                    child: TextField(
-                      controller: _emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(fontSize: 15, color: Color(0xFF222222)),
-                      decoration: InputDecoration(
-                        hintText: s.enterEmailHint,
-                        hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF9E9E9E)),
-                        border: InputBorder.none,
-                        isDense: true,
-                      ),
+                  Container(
+                    height: 48,
+                    decoration: BoxDecoration(color: const Color(0xFFEFEFF2), borderRadius: BorderRadius.circular(14)),
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    alignment: Alignment.center,
+                    child: Row(
+                      children: [
+                        Selector<RegisterViewModel, CountryDto?>(
+                          selector: (_, m) => m.currentCountry,
+                          builder: (context, currentCountry, _) {
+                            final displayName = currentCountry?.name.isNotEmpty == true
+                                ? currentCountry!.name
+                                : (currentCountry?.countryCode ?? 'US');
+
+                            return GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () async {
+                                final selected = await context.push<CountryDto>(AppRoutes.countrySearch);
+                                if (selected != null && context.mounted) {
+                                  context.read<RegisterViewModel>().switchCountry(selected);
+                                }
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ConstrainedBox(
+                                    constraints: const BoxConstraints(maxWidth: 88),
+                                    child: Text(
+                                      displayName,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF222222),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  const Icon(Icons.arrow_drop_down, size: 18, color: Color(0xFF666666)),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    width: 1,
+                                    height: 18,
+                                    color: const Color(0xFFD0D0D4),
+                                    margin: const EdgeInsets.only(right: 10),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        Expanded(
+                          child: TextField(
+                            controller: _emailCtrl, // 如果你的控制器叫 _accountCtrl 则保持原名
+                            keyboardType: TextInputType.emailAddress,
+                            style: const TextStyle(fontSize: 14, color: Color(0xFF222222)),
+                            decoration: InputDecoration(
+                              hintText: s.enterEmailHint,
+                              hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF9E9E9E)),
+                              border: InputBorder.none,
+                              isDense: true,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 

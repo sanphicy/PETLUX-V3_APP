@@ -111,4 +111,3 @@ class _AuthVerifyCodeFieldState extends State<AuthVerifyCodeField> {
     );
   }
 }
-现在到规范的国家获取问题了 因为sim出口不适合并且权限敏感所以 地区判断改为locat和其他方式来判断 我是这样想的 进入就去缓存看看有没有 没有就获取有就用缓存的最好 然后登录就用缓存的如果登录不进去后台是三个节点轮流静默好还是？

@@ -9,6 +9,8 @@ import 'package:petlux/common/widgets/app_dialogs.dart';
 import 'package:petlux/features/auth/viewmodels/login_view_model.dart';
 import 'package:petlux/routes/app_router.dart';
 
+import 'package:petlux/common/models/country_dto.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -34,15 +36,27 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  static final RegExp _emailRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+
   Future<void> _handleLogin(LoginViewModel vm, S s) async {
     final account = _accountCtrl.text.trim();
     final pwd = _passwordCtrl.text.trim();
 
-    if (account.isEmpty || pwd.isEmpty) {
-      context.showAppToast(message: s.emptyAccountOrPassword, type: AppToastType.warning);
+    if (account.isEmpty) {
+      context.showAppToast(message: s.enterEmailHint, type: AppToastType.warning);
       return;
     }
 
+    if (pwd.isEmpty) {
+      context.showAppToast(message: s.enterPasswordHint, type: AppToastType.warning);
+      return;
+    }
+
+    if (!_emailRegExp.hasMatch(account)) {
+      context.showAppToast(message: s.invalidAccountFormat, type: AppToastType.warning);
+      return;
+    }
+    //隐私政策是否勾选
     if (!_agreedPrivacy) {
       context.showAppToast(
         message: '${s.agreePrefix}${s.userAgreement} & ${s.privacyPolicy}',
@@ -50,19 +64,16 @@ class _LoginPageState extends State<LoginPage> {
       );
       return;
     }
-
+    //全局收起软键盘
     FocusManager.instance.primaryFocus?.unfocus();
 
-    final bool isEmail = account.contains('@');
-    final success = await vm.login(account, pwd, isEmail: isEmail);
+    final success = await vm.login(account, pwd, isEmail: true);
 
     if (!mounted) return;
 
     if (success) {
       context.go(AppRoutes.tabDevice);
-    } else {
-      context.showAppToast(message: vm.errorMsg.isNotEmpty ? vm.errorMsg : s.operationFailed, type: AppToastType.error);
-    }
+    } else {}
   }
 
   @override
@@ -117,22 +128,74 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                   const SizedBox(height: 24),
-
-                  // 邮箱 / 账号输入框
                   Container(
                     height: 48,
                     decoration: BoxDecoration(color: _inputBg, borderRadius: BorderRadius.circular(14)),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
                     alignment: Alignment.center,
-                    child: TextField(
-                      controller: _accountCtrl,
-                      style: const TextStyle(fontSize: 14, color: Color(0xFF222222)),
-                      decoration: InputDecoration(
-                        hintText: s.enterEmailHint,
-                        hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF9E9E9E)),
-                        border: InputBorder.none,
-                        isDense: true,
-                      ),
+                    child: Row(
+                      children: [
+                        Selector<LoginViewModel, CountryDto?>(
+                          selector: (_, m) => m.currentCountry,
+                          builder: (context, currentCountry, _) {
+                            final displayName = currentCountry?.name.isNotEmpty == true
+                                ? currentCountry!.name
+                                : (currentCountry?.countryCode ?? 'US');
+
+                            return GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () async {
+                                final selected = await context.push<CountryDto>(AppRoutes.countrySearch);
+                                if (selected != null && context.mounted) {
+                                  vm.switchCountry(selected);
+                                }
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ConstrainedBox(
+                                    constraints: const BoxConstraints(maxWidth: 88),
+                                    child: Text(
+                                      displayName,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF222222),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  const Icon(Icons.arrow_drop_down, size: 18, color: Color(0xFF666666)),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    width: 1,
+                                    height: 18,
+                                    color: const Color(0xFFD0D0D4),
+                                    margin: const EdgeInsets.only(right: 10),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+
+                        // 邮箱输入框
+                        Expanded(
+                          child: TextField(
+                            controller: _accountCtrl,
+                            keyboardType: TextInputType.emailAddress,
+                            style: const TextStyle(fontSize: 14, color: Color(0xFF222222)),
+                            decoration: InputDecoration(
+                              hintText: s.enterEmailHint,
+                              hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF9E9E9E)),
+                              border: InputBorder.none,
+                              isDense: true,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 

@@ -6,6 +6,7 @@ import 'package:petlux/common/l10n/app_localizations.dart';
 import 'package:petlux/common/widgets/app_dialogs.dart';
 import 'package:petlux/features/auth/viewmodels/forgot_password_view_model.dart';
 import 'package:petlux/routes/app_router.dart';
+import 'package:petlux/common/models/country_dto.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -194,17 +195,69 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   const SizedBox(height: 26),
 
                   // 1. 邮箱输入框
+                  // 1. 邮箱输入框（内嵌国家选择）
                   _buildCapsuleField(
-                    child: TextField(
-                      controller: _emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(fontSize: 15, color: Color(0xFF222222)),
-                      decoration: InputDecoration(
-                        hintText: s.enterEmailHint,
-                        hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF9E9E9E)),
-                        border: InputBorder.none,
-                        isDense: true,
-                      ),
+                    child: Row(
+                      children: [
+                        Selector<ForgotPasswordViewModel, CountryDto?>(
+                          selector: (_, m) => m.currentCountry,
+                          builder: (context, currentCountry, _) {
+                            final displayName = currentCountry?.name.isNotEmpty == true
+                                ? currentCountry!.name
+                                : (currentCountry?.countryCode ?? 'US');
+
+                            return GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () async {
+                                final selected = await context.push<CountryDto>(AppRoutes.countrySearch);
+                                if (selected != null && context.mounted) {
+                                  context.read<ForgotPasswordViewModel>().switchCountry(selected);
+                                }
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ConstrainedBox(
+                                    constraints: const BoxConstraints(maxWidth: 88),
+                                    child: Text(
+                                      displayName,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF222222),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  const Icon(Icons.arrow_drop_down, size: 18, color: Color(0xFF666666)),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    width: 1,
+                                    height: 18,
+                                    color: _borderGrey,
+                                    margin: const EdgeInsets.only(right: 10),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        Expanded(
+                          child: TextField(
+                            controller: _emailCtrl,
+                            keyboardType: TextInputType.emailAddress,
+                            style: const TextStyle(fontSize: 15, color: Color(0xFF222222)),
+                            decoration: InputDecoration(
+                              hintText: s.enterEmailHint,
+                              hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF9E9E9E)),
+                              border: InputBorder.none,
+                              isDense: true,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 

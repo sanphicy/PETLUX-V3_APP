@@ -51,7 +51,7 @@ class SZh extends S {
   String get emptyAccountOrPassword => '请填写完整信息';
 
   @override
-  String get invalidAccountFormat => '账号格式不正确';
+  String get invalidAccountFormat => '请输入正确的邮箱格式';
 
   @override
   String get passwordMismatch => '两次输入的密码不一致';
@@ -127,6 +127,15 @@ class SZh extends S {
 
   @override
   String get networkError => '网络连接失败，请检查网络设置';
+
+  @override
+  String get selectCountryRegion => '选择国家/地区';
+
+  @override
+  String get searchCountryHint => '搜索国家或区号';
+
+  @override
+  String get noMatchingRegion => '未找到匹配的国家或地区';
 
   @override
   String get wifiConfigTitle => '配置设备网络';

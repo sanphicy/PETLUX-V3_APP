@@ -51,7 +51,7 @@ class SEn extends S {
   String get emptyAccountOrPassword => 'Please fill in all fields';
 
   @override
-  String get invalidAccountFormat => 'Invalid account format';
+  String get invalidAccountFormat => 'Please enter a valid email address';
 
   @override
   String get passwordMismatch => 'Passwords do not match';
@@ -128,6 +128,15 @@ class SEn extends S {
 
   @override
   String get networkError => 'Network Error';
+
+  @override
+  String get selectCountryRegion => 'Select Country / Region';
+
+  @override
+  String get searchCountryHint => 'Search country or region code';
+
+  @override
+  String get noMatchingRegion => 'No matching region found';
 
   @override
   String get wifiConfigTitle => '配置设备网络';

@@ -12,17 +12,11 @@ class LoginViewModel extends BaseProvider {
 
   CountryDto? get currentCountry => _regionService.currentCountry;
 
-  // 乐观更新右上角选中国家
   Future<void> switchCountry(CountryDto country) async {
-    // 立即通知 UI 乐观渲染新选中的国家
+    // 1. 立即持久化并切换底层机房 BaseUrl
+    await _regionService.switchCountry(country);
+    // 2. 强制通知 LoginPage 刷新内嵌的国家展示
     notifyListeners();
-
-    // 后台异步执行 BaseURL 切换与缓存
-    final success = await _regionService.switchCountry(country);
-    if (!success) {
-      // 若失败则重绘回退
-      notifyListeners();
-    }
   }
 
   //登录
