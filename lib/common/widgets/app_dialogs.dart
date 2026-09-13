@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:petlux/core/services/nav_service.dart';
 import 'package:petlux/common/l10n/app_localizations.dart';
@@ -7,6 +8,7 @@ enum AppToastType { success, error, warning, info }
 enum AppToastPosition { top, center, bottom }
 
 OverlayEntry? _currentToastEntry;
+Timer? _toastTimer;
 
 extension AppDialogExtension on BuildContext {
   Future<bool?> showAppDialog({
@@ -17,23 +19,61 @@ extension AppDialogExtension on BuildContext {
   }) {
     final String actualConfirmText = confirmText ?? S.of(this)!.confirm;
     final String actualCancelText = cancelText ?? S.of(this)!.cancel;
+    const Color brandYellow = Color(0xFFF3C746);
+
     return showDialog<bool>(
       context: this,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          title: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          content: Text(content, style: const TextStyle(fontSize: 15, color: Colors.black87)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF222222),
+            ),
+          ),
+          content: Text(
+            content,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Color(0xFF555555),
+              height: 1.4,
+            ),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text(actualCancelText, style: const TextStyle(color: Colors.grey)),
+              child: Text(
+                actualCancelText,
+                style: const TextStyle(color: Color(0xFF888888)),
+              ),
             ),
             TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF222222),
+              ),
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text(
-                actualConfirmText,
-                style: const TextStyle(color: Color(0xFF917CEE), fontWeight: FontWeight.bold),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: brandYellow, // 👈 弹窗确认按钮对齐主黄色
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  actualConfirmText,
+                  style: const TextStyle(
+                    color: Color(0xFF222222),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
               ),
             ),
           ],
@@ -54,39 +94,60 @@ extension AppDialogExtension on BuildContext {
 
     switch (type) {
       case AppToastType.success:
-        iconData = Icons.check_circle;
-        iconColor = const Color(0xFF5A784A);
-        bgColor = const Color(0xFFF1F4EE);
+        iconData = Icons.check_circle_rounded;
+        iconColor = const Color(0xFF43A047);
+        bgColor = const Color(0xFFF1F8F1);
         break;
       case AppToastType.error:
-        iconData = Icons.cancel;
-        iconColor = const Color(0xFFA63232);
-        bgColor = const Color(0xFFF8EDED);
+        iconData = Icons.cancel_rounded;
+        iconColor = const Color(0xFFE53935);
+        bgColor = const Color(0xFFFDF2F2);
         break;
       case AppToastType.warning:
-        iconData = Icons.warning_amber;
-        iconColor = const Color(0xFFDA8B33);
-        bgColor = const Color(0xFFFFF8EE);
+        iconData = Icons.warning_amber_rounded;
+        iconColor = const Color(0xFFD97706);
+        bgColor = const Color(0xFFFFFBEB);
         break;
       case AppToastType.info:
-        iconData = Icons.info_outline;
-        iconColor = const Color(0xFF5B7A8C);
-        bgColor = const Color(0xFFF0F4F8);
+        iconData = Icons.info_rounded;
+        iconColor = const Color(0xFF4B5563);
+        bgColor = const Color(0xFFF3F4F6);
         break;
     }
 
-    Alignment alignment = Alignment.center;
-    EdgeInsets margin = EdgeInsets.zero;
+    Alignment alignment;
+    EdgeInsets margin;
 
-    final overlayState = Overlay.maybeOf(this) ?? NavService.rootNavigatorKey.currentState?.overlay;
+    switch (position) {
+      case AppToastPosition.top:
+        alignment = Alignment.topCenter;
+        margin = const EdgeInsets.only(top: 50);
+        break;
+      case AppToastPosition.bottom:
+        alignment = Alignment.bottomCenter;
+        margin = const EdgeInsets.only(bottom: 50);
+        break;
+      case AppToastPosition.center:
+        alignment = Alignment.center;
+        margin = EdgeInsets.zero;
+        break;
+    }
+
+    final overlayState =
+        Overlay.maybeOf(this) ??
+        NavService.rootNavigatorKey.currentState?.overlay;
     if (overlayState == null) return;
+
+    _toastTimer?.cancel();
+    _toastTimer = null;
 
     if (_currentToastEntry != null && _currentToastEntry!.mounted) {
       _currentToastEntry!.remove();
       _currentToastEntry = null;
     }
 
-    _currentToastEntry = OverlayEntry(
+    late OverlayEntry entry;
+    entry = OverlayEntry(
       builder: (context) {
         return SafeArea(
           child: IgnorePointer(
@@ -96,28 +157,35 @@ extension AppDialogExtension on BuildContext {
                 color: Colors.transparent,
                 child: Container(
                   margin: margin,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: bgColor,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: iconColor.withValues(alpha: 0.2)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
+                        color: Colors.black.withValues(alpha: 0.06),
                         blurRadius: 10,
-                        offset: const Offset(0, 5),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(iconData, color: iconColor, size: 22),
-                      const SizedBox(width: 10),
+                      Icon(iconData, color: iconColor, size: 20),
+                      const SizedBox(width: 8),
                       Flexible(
                         child: Text(
                           message,
-                          style: TextStyle(color: iconColor, fontSize: 15, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: iconColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
@@ -130,10 +198,14 @@ extension AppDialogExtension on BuildContext {
       },
     );
 
-    overlayState.insert(_currentToastEntry!);
-    Future.delayed(duration, () {
-      if (_currentToastEntry != null && _currentToastEntry!.mounted) {
-        _currentToastEntry!.remove();
+    _currentToastEntry = entry;
+    overlayState.insert(entry);
+
+    _toastTimer = Timer(duration, () {
+      if (entry.mounted) {
+        entry.remove();
+      }
+      if (_currentToastEntry == entry) {
         _currentToastEntry = null;
       }
     });
