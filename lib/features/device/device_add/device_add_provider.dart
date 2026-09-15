@@ -22,9 +22,6 @@ class DeviceAddProvider extends BaseProvider {
   String _filterName = 'petlux, PETLUX';
   bool _autoFetchWifi = true;
 
-  bool _isFactoryDebugMode = false; //工厂调试
-  bool get isFactoryDebugMode => _isFactoryDebugMode;
-
   bool get filterUnknown => _filterUnknown;
   String get filterName => _filterName;
   bool get autoFetchWifi => _autoFetchWifi;
@@ -37,7 +34,6 @@ class DeviceAddProvider extends BaseProvider {
     _filterName = prefs.getString('pref_filter_name') ?? 'petlux';
     _autoFetchWifi = prefs.getBool('pref_auto_fetch_wifi') ?? true;
     _hasLoadedSettings = true;
-    _isFactoryDebugMode = prefs.getBool('pref_factory_debug_mode') ?? false;
   }
 
   // 保存设置并重新应用
@@ -45,19 +41,16 @@ class DeviceAddProvider extends BaseProvider {
     required bool filterUnknown,
     required String filterName,
     required bool autoFetchWifi,
-    required bool isFactoryDebugMode,
   }) async {
     _filterUnknown = filterUnknown;
     _filterName = filterName;
     _autoFetchWifi = autoFetchWifi;
-    _isFactoryDebugMode = isFactoryDebugMode;
     notifyListeners();
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('pref_filter_unknown', filterUnknown);
     await prefs.setString('pref_filter_name', filterName);
     await prefs.setBool('pref_auto_fetch_wifi', autoFetchWifi);
-    await prefs.setBool('pref_factory_debug_mode', isFactoryDebugMode);
     await startSearchDevices(); // 设置更改后自动重新搜索
   }
   // ================================================

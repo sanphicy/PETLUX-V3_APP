@@ -10,7 +10,8 @@ class DeviceAddSuccessPage extends StatelessWidget {
   final String deviceId;
   const DeviceAddSuccessPage({super.key, required this.deviceId});
 
-  static const Color _primaryPurple = Color(0xFF917CEE);
+  // 品牌主金色
+  static const Color _primaryGold = Color(0xFFF3C746);
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +27,8 @@ class DeviceAddSuccessPage extends StatelessWidget {
                 Container(
                   width: 100.w,
                   height: 100.w,
-                  decoration: const BoxDecoration(color: _primaryPurple, shape: BoxShape.circle),
-                  child: Icon(Icons.check, size: 50.w, color: Colors.white),
+                  decoration: const BoxDecoration(color: _primaryGold, shape: BoxShape.circle),
+                  child: Icon(Icons.check, size: 50.w, color: const Color(0xFF222222)),
                 ),
                 SizedBox(height: Dimens.spacingXLarge),
                 Text(
@@ -44,17 +45,15 @@ class DeviceAddSuccessPage extends StatelessWidget {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, Dimens.buttonLarge),
-                    backgroundColor: _primaryPurple,
+                    backgroundColor: _primaryGold,
                   ),
                   onPressed: () {
-                    // 1. 触发刷新 API
                     context.read<DeviceProvider>().fetchDevices();
-                    // 2. 跳转进入管理设备页
                     context.go(AppRoutes.deviceManagerPath(deviceId));
                   },
                   child: const Text(
                     "管理设备",
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Color(0xFF222222), fontWeight: FontWeight.bold),
                   ),
                 ),
                 SizedBox(height: Dimens.spacingNormal),
@@ -64,9 +63,7 @@ class DeviceAddSuccessPage extends StatelessWidget {
                     side: const BorderSide(color: Color(0xFFE0E0E0)),
                   ),
                   onPressed: () {
-                    // 1. 触发刷新 API
                     context.read<DeviceProvider>().fetchDevices();
-                    // 2. 切回首页，首页 UI 会因为 fetchDevices 内的 notifyListeners 自动重绘并展示最新设备
                     context.go(AppRoutes.home);
                   },
                   child: const Text("返回首页", style: TextStyle(color: Color(0xFF333333))),

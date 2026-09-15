@@ -20,8 +20,9 @@ class DeviceAddWifiPage extends StatefulWidget {
 }
 
 class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
-  static const Color _primaryPurple = Color(0xFF917CEE);
-  static const Color _bgColor = Colors.white; // 纯白背景
+  // 品牌主金色
+  static const Color _primaryGold = Color(0xFFF3C746);
+  static const Color _bgColor = Colors.white;
 
   late DeviceAddProvider _provider;
   final TextEditingController _ssidCtrl = TextEditingController();
@@ -49,11 +50,9 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
     });
   }
 
-  // 监听 Provider，如果配网走完且存下了设备 ID，则执行跳转
   void _onProviderStateChanged() {
     if (_provider.configStep == 4 && _provider.boundDeviceId != null) {
       _provider.removeListener(_onProviderStateChanged);
-      // 跳转到外部独立的成功页面
       context.pushReplacement(AppRoutes.deviceAddSuccessPath(_provider.boundDeviceId!));
     }
   }
@@ -75,7 +74,7 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
     final provider = context.watch<DeviceAddProvider>();
 
     return Scaffold(
-      backgroundColor: _bgColor, // 替换为纯白背景
+      backgroundColor: _bgColor,
       appBar: AppBar(
         title: const Text("网络配置", style: TextStyle(color: Color(0xFF333333))),
         elevation: 0,
@@ -104,9 +103,9 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(Icons.phone_iphone, size: 40.w, color: _primaryPurple), // 替换为紫色
+                  Icon(Icons.phone_iphone, size: 40.w, color: _primaryGold),
                   _AnimatedDots(isWorking: !provider.hasError && provider.configStep < 4),
-                  Icon(Icons.router, size: 40.w, color: _primaryPurple), // 替换为紫色
+                  Icon(Icons.router, size: 40.w, color: _primaryGold),
                 ],
               ),
               SizedBox(height: Dimens.spacingLarge),
@@ -116,9 +115,7 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
                   value: provider.progress,
                   minHeight: 6.h,
                   backgroundColor: const Color(0xFFEEEEEE),
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    provider.hasError ? Colors.redAccent : _primaryPurple, // 替换为紫色
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(provider.hasError ? Colors.redAccent : _primaryGold),
                 ),
               ),
               SizedBox(height: Dimens.spacingSmall),
@@ -127,14 +124,13 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
                 style: TextStyle(
                   fontSize: Dimens.fontMedium,
                   fontWeight: FontWeight.bold,
-                  color: provider.hasError ? Colors.redAccent : const Color(0xFF333333), // 黑色字体
+                  color: provider.hasError ? Colors.redAccent : const Color(0xFF333333),
                 ),
                 textAlign: TextAlign.center,
               ),
             ],
           ),
         ),
-
         AnimatedSize(
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOutCubic,
@@ -146,13 +142,13 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
                     children: [
                       Text(
                         s.wifiConfigDesc,
-                        style: TextStyle(color: const Color(0xFF666666), fontSize: Dimens.fontSmall), // 灰色字体
+                        style: TextStyle(color: const Color(0xFF666666), fontSize: Dimens.fontSmall),
                       ),
                       SizedBox(height: Dimens.spacingNormal),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 16.w),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF2F2F2), // 保持原有输入框灰底色
+                          color: const Color(0xFFF2F2F2),
                           borderRadius: BorderRadius.circular(Dimens.radiusLarge),
                         ),
                         child: Row(
@@ -168,7 +164,7 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
                             ),
                             if (provider.deviceWifiList.isNotEmpty)
                               PopupMenuButton<String>(
-                                icon: const Icon(Icons.arrow_drop_down, color: _primaryPurple), // 替换为紫色
+                                icon: const Icon(Icons.arrow_drop_down, color: _primaryGold),
                                 onSelected: (String value) {
                                   setState(() {
                                     _ssidCtrl.text = value;
@@ -187,18 +183,13 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
                         ),
                       ),
                       SizedBox(height: Dimens.spacingNormal),
-                      PasswordTextField(
-                        controller: _pwdCtrl,
-                        themeColor: _primaryPurple, // 替换为紫色
-                        hintText: s.wifiPasswordHint,
-                      ),
+                      PasswordTextField(controller: _pwdCtrl, themeColor: _primaryGold, hintText: s.wifiPasswordHint),
                       SizedBox(height: Dimens.spacingLarge),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(double.infinity, Dimens.buttonLarge),
-                          backgroundColor: _primaryPurple, // 替换为紫色
+                          backgroundColor: _primaryGold,
                         ),
-                        // 在 Wi-Fi 提交与异常捕获后校验 context
                         onPressed: () async {
                           final targetSsid = _ssidCtrl.text.trim();
                           final pwd = _pwdCtrl.text.trim();
@@ -213,7 +204,7 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
                         },
                         child: Text(
                           provider.hasError ? "重新配置" : s.startConfig,
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          style: const TextStyle(color: Color(0xFF222222), fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],
@@ -221,7 +212,6 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
                 )
               : const SizedBox(width: double.infinity, height: 0),
         ),
-
         Expanded(
           child: Container(
             margin: EdgeInsets.all(Dimens.pagePadding),
@@ -240,7 +230,7 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
                 final isError = log.contains('❌');
 
                 Color textColor = Colors.grey.shade400;
-                if (isHighlight) textColor = _primaryPurple; // 替换为紫色
+                if (isHighlight) textColor = const Color(0xFFB88E14);
                 if (isError) textColor = Colors.redAccent;
 
                 return Padding(
@@ -273,7 +263,7 @@ class _AnimatedDots extends StatefulWidget {
 }
 
 class _AnimatedDotsState extends State<_AnimatedDots> {
-  static const Color _primaryPurple = Color(0xFF917CEE);
+  static const Color _primaryGold = Color(0xFFF3C746);
   Timer? _timer;
   int _activeIndex = 0;
 
@@ -324,7 +314,7 @@ class _AnimatedDotsState extends State<_AnimatedDots> {
           height: 8.w,
           transformAlignment: Alignment.center,
           transform: Matrix4.diagonal3Values(isActive ? 1.4 : 1.0, isActive ? 1.4 : 1.0, 1.0),
-          decoration: BoxDecoration(color: isActive ? _primaryPurple : Colors.grey.shade300, shape: BoxShape.circle),
+          decoration: BoxDecoration(color: isActive ? _primaryGold : Colors.grey.shade300, shape: BoxShape.circle),
         );
       }),
     );

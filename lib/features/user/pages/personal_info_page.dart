@@ -18,7 +18,7 @@ class PersonalInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 按需创建局部 ViewModel，离开页面自动销毁[cite: 1]
+    // 按需创建局部 ViewModel，离开页面自动销毁
     return ChangeNotifierProvider(create: (_) => UserViewModel(), child: const _PersonalInfoView());
   }
 }

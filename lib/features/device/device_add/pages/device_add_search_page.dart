@@ -16,8 +16,8 @@ class DeviceAddSearchPage extends StatefulWidget {
 }
 
 class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
-  // 定义统一紫色调
-  static const Color _primaryPurple = Color(0xFF917CEE);
+  // 品牌统一主金黄色
+  static const Color _primaryGold = Color(0xFFF3C746);
 
   @override
   void initState() {
@@ -30,8 +30,6 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
   void _showSettingsBottomSheet(BuildContext context, DeviceAddProvider provider) {
     bool filterUnknown = provider.filterUnknown;
     bool autoFetchWifi = provider.autoFetchWifi;
-    // bool isFactoryDebugMode = false;
-    bool isFactoryDebugMode = provider.isFactoryDebugMode;
     TextEditingController nameCtrl = TextEditingController(text: provider.filterName);
 
     showModalBottomSheet(
@@ -67,7 +65,7 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
                     subtitle: const Text("隐藏没有名称的蓝牙设备", style: TextStyle(fontSize: 12, color: Colors.grey)),
                     value: filterUnknown,
                     onChanged: (val) => setState(() => filterUnknown = val),
-                    activeThumbColor: _primaryPurple, // 替换颜色
+                    activeColor: _primaryGold,
                   ),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
@@ -78,20 +76,8 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
                     ),
                     value: autoFetchWifi,
                     onChanged: (val) => setState(() => autoFetchWifi = val),
-                    activeThumbColor: _primaryPurple, // 替换颜色
+                    activeColor: _primaryGold,
                   ),
-                  // SizedBox(height: 15.h),
-                  // SwitchListTile(
-                  //   contentPadding: EdgeInsets.zero,
-                  //   title: const Text("工厂调试模式", style: TextStyle(fontWeight: FontWeight.w500)),
-                  //   subtitle: const Text(
-                  //     "开启后，点击连接将进入 BLE 开发者调试控制台",
-                  //     style: TextStyle(fontSize: 12, color: Colors.grey),
-                  //   ),
-                  //   value: isFactoryDebugMode,
-                  //   onChanged: (val) => setState(() => isFactoryDebugMode = val),
-                  //   activeColor: _primaryPurple,
-                  // ),
                   SizedBox(height: 15.h),
                   Text(
                     "精确过滤",
@@ -101,7 +87,7 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
                   TextField(
                     controller: nameCtrl,
                     decoration: InputDecoration(
-                      hintText: "多个名称用逗号隔开，如: petlux, PETLUX",
+                      hintText: "输入要包含的设备名称 (留空则不过滤)",
                       hintStyle: const TextStyle(color: Colors.grey),
                       filled: true,
                       fillColor: const Color(0xFFF2F2F2),
@@ -116,7 +102,7 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(double.infinity, 50.h),
-                      backgroundColor: _primaryPurple, // 替换颜色
+                      backgroundColor: _primaryGold,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                     ),
                     onPressed: () {
@@ -124,13 +110,12 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
                         filterUnknown: filterUnknown,
                         filterName: nameCtrl.text.trim(),
                         autoFetchWifi: autoFetchWifi,
-                        isFactoryDebugMode: isFactoryDebugMode,
                       );
                       Navigator.pop(ctx);
                     },
                     child: const Text(
                       "保存并重新搜索",
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                      style: TextStyle(color: Color(0xFF222222), fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
                   SizedBox(height: 20.h),
@@ -149,13 +134,13 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
     final provider = context.watch<DeviceAddProvider>();
 
     return Scaffold(
-      backgroundColor: Colors.white, // 强制纯白背景，去除发黄
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings, color: Color(0xFF666666)), // 替换颜色
+            icon: const Icon(Icons.settings, color: Color(0xFF666666)),
             onPressed: () => _showSettingsBottomSheet(context, provider),
           ),
         ],
@@ -174,28 +159,20 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
               s.autoSearching,
               style: TextStyle(
                 fontSize: Dimens.fontMedium,
-                color: _primaryPurple, // 替换颜色
+                color: const Color(0xFFB88E14),
                 fontWeight: FontWeight.w500,
               ),
             ),
             SizedBox(height: 60.h),
             Center(
-              child: Icon(
-                Icons.bluetooth_searching,
-                size: 140.w,
-                color: _primaryPurple.withValues(alpha: 0.15), // 替换颜色
-              ),
+              child: Icon(Icons.bluetooth_searching, size: 140.w, color: _primaryGold.withValues(alpha: 0.25)),
             ),
             SizedBox(height: 40.h),
             Center(
               child: Text(
                 s.noDeviceFoundDesc,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: _primaryPurple.withValues(alpha: 0.5), // 替换颜色
-                  fontSize: Dimens.fontSmall,
-                  height: 1.5,
-                ),
+                style: TextStyle(color: const Color(0xFF888888), fontSize: Dimens.fontSmall, height: 1.5),
               ),
             ),
             SizedBox(height: 60.h),
@@ -210,12 +187,12 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
                   SizedBox(
                     width: 16.w,
                     height: 16.w,
-                    child: const CircularProgressIndicator(strokeWidth: 2, color: _primaryPurple), // 替换颜色
+                    child: const CircularProgressIndicator(strokeWidth: 2, color: _primaryGold),
                   )
                 else
                   GestureDetector(
                     onTap: () => provider.startSearchDevices(),
-                    child: Icon(Icons.refresh, size: 18.w, color: _primaryPurple), // 替换颜色
+                    child: Icon(Icons.refresh, size: 18.w, color: _primaryGold),
                   ),
               ],
             ),
@@ -225,7 +202,10 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
                   ? Center(
                       child: TextButton(
                         onPressed: () => provider.startSearchDevices(),
-                        child: const Text("重新搜索", style: TextStyle(color: _primaryPurple)), // 替换颜色
+                        child: const Text(
+                          "重新搜索",
+                          style: TextStyle(color: _primaryGold, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     )
                   : ListView.separated(
@@ -247,7 +227,7 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Dimens.spacingNormal, vertical: Dimens.spacingSmall),
       decoration: BoxDecoration(
-        color: Colors.white, // 强制纯白卡片
+        color: Colors.white,
         borderRadius: BorderRadius.circular(Dimens.radiusNormal),
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 2))],
       ),
@@ -255,8 +235,8 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
         children: [
           Container(
             padding: EdgeInsets.all(Dimens.spacingSmall),
-            decoration: BoxDecoration(color: _primaryPurple.withValues(alpha: 0.1), shape: BoxShape.circle), // 替换颜色
-            child: Icon(Icons.devices_other, color: _primaryPurple, size: Dimens.iconNormal), // 替换颜色
+            decoration: BoxDecoration(color: _primaryGold.withValues(alpha: 0.15), shape: BoxShape.circle),
+            child: Icon(Icons.devices_other, color: const Color(0xFFB88E14), size: Dimens.iconNormal),
           ),
           SizedBox(width: Dimens.spacingNormal),
           Expanded(
@@ -270,22 +250,16 @@ class _DeviceAddSearchPageState extends State<DeviceAddSearchPage> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFF9F9FC),
-              foregroundColor: _primaryPurple,
+              foregroundColor: const Color(0xFF222222),
               elevation: 0,
               minimumSize: Size(80.w, 36.h),
               padding: EdgeInsets.symmetric(horizontal: Dimens.spacingNormal),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimens.radiusMax)),
             ),
             onPressed: () {
-              // 根据模式跳转是否跳转调试
-              // if (provider.isFactoryDebugMode) {
-              //   context.push(AppRoutes.factoryDebug, extra: {'device': device});
-              // } else {
-              //   context.push(AppRoutes.deviceAddWifi, extra: {'device': device, 'provider': provider});
-              // }
               context.push(AppRoutes.deviceAddWifi, extra: {'device': device, 'provider': provider});
             },
-            child: Text("连接"),
+            child: const Text("连接", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
