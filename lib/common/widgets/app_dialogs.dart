@@ -19,60 +19,30 @@ extension AppDialogExtension on BuildContext {
   }) {
     final String actualConfirmText = confirmText ?? S.of(this)!.confirm;
     final String actualCancelText = cancelText ?? S.of(this)!.cancel;
-    const Color brandYellow = Color(0xFFF3C746);
 
     return showDialog<bool>(
       context: this,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(
             title,
-            style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF222222),
-            ),
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Color(0xFF222222)),
           ),
-          content: Text(
-            content,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Color(0xFF555555),
-              height: 1.4,
-            ),
-          ),
+          content: Text(content, style: const TextStyle(fontSize: 14, color: Color(0xFF555555), height: 1.4)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text(
-                actualCancelText,
-                style: const TextStyle(color: Color(0xFF888888)),
-              ),
+              child: Text(actualCancelText, style: const TextStyle(color: Color(0xFF888888))),
             ),
             TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: const Color(0xFF222222),
-              ),
               onPressed: () => Navigator.of(context).pop(true),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: brandYellow, // 👈 弹窗确认按钮对齐主黄色
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  actualConfirmText,
-                  style: const TextStyle(
-                    color: Color(0xFF222222),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
+              child: Text(
+                actualConfirmText,
+                style: const TextStyle(
+                  color: Color(0xFF222222), // 经典石墨黑加粗
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
                 ),
               ),
             ),
@@ -133,9 +103,7 @@ extension AppDialogExtension on BuildContext {
         break;
     }
 
-    final overlayState =
-        Overlay.maybeOf(this) ??
-        NavService.rootNavigatorKey.currentState?.overlay;
+    final overlayState = Overlay.maybeOf(this) ?? NavService.rootNavigatorKey.currentState?.overlay;
     if (overlayState == null) return;
 
     _toastTimer?.cancel();
@@ -157,10 +125,7 @@ extension AppDialogExtension on BuildContext {
                 color: Colors.transparent,
                 child: Container(
                   margin: margin,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 10,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                   decoration: BoxDecoration(
                     color: bgColor,
                     borderRadius: BorderRadius.circular(12),
@@ -181,11 +146,7 @@ extension AppDialogExtension on BuildContext {
                       Flexible(
                         child: Text(
                           message,
-                          style: TextStyle(
-                            color: iconColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: TextStyle(color: iconColor, fontSize: 14, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ],

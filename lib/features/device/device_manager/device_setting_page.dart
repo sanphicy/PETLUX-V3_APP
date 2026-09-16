@@ -12,10 +12,7 @@ class DeviceSettingPage extends StatelessWidget {
   final String deviceId;
   const DeviceSettingPage({super.key, required this.deviceId});
 
-  Future<void> _pickDndTime(
-    BuildContext context,
-    ActiveDeviceProvider provider,
-  ) async {
+  Future<void> _pickDndTime(BuildContext context, ActiveDeviceProvider provider) async {
     final start = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -34,47 +31,30 @@ class DeviceSettingPage extends StatelessWidget {
     );
   }
 
-  void _showOtaDialog(
-    BuildContext context,
-    ActiveDeviceProvider provider,
-    S s,
-  ) {
+  void _showOtaDialog(BuildContext context, ActiveDeviceProvider provider, S s) {
     showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: Text(
-            s.firmwareUpgrade,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(s.firmwareUpgrade, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           content: Text(s.newFirmwareFound(provider.newFirmwareVersion)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: Text(s.cancel, style: const TextStyle(color: Colors.grey)),
+              child: Text(s.cancel, style: const TextStyle(color: Color(0xFF888888))),
             ),
             TextButton(
               onPressed: () async {
                 Navigator.pop(ctx);
-                final success = await provider.startFirmwareUpgrade(
-                  timeoutSeconds: 120,
-                );
+                final success = await provider.startFirmwareUpgrade(timeoutSeconds: 120);
                 if (success && context.mounted) {
-                  context.showAppToast(
-                    message: s.upgradeDispatched,
-                    type: AppToastType.info,
-                  );
+                  context.showAppToast(message: s.upgradeDispatched, type: AppToastType.info);
                 }
               },
-              child: const Text(
-                "确认升级",
-                style: TextStyle(
-                  color: Color(0xFFF3C746),
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Text(
+                s.confirmUpgrade,
+                style: const TextStyle(color: Color(0xFF222222), fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -88,7 +68,6 @@ class DeviceSettingPage extends StatelessWidget {
     final s = S.of(context)!;
     final provider = context.read<ActiveDeviceProvider>();
 
-    // 品牌统一主金色
     const Color primaryGold = Color(0xFFF3C746);
     const Color bgColor = Color(0xFFF9F9FC);
     const Color textColor = Color(0xFF333333);
@@ -103,18 +82,10 @@ class DeviceSettingPage extends StatelessWidget {
         centerTitle: true,
         title: Text(
           s.deviceSetting,
-          style: const TextStyle(
-            color: textColor,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: textColor,
-            size: 20,
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: textColor, size: 20),
           onPressed: () => context.pop(),
         ),
       ),
@@ -155,15 +126,10 @@ class DeviceSettingPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Image.asset(
-                          provider.currentDevice?.displayImage ??
-                              'assets/images/product-pic.png',
+                          provider.currentDevice?.displayImage ?? 'assets/images/product-pic.png',
                           width: 70,
                           height: 70,
-                          errorBuilder: (_, __, ___) => const Icon(
-                            Icons.devices,
-                            size: 70,
-                            color: Colors.grey,
-                          ),
+                          errorBuilder: (_, __, ___) => const Icon(Icons.devices, size: 70, color: Colors.grey),
                         ),
                         const SizedBox(width: 15),
                         Expanded(
@@ -171,28 +137,15 @@ class DeviceSettingPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     devName,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: textColor,
-                                    ),
+                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
                                   ),
                                   GestureDetector(
-                                    onTap: () => _showEditNameDialog(
-                                      context,
-                                      provider,
-                                      s,
-                                    ),
-                                    child: Icon(
-                                      Icons.edit_outlined,
-                                      color: Colors.grey.shade400,
-                                      size: 18,
-                                    ),
+                                    onTap: () => _showEditNameDialog(context, provider, s),
+                                    child: Icon(Icons.edit_outlined, color: Colors.grey.shade400, size: 18),
                                   ),
                                 ],
                               ),
@@ -203,9 +156,7 @@ class DeviceSettingPage extends StatelessWidget {
                                     width: 8,
                                     height: 8,
                                     decoration: BoxDecoration(
-                                      color: isOnline
-                                          ? onlineColor
-                                          : offlineColor,
+                                      color: isOnline ? onlineColor : offlineColor,
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -214,9 +165,7 @@ class DeviceSettingPage extends StatelessWidget {
                                     isOnline ? s.online : s.offline,
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: isOnline
-                                          ? onlineColor
-                                          : offlineColor,
+                                      color: isOnline ? onlineColor : offlineColor,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -225,18 +174,12 @@ class DeviceSettingPage extends StatelessWidget {
                               const SizedBox(height: 6),
                               Text(
                                 '${s.firmwareVersion}: $fwVer',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
+                                style: const TextStyle(fontSize: 12, color: Colors.grey),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 '${s.serialNumber}: $displayId',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
+                                style: const TextStyle(fontSize: 12, color: Colors.grey),
                               ),
                             ],
                           ),
@@ -247,7 +190,6 @@ class DeviceSettingPage extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 20),
-
               // 2. 时区设置
               _buildCardGroup(
                 children: [
@@ -259,14 +201,12 @@ class DeviceSettingPage extends StatelessWidget {
                         const Color(0xFF7C8CEE),
                         s.timezoneSetting,
                         trailingText: tzOffset,
-                        onTap: () =>
-                            context.push('/device_setting/$deviceId/timezone'),
+                        onTap: () => context.push('/device_setting/$deviceId/timezone'),
                       );
                     },
                   ),
                 ],
               ),
-
               // 3. 模式与参数
               _buildSectionTitle(s.modeAndParams),
               _buildCardGroup(
@@ -279,18 +219,14 @@ class DeviceSettingPage extends StatelessWidget {
                         primaryGold,
                         s.autoModeDelay,
                         showDivider: true,
-                        trailingText:
-                            '${provider.autoModeOptions[autoIdx]} ${s.minutesUnit}',
+                        trailingText: '${provider.autoModeOptions[autoIdx]} ${s.minutesUnit}',
                         onTap: () {
                           AppWheelPickerSheet.show(
                             context,
                             title: s.autoModeDelay,
-                            items: provider.autoModeOptions
-                                .map((e) => '$e ${s.minutesUnit}')
-                                .toList(),
+                            items: provider.autoModeOptions.map((e) => '$e ${s.minutesUnit}').toList(),
                             initialIndex: autoIdx,
-                            onConfirm: (int index) =>
-                                provider.updateAutoMode(index),
+                            onConfirm: (int index) => provider.updateAutoMode(index),
                           );
                         },
                       );
@@ -306,23 +242,19 @@ class DeviceSettingPage extends StatelessWidget {
                           '等离子除臭计划',
                           showDivider: true,
                           trailingText: isAlways ? '常开模式' : '循环模式',
-                          onTap: () =>
-                              _showPlasmaScheduleSheet(context, provider, s),
+                          onTap: () => _showPlasmaScheduleSheet(context, provider, s),
                         );
                       },
                     ),
                   Selector<ActiveDeviceProvider, Map<String, String>>(
-                    selector: (_, vm) =>
-                        vm.currentDevice?.dndTimeRange ??
-                        {'start': '22:00', 'end': '06:00'},
+                    selector: (_, vm) => vm.currentDevice?.dndTimeRange ?? {'start': '22:00', 'end': '06:00'},
                     builder: (context, dndRange, _) {
                       return _buildSettingTile(
                         Icons.nightlight_round,
                         const Color(0xFF7C8CEE),
                         s.dndTimeRange,
                         showDivider: true,
-                        trailingText:
-                            '${dndRange['start']} - ${dndRange['end']}',
+                        trailingText: '${dndRange['start']} - ${dndRange['end']}',
                         onTap: () => _pickDndTime(context, provider),
                       );
                     },
@@ -331,23 +263,16 @@ class DeviceSettingPage extends StatelessWidget {
                     Icons.timer_rounded,
                     const Color(0xFF3B9EBA),
                     s.timerSchedule,
-                    onTap: () =>
-                        context.push('/device_setting/$deviceId/timer'),
+                    onTap: () => context.push('/device_setting/$deviceId/timer'),
                   ),
                 ],
               ),
-
               // 4. 更多工具
               _buildSectionTitle(s.moreTools),
               _buildCardGroup(
                 children: [
-                  // OTA 固件升级
                   Selector<ActiveDeviceProvider, (bool, bool, String)>(
-                    selector: (_, vm) => (
-                      vm.isOtaUpdating,
-                      vm.hasNewFirmware,
-                      vm.currentDevice?.firmwareVersion ?? '',
-                    ),
+                    selector: (_, vm) => (vm.isOtaUpdating, vm.hasNewFirmware, vm.currentDevice?.firmwareVersion ?? ''),
                     builder: (context, otaState, _) {
                       final isUpdating = otaState.$1;
                       final hasNew = otaState.$2;
@@ -360,9 +285,7 @@ class DeviceSettingPage extends StatelessWidget {
                         trailingText: isUpdating ? s.upgrading : currentVer,
                         showRedDot: hasNew && !isUpdating,
                         isLoading: isUpdating,
-                        onTap: (hasNew && !isUpdating)
-                            ? () => _showOtaDialog(context, provider, s)
-                            : null,
+                        onTap: (hasNew && !isUpdating) ? () => _showOtaDialog(context, provider, s) : null,
                       );
                     },
                   ),
@@ -378,8 +301,7 @@ class DeviceSettingPage extends StatelessWidget {
                     const Color(0xFFEEA27C),
                     s.weighingCalibration,
                     showDivider: true,
-                    onTap: () =>
-                        context.push('/device_setting/$deviceId/weighing'),
+                    onTap: () => context.push('/device_setting/$deviceId/weighing'),
                   ),
                   _buildSettingTile(
                     Icons.help_outline_rounded,
@@ -387,10 +309,7 @@ class DeviceSettingPage extends StatelessWidget {
                     s.helpAndSupport,
                     onTap: () async {
                       final Uri url = Uri.parse('https://petlux.nl/help');
-                      if (!await launchUrl(
-                        url,
-                        mode: LaunchMode.externalApplication,
-                      )) {
+                      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
                         debugPrint('Error launching URL');
                       }
                     },
@@ -405,38 +324,27 @@ class DeviceSettingPage extends StatelessWidget {
     );
   }
 
-  void _showEditNameDialog(
-    BuildContext context,
-    ActiveDeviceProvider provider,
-    S s,
-  ) {
-    final TextEditingController controller = TextEditingController(
-      text: provider.currentDevice?.deviceName ?? '',
-    );
+  void _showEditNameDialog(BuildContext context, ActiveDeviceProvider provider, S s) {
+    final TextEditingController controller = TextEditingController(text: provider.currentDevice?.deviceName ?? '');
+
     showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: Text(
-            s.renameDevice,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(s.renameDevice, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           content: TextField(
             controller: controller,
-            decoration: const InputDecoration(
-              hintText: "请输入设备新名称",
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFFF3C746)),
-              ),
+            cursorColor: const Color(0xFF333333),
+            decoration: InputDecoration(
+              hintText: s.enterNewDeviceName,
+              focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF333333))),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: Text(s.cancel, style: const TextStyle(color: Colors.grey)),
+              child: Text(s.cancel, style: const TextStyle(color: Color(0xFF888888))),
             ),
             TextButton(
               onPressed: () async {
@@ -446,19 +354,13 @@ class DeviceSettingPage extends StatelessWidget {
                 if (newName.isNotEmpty) {
                   final ok = await provider.updateDeviceName(newName);
                   if (ok && context.mounted) {
-                    context.showAppToast(
-                      message: s.nameUpdated,
-                      type: AppToastType.success,
-                    );
+                    context.showAppToast(message: s.nameUpdated, type: AppToastType.success);
                   }
                 }
               },
-              child: const Text(
-                "确定",
-                style: TextStyle(
-                  color: Color(0xFFF3C746),
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Text(
+                s.confirm,
+                style: const TextStyle(color: Color(0xFF222222), fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -472,11 +374,7 @@ class DeviceSettingPage extends StatelessWidget {
       padding: const EdgeInsets.only(left: 4, top: 22, bottom: 10),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 13,
-          color: Color(0xFF888888),
-          fontWeight: FontWeight.w500,
-        ),
+        style: const TextStyle(fontSize: 13, color: Color(0xFF888888), fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -486,13 +384,7 @@ class DeviceSettingPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Column(children: children),
     );
@@ -513,84 +405,47 @@ class DeviceSettingPage extends StatelessWidget {
         ListTile(
           leading: Container(
             padding: const EdgeInsets.all(7),
-            decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: iconColor.withValues(alpha: 0.1), shape: BoxShape.circle),
             child: Icon(icon, color: iconColor, size: 18),
           ),
           title: Text(
             title,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Color(0xFF333333),
-              fontWeight: FontWeight.w500,
-            ),
+            style: const TextStyle(fontSize: 14, color: Color(0xFF333333), fontWeight: FontWeight.w500),
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (trailingText != null)
-                Text(
-                  trailingText,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFF888888),
-                  ),
-                ),
+                Text(trailingText, style: const TextStyle(fontSize: 13, color: Color(0xFF888888))),
               if (isLoading) ...[
                 const SizedBox(width: 8),
                 const SizedBox(
                   width: 14,
                   height: 14,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Color(0xFFF3C746),
-                  ),
+                  child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFF3C746)),
                 ),
               ] else if (showRedDot) ...[
                 const SizedBox(width: 8),
                 Container(
                   width: 8,
                   height: 8,
-                  decoration: const BoxDecoration(
-                    color: Colors.redAccent,
-                    shape: BoxShape.circle,
-                  ),
+                  decoration: const BoxDecoration(color: Colors.redAccent, shape: BoxShape.circle),
                 ),
               ],
               const SizedBox(width: 5),
-              const Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: Colors.grey,
-                size: 14,
-              ),
+              const Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey, size: 14),
             ],
           ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 2,
-          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
           onTap: isLoading ? null : onTap,
         ),
-        if (showDivider)
-          const Divider(
-            height: 1,
-            thickness: 0.5,
-            indent: 52,
-            endIndent: 16,
-            color: Color(0xFFF0EFF5),
-          ),
+        if (showDivider) const Divider(height: 1, thickness: 0.5, indent: 52, endIndent: 16, color: Color(0xFFF0EFF5)),
       ],
     );
   }
 }
 
-void _showPlasmaScheduleSheet(
-  BuildContext context,
-  ActiveDeviceProvider provider,
-  S s,
-) {
+void _showPlasmaScheduleSheet(BuildContext context, ActiveDeviceProvider provider, S s) {
   final currentSched = provider.plasmaSchedule;
   bool isAlwaysOn = provider.isPlasmaAlwaysOn;
   bool isFineGrained = false;
@@ -624,26 +479,14 @@ void _showPlasmaScheduleSheet(
 
   void initControllers(bool fine) {
     if (fine) {
-      runMinCtrl = FixedExtentScrollController(
-        initialItem: runMinutes.clamp(0, 120),
-      );
-      outMinCtrl = FixedExtentScrollController(
-        initialItem: outMinutes.clamp(0, 360),
-      );
+      runMinCtrl = FixedExtentScrollController(initialItem: runMinutes.clamp(0, 120));
+      outMinCtrl = FixedExtentScrollController(initialItem: outMinutes.clamp(0, 360));
     } else {
-      runMinCtrl = FixedExtentScrollController(
-        initialItem: (runMinutes - 1).clamp(0, 119),
-      );
-      outMinCtrl = FixedExtentScrollController(
-        initialItem: (outMinutes - 1).clamp(0, 359),
-      );
+      runMinCtrl = FixedExtentScrollController(initialItem: (runMinutes - 1).clamp(0, 119));
+      outMinCtrl = FixedExtentScrollController(initialItem: (outMinutes - 1).clamp(0, 359));
     }
-    runSecCtrl = FixedExtentScrollController(
-      initialItem: (runSeconds - 1).clamp(0, 58),
-    );
-    outSecCtrl = FixedExtentScrollController(
-      initialItem: (outSeconds - 1).clamp(0, 58),
-    );
+    runSecCtrl = FixedExtentScrollController(initialItem: (runSeconds - 1).clamp(0, 58));
+    outSecCtrl = FixedExtentScrollController(initialItem: (outSeconds - 1).clamp(0, 58));
   }
 
   initControllers(isFineGrained);
@@ -654,27 +497,15 @@ void _showPlasmaScheduleSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
     builder: (ctx) {
       return StatefulBuilder(
         builder: (context, setSheetState) {
-          final currentRunMinList = isFineGrained
-              ? fineRunMinList
-              : normalRunMinList;
-          final currentOutMinList = isFineGrained
-              ? fineOutMinList
-              : normalOutMinList;
-          final currentRunTotalSec = isFineGrained
-              ? (runMinutes * 60 + runSeconds)
-              : (runMinutes * 60);
-          final currentOutTotalSec = isFineGrained
-              ? (outMinutes * 60 + outSeconds)
-              : (outMinutes * 60);
-          final bool isTooShort =
-              !isAlwaysOn &&
-              (currentRunTotalSec < 30 || currentOutTotalSec < 30);
+          final currentRunMinList = isFineGrained ? fineRunMinList : normalRunMinList;
+          final currentOutMinList = isFineGrained ? fineOutMinList : normalOutMinList;
+          final currentRunTotalSec = isFineGrained ? (runMinutes * 60 + runSeconds) : (runMinutes * 60);
+          final currentOutTotalSec = isFineGrained ? (outMinutes * 60 + outSeconds) : (outMinutes * 60);
+          final bool isTooShort = !isAlwaysOn && (currentRunTotalSec < 30 || currentOutTotalSec < 30);
 
           return SafeArea(
             child: Padding(
@@ -685,10 +516,7 @@ void _showPlasmaScheduleSheet(
                   Container(
                     width: 36,
                     height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
+                    decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2)),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -696,97 +524,49 @@ void _showPlasmaScheduleSheet(
                     children: [
                       TextButton(
                         onPressed: () => Navigator.pop(ctx),
-                        child: Text(
-                          s.cancel,
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 15,
-                          ),
-                        ),
+                        child: Text(s.cancel, style: const TextStyle(color: Colors.grey, fontSize: 15)),
                       ),
                       const Text(
                         '等离子除臭计划',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF333333),
-                        ),
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
                       ),
                       TextButton(
                         onPressed: () {
                           Navigator.pop(ctx);
                           if (isAlwaysOn) {
-                            provider.setPlasmaSchedule(
-                              runSeconds: 0,
-                              outSeconds: 0,
-                            );
+                            provider.setPlasmaSchedule(runSeconds: 0, outSeconds: 0);
                           } else {
-                            provider.setPlasmaSchedule(
-                              runSeconds: currentRunTotalSec,
-                              outSeconds: currentOutTotalSec,
-                            );
+                            provider.setPlasmaSchedule(runSeconds: currentRunTotalSec, outSeconds: currentOutTotalSec);
                           }
                         },
                         child: const Text(
                           '保存',
-                          style: TextStyle(
-                            color: primaryGold,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                          ),
+                          style: TextStyle(color: primaryGold, fontWeight: FontWeight.bold, fontSize: 15),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF9F9FC),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                    decoration: BoxDecoration(color: const Color(0xFFF9F9FC), borderRadius: BorderRadius.circular(16)),
                     child: Column(
                       children: [
                         RadioListTile<bool>(
                           value: true,
                           groupValue: isAlwaysOn,
                           activeColor: primaryGold,
-                          title: const Text(
-                            '常开模式',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: const Text(
-                            '设备将全天持续开启等离子除臭',
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                          onChanged: (val) =>
-                              setSheetState(() => isAlwaysOn = true),
+                          title: const Text('常开模式', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                          subtitle: const Text('设备将全天持续开启等离子除臭', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          onChanged: (val) => setSheetState(() => isAlwaysOn = true),
                         ),
-                        const Divider(
-                          height: 1,
-                          indent: 16,
-                          endIndent: 16,
-                          color: Color(0xFFEFEFEF),
-                        ),
+                        const Divider(height: 1, indent: 16, endIndent: 16, color: Color(0xFFEFEFEF)),
                         RadioListTile<bool>(
                           value: false,
                           groupValue: isAlwaysOn,
                           activeColor: primaryGold,
-                          title: const Text(
-                            '循环计划模式',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: const Text(
-                            '按设定时间循环启动和间隙释放',
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                          onChanged: (val) =>
-                              setSheetState(() => isAlwaysOn = false),
+                          title: const Text('循环计划模式', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                          subtitle: const Text('按设定时间循环启动和间隙释放', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          onChanged: (val) => setSheetState(() => isAlwaysOn = false),
                         ),
                       ],
                     ),
@@ -798,11 +578,7 @@ void _showPlasmaScheduleSheet(
                       children: [
                         const Text(
                           '精确到秒调节',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Color(0xFF666666),
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: TextStyle(fontSize: 13, color: Color(0xFF666666), fontWeight: FontWeight.w500),
                         ),
                         Switch(
                           value: isFineGrained,
@@ -832,11 +608,8 @@ void _showPlasmaScheduleSheet(
                             secList: secList,
                             showSeconds: isFineGrained,
                             primaryColor: primaryGold,
-                            onMinChanged: (idx) => setSheetState(
-                              () => runMinutes = currentRunMinList[idx],
-                            ),
-                            onSecChanged: (idx) =>
-                                setSheetState(() => runSeconds = secList[idx]),
+                            onMinChanged: (idx) => setSheetState(() => runMinutes = currentRunMinList[idx]),
+                            onSecChanged: (idx) => setSheetState(() => runSeconds = secList[idx]),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -849,11 +622,8 @@ void _showPlasmaScheduleSheet(
                             secList: secList,
                             showSeconds: isFineGrained,
                             primaryColor: primaryGold,
-                            onMinChanged: (idx) => setSheetState(
-                              () => outMinutes = currentOutMinList[idx],
-                            ),
-                            onSecChanged: (idx) =>
-                                setSheetState(() => outSeconds = secList[idx]),
+                            onMinChanged: (idx) => setSheetState(() => outMinutes = currentOutMinList[idx]),
+                            onSecChanged: (idx) => setSheetState(() => outSeconds = secList[idx]),
                           ),
                         ),
                       ],
@@ -861,10 +631,7 @@ void _showPlasmaScheduleSheet(
                     if (isTooShort) ...[
                       const SizedBox(height: 12),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFFF9DB),
                           borderRadius: BorderRadius.circular(10),
@@ -872,20 +639,12 @@ void _showPlasmaScheduleSheet(
                         ),
                         child: const Row(
                           children: [
-                            Icon(
-                              Icons.warning_amber_rounded,
-                              size: 16,
-                              color: Color(0xFFE67700),
-                            ),
+                            Icon(Icons.warning_amber_rounded, size: 16, color: Color(0xFFE67700)),
                             SizedBox(width: 6),
                             Expanded(
                               child: Text(
                                 '建议运行和间隙时间不少于30秒',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Color(0xFFD9480F),
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                style: TextStyle(fontSize: 11, color: Color(0xFFD9480F), fontWeight: FontWeight.w500),
                               ),
                             ),
                           ],
@@ -926,11 +685,7 @@ Widget _buildTimePickerColumn({
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF555555),
-          ),
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF555555)),
         ),
         const SizedBox(height: 8),
         SizedBox(
@@ -944,10 +699,7 @@ Widget _buildTimePickerColumn({
                 decoration: BoxDecoration(
                   color: primaryColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: primaryColor.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
+                  border: Border.all(color: primaryColor.withValues(alpha: 0.3), width: 1),
                 ),
               ),
               Row(
@@ -963,11 +715,7 @@ Widget _buildTimePickerColumn({
                         builder: (context, index) => Center(
                           child: Text(
                             '${minList[index]}分',
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF333333),
-                            ),
+                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
                           ),
                         ),
                       ),
@@ -985,11 +733,7 @@ Widget _buildTimePickerColumn({
                           builder: (context, index) => Center(
                             child: Text(
                               '${secList[index]}秒',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: primaryColor,
-                              ),
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: primaryColor),
                             ),
                           ),
                         ),

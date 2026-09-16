@@ -19,11 +19,7 @@ class HomeShellPage extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -2)),
           ],
         ),
         child: BottomNavigationBar(
@@ -31,54 +27,27 @@ class HomeShellPage extends StatelessWidget {
           backgroundColor: Colors.white,
           elevation: 0,
           onTap: (index) {
-            navigationShell.goBranch(
-              index,
-              initialLocation: index == navigationShell.currentIndex,
-            );
+            navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex);
           },
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: const Color(0xFFF3C746),
+          selectedItemColor: const Color(0xFF96c76b),
           unselectedItemColor: const Color(0xFF666666),
           selectedFontSize: 12,
           unselectedFontSize: 12,
           items: [
             BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/images/product-logo-black.png',
-                width: iconSize,
-                height: iconSize,
-              ),
-              activeIcon: Image.asset(
-                'assets/images/product-logo.png',
-                width: iconSize,
-                height: iconSize,
-              ),
+              icon: Image.asset('assets/images/product-logo-black.png', width: iconSize, height: iconSize),
+              activeIcon: Image.asset('assets/images/product-logo.png', width: iconSize, height: iconSize),
               label: s.tabDevice,
             ),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/images/data-black.png',
-                width: iconSize,
-                height: iconSize,
-              ),
-              activeIcon: Image.asset(
-                'assets/images/data.png',
-                width: iconSize,
-                height: iconSize,
-              ),
+              icon: Image.asset('assets/images/data-black.png', width: iconSize, height: iconSize),
+              activeIcon: Image.asset('assets/images/data.png', width: iconSize, height: iconSize),
               label: s.tabUsage,
             ),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/images/user-black.png',
-                width: iconSize,
-                height: iconSize,
-              ),
-              activeIcon: Image.asset(
-                'assets/images/user-purple.png',
-                width: iconSize,
-                height: iconSize,
-              ),
+              icon: Image.asset('assets/images/user-black.png', width: iconSize, height: iconSize),
+              activeIcon: Image.asset('assets/images/user-purple.png', width: iconSize, height: iconSize),
               label: s.tabUser,
             ),
           ],

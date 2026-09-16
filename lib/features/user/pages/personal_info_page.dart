@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:petlux/common/l10n/app_localizations.dart';
 import 'package:petlux/common/models/user_dto.dart';
 import 'package:petlux/common/providers/user_provider.dart';
-import 'package:petlux/common/theme/app_theme.dart';
 import 'package:petlux/common/widgets/app_avatar.dart';
 import 'package:petlux/common/widgets/app_dialogs.dart';
 import 'package:petlux/common/widgets/responsive_layout.dart';
@@ -18,7 +17,6 @@ class PersonalInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 按需创建局部 ViewModel，离开页面自动销毁
     return ChangeNotifierProvider(create: (_) => UserViewModel(), child: const _PersonalInfoView());
   }
 }
@@ -28,24 +26,26 @@ class _PersonalInfoView extends StatelessWidget {
 
   void _showEditNicknameDialog(BuildContext context, UserViewModel vm, String currentNickname, S s) {
     final TextEditingController controller = TextEditingController(text: currentNickname);
+
     showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(s.editNickname, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           content: TextField(
             controller: controller,
             autofocus: true,
+            cursorColor: const Color(0xFF333333),
             decoration: InputDecoration(
               hintText: s.enterNewNickname,
-              focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppTheme.primaryPurple)),
+              focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF333333))),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: Text(s.cancel, style: const TextStyle(color: Colors.grey)),
+              child: Text(s.cancel, style: const TextStyle(color: Color(0xFF888888))),
             ),
             TextButton(
               onPressed: () async {
@@ -61,7 +61,7 @@ class _PersonalInfoView extends StatelessWidget {
               },
               child: Text(
                 s.confirm,
-                style: const TextStyle(color: AppTheme.primaryPurple, fontWeight: FontWeight.bold),
+                style: const TextStyle(color: Color(0xFF222222), fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -114,6 +114,7 @@ class _PersonalInfoView extends StatelessWidget {
     int countdown = 0;
     Timer? timer;
     bool isSending = false;
+    const Color brandYellow = Color(0xFFF3C746);
 
     showDialog(
       context: context,
@@ -160,6 +161,7 @@ class _PersonalInfoView extends StatelessWidget {
                           child: TextField(
                             controller: codeController,
                             keyboardType: TextInputType.number,
+                            cursorColor: brandYellow,
                             decoration: InputDecoration(
                               hintText: s.enterEmailCodeHint,
                               hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
@@ -183,14 +185,14 @@ class _PersonalInfoView extends StatelessWidget {
                               ? const SizedBox(
                                   width: 14,
                                   height: 14,
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.primaryPurple),
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: brandYellow),
                                 )
                               : Text(
                                   countdown > 0 ? '${countdown}s' : s.sendCode,
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
-                                    color: countdown > 0 ? Colors.grey : AppTheme.primaryPurple,
+                                    color: countdown > 0 ? Colors.grey : brandYellow,
                                   ),
                                 ),
                         ),
@@ -240,14 +242,13 @@ class _PersonalInfoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context)!;
-    // 监听局部 ViewModel 状态（loading / 错误信息）[cite: 1]
     final vm = context.watch<UserViewModel>();
-    // 精准监听全局 UserDto 实体[cite: 1, 2]
     final user = context.select<UserProvider, UserDto>((p) => p.user);
 
     const Color textColor = Color(0xFF333333);
     const Color valueColor = Color(0xFF888888);
     const Color dividerColor = Color(0xFFEEEEEE);
+    const Color brandYellow = Color(0xFFF3C746);
 
     final String displayAccount = user.account.isNotEmpty ? user.account : s.notBound;
 
@@ -315,7 +316,7 @@ class _PersonalInfoView extends StatelessWidget {
 
                     const Spacer(),
 
-                    // 4. 注销账号
+                    // 4. 注销账号按钮
                     SizedBox(
                       width: double.infinity,
                       height: 48,
@@ -334,13 +335,13 @@ class _PersonalInfoView extends StatelessWidget {
                     ),
                     const SizedBox(height: 14),
 
-                    // 5. 退出登录
+                    // 5. 退出登录按钮
                     SizedBox(
                       width: double.infinity,
                       height: 48,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryPurple,
+                          backgroundColor: brandYellow, // 👈 退出登录按钮统一为金色
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                           elevation: 0,
                         ),
@@ -357,7 +358,11 @@ class _PersonalInfoView extends StatelessWidget {
                         },
                         child: Text(
                           s.logout,
-                          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            color: Color(0xFF222222), // 👈 高对比度深色字
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -366,11 +371,10 @@ class _PersonalInfoView extends StatelessWidget {
                 ),
               ),
 
-              // 遮罩 Loading（直接绑定 vm.isLoading）
               if (vm.isLoading)
                 Container(
                   color: Colors.black.withValues(alpha: 0.2),
-                  child: const Center(child: CircularProgressIndicator(color: AppTheme.primaryPurple)),
+                  child: const Center(child: CircularProgressIndicator(color: brandYellow)),
                 ),
             ],
           ),

@@ -26,7 +26,7 @@ class TimerModePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context)!;
     final provider = context.read<ActiveDeviceProvider>();
-    const Color primaryColor = Color(0xFF917CEE);
+    const Color brandYellow = Color(0xFFF3C746);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9FC),
@@ -56,7 +56,11 @@ class TimerModePage extends StatelessWidget {
             },
             child: Text(
               s.save,
-              style: const TextStyle(color: primaryColor, fontWeight: FontWeight.bold, fontSize: 16),
+              style: const TextStyle(
+                color: brandYellow, // 👈 保存按钮对齐金色
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ),
         ],
@@ -77,7 +81,6 @@ class TimerModePage extends StatelessWidget {
                 itemCount: timerList.length,
                 itemBuilder: (context, index) {
                   final String timerStr = timerList[index];
-
                   return Container(
                     margin: const EdgeInsets.only(bottom: 12),
                     child: Slidable(
@@ -119,7 +122,7 @@ class TimerModePage extends StatelessWidget {
                                 color: Color(0xFF333333),
                               ),
                             ),
-                            const Icon(Icons.timer_outlined, color: primaryColor),
+                            const Icon(Icons.timer_outlined, color: brandYellow),
                           ],
                         ),
                       ),
@@ -133,12 +136,12 @@ class TimerModePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showSingleTimePicker(context, provider, s),
-        icon: const Icon(Icons.add, color: Colors.white),
+        icon: const Icon(Icons.add, color: Color(0xFF222222)),
         label: Text(
           s.addTimer,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Color(0xFF222222), fontWeight: FontWeight.bold),
         ),
-        backgroundColor: primaryColor,
+        backgroundColor: brandYellow, // 👈 悬浮操作按钮对齐品牌金色
       ),
     );
   }

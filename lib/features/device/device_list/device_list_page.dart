@@ -19,8 +19,8 @@ class DeviceListPage extends StatefulWidget {
 }
 
 class _DeviceListPageState extends State<DeviceListPage> {
-  static const Color _primaryPurple = Color(0xFF917CEE);
-  static const Color _pillYellow = Color(0xFFF3C746); // 顶部药丸金色
+  static const Color _pillYellow = Color(0xFFF3C746);
+  static const Color _loadingGrey = Color(0xFF555555);
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
             controller: controller,
             autofocus: true,
             decoration: const InputDecoration(
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: _primaryPurple)),
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: _pillYellow)),
             ),
           ),
           actions: [
@@ -62,7 +62,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
               },
               child: Text(
                 s.confirm,
-                style: const TextStyle(color: _primaryPurple, fontWeight: FontWeight.bold),
+                style: const TextStyle(color: _pillYellow, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -118,25 +118,17 @@ class _DeviceListPageState extends State<DeviceListPage> {
     final screenWidth = mediaQuery.size.width;
     final statusBarHeight = mediaQuery.padding.top;
 
-    // 1. 根据 device_list_header.png 原图的固有宽高比锁定真实渲染高度（宽度全屏填满）
-    // 原图宽/高比约为 2.15，确保不同屏幕下绝不变形、不被拉伸
     const double headerAspectRatio = 2.15;
     final double headerImgHeight = screenWidth / headerAspectRatio;
-
-    // 2. 头部总可视高度 = 状态栏高度 + 图片本身高度
     final double totalHeaderHeight = statusBarHeight + headerImgHeight;
-
-    // 3. 猫爪截断线：动态定在图片高度的 92% 处（猫爪刚好伸出的位置）
     final double cutOffTop = statusBarHeight + (headerImgHeight * 0.92);
-
-    // 4. 黄色药丸的居中锚点：原图白弧中心大约位于图片高度的 78% 处
-    final double pillCenterTop = statusBarHeight + (headerImgHeight * 0.78) - 22; // 22为药丸半高(44/2)
+    final double pillCenterTop = statusBarHeight + (headerImgHeight * 0.78) - 22;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // 第一层：设备卡片列表（在截断线 cutOffTop 以下滚动，向上滑动时被 ClipRect 完美切除）
+          // 第一层：设备卡片列表
           Positioned(
             top: cutOffTop,
             left: 0,
@@ -146,8 +138,9 @@ class _DeviceListPageState extends State<DeviceListPage> {
               child: ResponsiveFormContainer(
                 maxWidth: 600,
                 child: RefreshIndicator(
-                  color: _primaryPurple,
+                  color: _loadingGrey, // 👈 下拉刷新换成通用深灰
                   backgroundColor: Colors.white,
+                  strokeWidth: 2.2,
                   onRefresh: () async {
                     await deviceProvider.fetchDevices();
                   },
@@ -161,7 +154,12 @@ class _DeviceListPageState extends State<DeviceListPage> {
                       if (isLoading && devices.isEmpty) {
                         return const Padding(
                           padding: EdgeInsets.only(top: 60),
-                          child: Center(child: CircularProgressIndicator(color: _primaryPurple)),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: _loadingGrey, // 👈 全屏等待换成通用深灰
+                              strokeWidth: 2.5,
+                            ),
+                          ),
                         );
                       }
 
@@ -179,7 +177,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
 
                       return ListView.builder(
                         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                        // 顶部留出距离，避免刚进页面时第一张卡片紧贴截断线
                         padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                         itemCount: devices.length,
                         itemBuilder: (context, index) {
@@ -202,7 +199,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
             ),
           ),
 
-          // 第二层：Header 区域（浮在最顶层，锁定比例覆盖）
+          // 第二层：Header 区域
           Positioned(
             top: 0,
             left: 0,
@@ -211,7 +208,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // 状态栏黑色填充，应对各种打孔屏、水滴屏和灵动岛
                 Positioned(
                   top: 0,
                   left: 0,
@@ -219,8 +215,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
                   height: statusBarHeight + 10,
                   child: Container(color: const Color(0xFF262626)),
                 ),
-
-                // 猫咪 Header 图片（严格依附在状态栏下方，按真实宽高比铺满宽度）
                 Positioned(
                   top: statusBarHeight,
                   left: 0,
@@ -233,8 +227,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
                     fit: BoxFit.fill,
                   ),
                 ),
-
-                // 右上角 (+) 添加设备按钮（动态绑定状态栏高度）
                 Positioned(
                   top: statusBarHeight + 4,
                   right: 14,
@@ -243,8 +235,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
                     onPressed: () => context.push(AppRoutes.deviceAddSearch),
                   ),
                 ),
-
-                // 第三层：黄色药丸（使用动态百分比绝对定位，无论什么屏幕都固定居中在黑白弧线中心）
                 Positioned(
                   top: pillCenterTop,
                   left: 0,
