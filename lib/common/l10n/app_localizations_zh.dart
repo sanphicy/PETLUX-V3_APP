@@ -180,6 +180,84 @@ class SZh extends S {
   String get searchingAvailable => '正在搜索可用设备';
 
   @override
+  String get networkSettings => '搜索与配网设置';
+
+  @override
+  String get filterUnknownDevices => '过滤未知设备';
+
+  @override
+  String get hideUnnamedDevices => '隐藏没有名称的蓝牙设备';
+
+  @override
+  String get autoFetchWifi => '自动获取周围 Wi-Fi';
+
+  @override
+  String get autoFetchWifiDesc => '关闭后不向设备下发扫描指令，配网时将自动读取手机当前连接的 Wi-Fi';
+
+  @override
+  String get exactFilter => '精确过滤';
+
+  @override
+  String get exactFilterHint => '输入要包含的设备名称 (留空则不过滤)';
+
+  @override
+  String get saveAndResearch => '保存并重新搜索';
+
+  @override
+  String get searchAgain => '重新搜索';
+
+  @override
+  String get connect => '连接';
+
+  @override
+  String get preparingDeviceChannel => '正在准备设备通道';
+
+  @override
+  String get configError => '配置发生异常';
+
+  @override
+  String get reconfig => '重新配置';
+
+  @override
+  String get deviceAddedDesc => '您的设备已成功连接至网络并绑定。';
+
+  @override
+  String get manageDevice => '管理设备';
+
+  @override
+  String get backToHome => '返回首页';
+
+  @override
+  String get noBlePermission => '未获取蓝牙权限';
+
+  @override
+  String get ensureBleOn => '请确保已开启蓝牙';
+
+  @override
+  String get bleScanFailed => '扫描失败';
+
+  @override
+  String get bleConnectFailed => '连接蓝牙失败';
+
+  @override
+  String get wifiOrPwdEmpty => 'Wi-Fi 或密码不能为空';
+
+  @override
+  String get getMqttFailed => '获取 MQTT 配置失败';
+
+  @override
+  String get bindDeviceFailed => '绑定设备失败，请重试';
+
+  @override
+  String get wifiPwdError => 'Wi-Fi 密码错误或信号极弱';
+
+  @override
+  String get networkInterrupted => '网络连接中断';
+
+  @override
+  String get configTimeoutOrError => '配网异常或超时';
+
+  @override
   String get myDevices => '我的设备';
 
   @override
@@ -455,6 +533,33 @@ class SZh extends S {
   String get latestVersion => '最新';
 
   @override
+  String get plasmaScheduleTitle => '等离子除臭计划';
+
+  @override
+  String get plasmaAlwaysOn => '常开模式';
+
+  @override
+  String get plasmaCycleMode => '循环计划模式';
+
+  @override
+  String get plasmaAlwaysOnDesc => '设备将全天持续开启等离子除臭';
+
+  @override
+  String get plasmaCycleModeDesc => '按设定时间循环启动和间隙释放';
+
+  @override
+  String get fineGrainedAdjust => '精确到秒调节';
+
+  @override
+  String get runDuration => '运行时间';
+
+  @override
+  String get intervalDuration => '间隙时间';
+
+  @override
+  String get plasmaDurationWarning => '建议运行和间隙时间不少于30秒';
+
+  @override
   String get dataStatistics => '数据统计';
 
   @override
@@ -543,4 +648,39 @@ class SZh extends S {
 
   @override
   String get aboutUs => '关于我们';
+
+  @override
+  String get languageSetting => '语言设置';
+
+  @override
+  String get followSystem => '跟随系统';
+
+  @override
+  String deleteAccountConfirm(Object account) {
+    return '注销后账号数据将永久删除且无法恢复。我们将向 $account 发送验证码以确认操作。';
+  }
+
+  @override
+  String get confirmDelete => '确认注销';
+
+  @override
+  String get logoutConfirm => '确定要退出当前账号吗？';
+
+  @override
+  String get officialEmailLabel => '电子邮箱: ';
+
+  @override
+  String get officialWebsiteLabel => '官方网站: ';
+
+  @override
+  String get contactUsDesc => '如果您有任何问题或建议，欢迎随时与我们联系：';
+
+  @override
+  String get avatarUploadFailed => '头像上传失败，请检查相机/相册权限及网络连接';
+
+  @override
+  String get noCurrentAccount => '未获取到当前账号';
+
+  @override
+  String get deleteAccountFailed => '注销失败，请稍后重试';
 }

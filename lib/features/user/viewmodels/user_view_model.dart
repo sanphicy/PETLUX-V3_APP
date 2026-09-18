@@ -1,12 +1,15 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import 'package:petlux/common/l10n/app_localizations.dart';
 import 'package:petlux/common/providers/base_provider.dart';
 import 'package:petlux/common/providers/user_provider.dart';
 import 'package:petlux/core/network/api_endpoints.dart';
 import 'package:petlux/core/network/http_client.dart';
 import 'package:petlux/core/network/result_model.dart';
+import 'package:petlux/core/services/nav_service.dart';
 import 'package:petlux/features/auth/models/auth_request.dart';
 import 'package:petlux/features/auth/repositories/auth_repository.dart';
 import 'package:petlux/locator.dart';
@@ -18,6 +21,11 @@ class UserViewModel extends BaseProvider {
 
   String _appVersion = '';
   String get appVersion => _appVersion;
+
+  S? get _s {
+    final BuildContext? ctx = NavService.rootNavigatorKey.currentContext;
+    return ctx != null ? S.of(ctx) : null;
+  }
 
   UserViewModel() {
     _loadAppVersion();
@@ -51,10 +59,8 @@ class UserViewModel extends BaseProvider {
       } else {
         setError(result.message);
       }
-    } catch (e) {
-      setError("修改昵称失败: $e");
-    } finally {
-      setLoading(false);
+    } catch (_) {
+      setError(_s?.operationFailed ?? "Failed to update nickname");
     }
     return false;
   }
@@ -79,8 +85,8 @@ class UserViewModel extends BaseProvider {
       } else {
         setError(result.message);
       }
-    } catch (e) {
-      setError("头像上传失败，请检查相机/相册权限及网络连接");
+    } catch (_) {
+      setError(_s?.avatarUploadFailed ?? "Failed to upload avatar");
     } finally {
       setLoading(false);
     }
@@ -91,7 +97,7 @@ class UserViewModel extends BaseProvider {
   Future<int> sendDeleteAccountCode() async {
     final currentUser = _userProvider.user;
     if (currentUser.account.isEmpty) {
-      setError("未获取到当前账号");
+      setError(_s?.noCurrentAccount ?? "Account not found");
       return 0;
     }
     final bool isEmail = currentUser.account.contains('@');
@@ -119,7 +125,7 @@ class UserViewModel extends BaseProvider {
   // 执行注销
   Future<bool> deleteAccount(String code) async {
     if (code.trim().isEmpty) {
-      setError("请输入验证码");
+      setError(_s?.enterEmailCodeHint ?? "Please enter verification code");
       return false;
     }
     setLoading(true);
@@ -138,7 +144,7 @@ class UserViewModel extends BaseProvider {
         return false;
       }
     } catch (_) {
-      setError("注销失败，请稍后重试");
+      setError(_s?.deleteAccountFailed ?? "Failed to delete account");
       return false;
     } finally {
       setLoading(false);

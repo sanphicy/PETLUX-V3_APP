@@ -87,5 +87,14 @@
   "macAddress": "MAC Address",
   "resetWifi": "Reset Wi-Fi",
   "resetWifiSuccess": "Reset Wi-Fi command sent, device entering pairing mode",
-  "latestVersion":"Latest"
+  "latestVersion":"Latest",
+  "plasmaScheduleTitle": "Plasma Deodorization Schedule",
+  "plasmaAlwaysOn": "Always On",
+  "plasmaCycleMode": "Cycle Mode",
+  "plasmaAlwaysOnDesc": "Continuous plasma deodorization throughout the day",
+  "plasmaCycleModeDesc": "Periodic activation based on set intervals",
+  "fineGrainedAdjust": "Second-level Adjustment",
+  "runDuration": "Run Time",
+  "intervalDuration": "Interval Time",
+  "plasmaDurationWarning": "Run and interval times should not be less than 30s"
 }

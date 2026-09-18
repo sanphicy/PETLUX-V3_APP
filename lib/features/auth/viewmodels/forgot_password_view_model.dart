@@ -5,12 +5,21 @@ import 'package:petlux/features/auth/models/auth_request.dart';
 import 'package:petlux/features/auth/repositories/auth_repository.dart';
 import 'package:petlux/locator.dart';
 import 'package:petlux/common/models/country_dto.dart';
+import 'package:flutter/material.dart';
+import 'package:petlux/common/l10n/app_localizations.dart';
+import 'package:petlux/core/services/nav_service.dart';
 
 class ForgotPasswordViewModel extends BaseProvider {
   final AuthRepository _authRepo = locator<AuthRepository>();
   final RegionService _regionService = locator<RegionService>();
 
   CountryDto? get currentCountry => _regionService.currentCountry;
+
+  S? get _s {
+    final BuildContext? ctx = NavService.rootNavigatorKey.currentContext;
+    return ctx != null ? S.of(ctx) : null;
+  }
+
   Future<void> switchCountry(CountryDto country) async {
     await _regionService.switchCountry(country);
     notifyListeners();
@@ -18,7 +27,7 @@ class ForgotPasswordViewModel extends BaseProvider {
 
   Future<int> sendVerifyCode(String account, bool isPhoneMode) async {
     if (account.trim().isEmpty) {
-      setError("请输入账号");
+      setError(_s?.enterEmailHint ?? "Please enter your email");
       return 0;
     }
     ResultEntity<int> result;
@@ -45,7 +54,7 @@ class ForgotPasswordViewModel extends BaseProvider {
     required bool isPhoneMode,
   }) async {
     if (account.trim().isEmpty || newPassword.trim().isEmpty || code.trim().isEmpty) {
-      setError("请填写完整信息");
+      setError(_s?.emptyAccountOrPassword ?? "Please fill in all fields");
       return false;
     }
     setLoading(true);

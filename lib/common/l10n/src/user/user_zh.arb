@@ -16,5 +16,16 @@
   "logout": "退出登录",
   "appVersion": "软件版本",
   "feedback": "意见反馈",
-  "aboutUs": "关于我们"
+  "aboutUs": "关于我们",
+  "languageSetting": "语言设置",
+  "followSystem": "跟随系统",
+  "deleteAccountConfirm": "注销后账号数据将永久删除且无法恢复。我们将向 {account} 发送验证码以确认操作。",
+  "confirmDelete": "确认注销",
+  "logoutConfirm": "确定要退出当前账号吗？",
+  "officialEmailLabel": "电子邮箱: ",
+  "officialWebsiteLabel": "官方网站: ",
+  "contactUsDesc": "如果您有任何问题或建议，欢迎随时与我们联系：",
+  "avatarUploadFailed": "头像上传失败，请检查相机/相册权限及网络连接",
+  "noCurrentAccount": "未获取到当前账号",
+  "deleteAccountFailed": "注销失败，请稍后重试"
 }

@@ -39,10 +39,10 @@ class FeedbackPage extends StatelessWidget {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
             ),
             const SizedBox(height: 12),
-            const Text(
-              '\u3000\u3000如果您有任何问题或建议，欢迎随时与我们联系：',
+            Text(
+              s.contactUsDesc,
               softWrap: true,
-              style: TextStyle(fontSize: 14, color: Color(0xFF444444), height: 1.6),
+              style: const TextStyle(fontSize: 14, color: Color(0xFF444444), height: 1.6),
             ),
             const SizedBox(height: 20),
             Container(
@@ -68,12 +68,12 @@ class FeedbackPage extends StatelessWidget {
                         child: SelectableText.rich(
                           TextSpan(
                             style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
-                            children: const [
+                            children: [
                               TextSpan(
-                                text: '电子邮箱: ',
-                                style: TextStyle(fontWeight: FontWeight.w500),
+                                text: s.officialEmailLabel,
+                                style: const TextStyle(fontWeight: FontWeight.w500),
                               ),
-                              TextSpan(text: AppConstants.officialEmail),
+                              const TextSpan(text: AppConstants.officialEmail),
                             ],
                           ),
                         ),
@@ -90,12 +90,12 @@ class FeedbackPage extends StatelessWidget {
                         child: SelectableText.rich(
                           TextSpan(
                             style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
-                            children: const [
+                            children: [
                               TextSpan(
-                                text: '官方网站: ',
-                                style: TextStyle(fontWeight: FontWeight.w500),
+                                text: s.officialWebsiteLabel,
+                                style: const TextStyle(fontWeight: FontWeight.w500),
                               ),
-                              TextSpan(text: AppConstants.officialWebsite),
+                              const TextSpan(text: AppConstants.officialWebsite),
                             ],
                           ),
                         ),

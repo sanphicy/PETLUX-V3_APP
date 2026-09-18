@@ -13,9 +13,9 @@ import 'package:petlux/routes/app_router.dart';
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
 
-  // 获取语言显示名称
+  // 1. 获取语言显示名称（跟随系统走国际化词条）
   String _getLocaleName(Locale? locale, S s) {
-    if (locale == null) return "跟随系统";
+    if (locale == null) return s.followSystem;
     switch (locale.languageCode) {
       case 'zh':
         return '简体中文';
@@ -26,21 +26,17 @@ class UserPage extends StatelessWidget {
     }
   }
 
-  // 弹出选择语言的底部弹窗（自动读取 S.supportedLocales 拥有的语言）
+  // 弹出选择语言的底部弹窗
   void _showLanguagePicker(BuildContext context) {
     final s = S.of(context)!;
     final localeProvider = context.read<LocaleProvider>();
     final currentLocale = localeProvider.locale;
-
-    // 获取当前工程所有支持的语言
     final supported = S.supportedLocales;
 
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (ctx) {
         return SafeArea(
           child: Column(
@@ -49,57 +45,40 @@ class UserPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
-                  "语言设置",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF333333),
-                  ),
+                  s.languageSetting,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
                 ),
               ),
               const Divider(height: 1, color: Color(0xFFEEEEEE)),
 
-              // 1. 跟随系统选项
+              // 跟随系统选项
               ListTile(
                 title: Text(
-                  "跟随系统",
+                  s.followSystem,
                   style: TextStyle(
-                    color: currentLocale == null
-                        ? const Color(0xFFF3C746)
-                        : const Color(0xFF333333),
-                    fontWeight: currentLocale == null
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                    color: currentLocale == null ? const Color(0xFFF3C746) : const Color(0xFF333333),
+                    fontWeight: currentLocale == null ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
-                trailing: currentLocale == null
-                    ? const Icon(Icons.check, color: Color(0xFFF3C746))
-                    : null,
+                trailing: currentLocale == null ? const Icon(Icons.check, color: Color(0xFFF3C746)) : null,
                 onTap: () {
                   localeProvider.setLocale(null);
                   Navigator.pop(ctx);
                 },
               ),
 
-              // 2. 自动遍历当前工程已有的所有语言
+              // 自动遍历支持的语言
               ...supported.map((loc) {
-                final isSelected =
-                    currentLocale?.languageCode == loc.languageCode;
+                final isSelected = currentLocale?.languageCode == loc.languageCode;
                 return ListTile(
                   title: Text(
                     _getLocaleName(loc, s),
                     style: TextStyle(
-                      color: isSelected
-                          ? const Color(0xFFF3C746)
-                          : const Color(0xFF333333),
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
+                      color: isSelected ? const Color(0xFFF3C746) : const Color(0xFF333333),
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                     ),
                   ),
-                  trailing: isSelected
-                      ? const Icon(Icons.check, color: Color(0xFFF3C746))
-                      : null,
+                  trailing: isSelected ? const Icon(Icons.check, color: Color(0xFFF3C746)) : null,
                   onTap: () {
                     localeProvider.setLocale(loc);
                     Navigator.pop(ctx);
@@ -119,7 +98,7 @@ class UserPage extends StatelessWidget {
     final s = S.of(context)!;
     final localeProvider = context.watch<LocaleProvider>();
 
-    const Color primaryGold = Color(0xFFF3C746); // 主金色
+    const Color primaryGold = Color(0xFFF3C746);
     const Color textColor = Color(0xFF333333);
     const Color subTextColor = Color(0xFF666666);
     const Color bgColor = Color(0xFFF9F9FC);
@@ -135,10 +114,9 @@ class UserPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 12),
-                // 1. 顶部用户信息栏
+                // 顶部用户信息栏
                 Selector<UserProvider, (String, String, String)>(
-                  selector: (_, vm) =>
-                      (vm.user.avatarUrl, vm.user.nickname, vm.user.userId),
+                  selector: (_, vm) => (vm.user.avatarUrl, vm.user.nickname, vm.user.userId),
                   builder: (context, data, _) {
                     final avatarUrl = data.$1;
                     final userName = data.$2;
@@ -154,14 +132,8 @@ class UserPage extends StatelessWidget {
                             Positioned(
                               bottom: -4,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: primaryGold,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(color: primaryGold, borderRadius: BorderRadius.circular(10)),
                                 child: Text(
                                   s.user,
                                   style: const TextStyle(
@@ -181,21 +153,14 @@ class UserPage extends StatelessWidget {
                             children: [
                               Text(
                                 userName.isNotEmpty ? userName : 'User',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  color: textColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: const TextStyle(fontSize: 18, color: textColor, fontWeight: FontWeight.bold),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 'ID: $userId',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: subTextColor,
-                                ),
+                                style: const TextStyle(fontSize: 12, color: subTextColor),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -203,11 +168,7 @@ class UserPage extends StatelessWidget {
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(
-                            Icons.settings_outlined,
-                            color: Color(0xFF666666),
-                            size: 26,
-                          ),
+                          icon: const Icon(Icons.settings_outlined, color: Color(0xFF666666), size: 26),
                           onPressed: () {
                             context.push(AppRoutes.personalInfo);
                           },
@@ -218,7 +179,7 @@ class UserPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
 
-                // 2. 功能列表组 A（语言设置、隐私政策、用户协议、版本信息）
+                // 功能列表组 A
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -233,11 +194,10 @@ class UserPage extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      // 新增：语言设置
                       _buildListTile(
                         Icons.chat_bubble_outline_rounded,
-                        const Color(0xFF6BB55B), // 浅绿色图标，对齐设计图第一行
-                        "语言设置",
+                        const Color(0xFF6BB55B),
+                        s.languageSetting,
                         trailingText: _getLocaleName(localeProvider.locale, s),
                         onTap: () => _showLanguagePicker(context),
                       ),
@@ -249,10 +209,7 @@ class UserPage extends StatelessWidget {
                         onTap: () {
                           context.push(
                             AppRoutes.webView,
-                            extra: {
-                              'title': s.privacyPolicy,
-                              'url': AppConstants.privacyPolicyUrl,
-                            },
+                            extra: {'title': s.privacyPolicy, 'url': AppConstants.privacyPolicyUrl},
                           );
                         },
                       ),
@@ -264,10 +221,7 @@ class UserPage extends StatelessWidget {
                         onTap: () {
                           context.push(
                             AppRoutes.webView,
-                            extra: {
-                              'title': s.userAgreement,
-                              'url': AppConstants.userAgreementUrl,
-                            },
+                            extra: {'title': s.userAgreement, 'url': AppConstants.userAgreementUrl},
                           );
                         },
                       ),
@@ -289,7 +243,7 @@ class UserPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // 3. 功能列表组 B（意见反馈、关于我们）
+                // 功能列表组 B
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -329,13 +283,7 @@ class UserPage extends StatelessWidget {
     );
   }
 
-  Widget _buildListTile(
-    IconData icon,
-    Color iconColor,
-    String title, {
-    String? trailingText,
-    VoidCallback? onTap,
-  }) {
+  Widget _buildListTile(IconData icon, Color iconColor, String title, {String? trailingText, VoidCallback? onTap}) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -345,33 +293,19 @@ class UserPage extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(7),
-              decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
+              decoration: BoxDecoration(color: iconColor.withValues(alpha: 0.1), shape: BoxShape.circle),
               child: Icon(icon, color: iconColor, size: 18),
             ),
             const SizedBox(width: 12),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0xFF333333),
-                fontWeight: FontWeight.w500,
-              ),
+              style: const TextStyle(fontSize: 14, color: Color(0xFF333333), fontWeight: FontWeight.w500),
             ),
             const Spacer(),
             if (trailingText != null && trailingText.isNotEmpty)
-              Text(
-                trailingText,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF999999)),
-              ),
+              Text(trailingText, style: const TextStyle(fontSize: 13, color: Color(0xFF999999))),
             const SizedBox(width: 4),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: Colors.grey,
-              size: 14,
-            ),
+            const Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey, size: 14),
           ],
         ),
       ),
@@ -379,11 +313,6 @@ class UserPage extends StatelessWidget {
   }
 
   Widget _buildDivider() {
-    return const Divider(
-      height: 1,
-      thickness: 0.5,
-      indent: 52,
-      color: Color(0xFFF0EFF5),
-    );
+    return const Divider(height: 1, thickness: 0.5, indent: 52, color: Color(0xFFF0EFF5));
   }
 }

@@ -439,6 +439,162 @@ abstract class S {
   /// **'正在搜索可用设备'**
   String get searchingAvailable;
 
+  /// No description provided for @networkSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索与配网设置'**
+  String get networkSettings;
+
+  /// No description provided for @filterUnknownDevices.
+  ///
+  /// In zh, this message translates to:
+  /// **'过滤未知设备'**
+  String get filterUnknownDevices;
+
+  /// No description provided for @hideUnnamedDevices.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐藏没有名称的蓝牙设备'**
+  String get hideUnnamedDevices;
+
+  /// No description provided for @autoFetchWifi.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动获取周围 Wi-Fi'**
+  String get autoFetchWifi;
+
+  /// No description provided for @autoFetchWifiDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭后不向设备下发扫描指令，配网时将自动读取手机当前连接的 Wi-Fi'**
+  String get autoFetchWifiDesc;
+
+  /// No description provided for @exactFilter.
+  ///
+  /// In zh, this message translates to:
+  /// **'精确过滤'**
+  String get exactFilter;
+
+  /// No description provided for @exactFilterHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入要包含的设备名称 (留空则不过滤)'**
+  String get exactFilterHint;
+
+  /// No description provided for @saveAndResearch.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存并重新搜索'**
+  String get saveAndResearch;
+
+  /// No description provided for @searchAgain.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新搜索'**
+  String get searchAgain;
+
+  /// No description provided for @connect.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接'**
+  String get connect;
+
+  /// No description provided for @preparingDeviceChannel.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在准备设备通道'**
+  String get preparingDeviceChannel;
+
+  /// No description provided for @configError.
+  ///
+  /// In zh, this message translates to:
+  /// **'配置发生异常'**
+  String get configError;
+
+  /// No description provided for @reconfig.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新配置'**
+  String get reconfig;
+
+  /// No description provided for @deviceAddedDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'您的设备已成功连接至网络并绑定。'**
+  String get deviceAddedDesc;
+
+  /// No description provided for @manageDevice.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理设备'**
+  String get manageDevice;
+
+  /// No description provided for @backToHome.
+  ///
+  /// In zh, this message translates to:
+  /// **'返回首页'**
+  String get backToHome;
+
+  /// No description provided for @noBlePermission.
+  ///
+  /// In zh, this message translates to:
+  /// **'未获取蓝牙权限'**
+  String get noBlePermission;
+
+  /// No description provided for @ensureBleOn.
+  ///
+  /// In zh, this message translates to:
+  /// **'请确保已开启蓝牙'**
+  String get ensureBleOn;
+
+  /// No description provided for @bleScanFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'扫描失败'**
+  String get bleScanFailed;
+
+  /// No description provided for @bleConnectFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接蓝牙失败'**
+  String get bleConnectFailed;
+
+  /// No description provided for @wifiOrPwdEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'Wi-Fi 或密码不能为空'**
+  String get wifiOrPwdEmpty;
+
+  /// No description provided for @getMqttFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'获取 MQTT 配置失败'**
+  String get getMqttFailed;
+
+  /// No description provided for @bindDeviceFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'绑定设备失败，请重试'**
+  String get bindDeviceFailed;
+
+  /// No description provided for @wifiPwdError.
+  ///
+  /// In zh, this message translates to:
+  /// **'Wi-Fi 密码错误或信号极弱'**
+  String get wifiPwdError;
+
+  /// No description provided for @networkInterrupted.
+  ///
+  /// In zh, this message translates to:
+  /// **'网络连接中断'**
+  String get networkInterrupted;
+
+  /// No description provided for @configTimeoutOrError.
+  ///
+  /// In zh, this message translates to:
+  /// **'配网异常或超时'**
+  String get configTimeoutOrError;
+
   /// No description provided for @myDevices.
   ///
   /// In zh, this message translates to:
@@ -973,6 +1129,60 @@ abstract class S {
   /// **'最新'**
   String get latestVersion;
 
+  /// No description provided for @plasmaScheduleTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'等离子除臭计划'**
+  String get plasmaScheduleTitle;
+
+  /// No description provided for @plasmaAlwaysOn.
+  ///
+  /// In zh, this message translates to:
+  /// **'常开模式'**
+  String get plasmaAlwaysOn;
+
+  /// No description provided for @plasmaCycleMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'循环计划模式'**
+  String get plasmaCycleMode;
+
+  /// No description provided for @plasmaAlwaysOnDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备将全天持续开启等离子除臭'**
+  String get plasmaAlwaysOnDesc;
+
+  /// No description provided for @plasmaCycleModeDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'按设定时间循环启动和间隙释放'**
+  String get plasmaCycleModeDesc;
+
+  /// No description provided for @fineGrainedAdjust.
+  ///
+  /// In zh, this message translates to:
+  /// **'精确到秒调节'**
+  String get fineGrainedAdjust;
+
+  /// No description provided for @runDuration.
+  ///
+  /// In zh, this message translates to:
+  /// **'运行时间'**
+  String get runDuration;
+
+  /// No description provided for @intervalDuration.
+  ///
+  /// In zh, this message translates to:
+  /// **'间隙时间'**
+  String get intervalDuration;
+
+  /// No description provided for @plasmaDurationWarning.
+  ///
+  /// In zh, this message translates to:
+  /// **'建议运行和间隙时间不少于30秒'**
+  String get plasmaDurationWarning;
+
   /// No description provided for @dataStatistics.
   ///
   /// In zh, this message translates to:
@@ -1152,6 +1362,72 @@ abstract class S {
   /// In zh, this message translates to:
   /// **'关于我们'**
   String get aboutUs;
+
+  /// No description provided for @languageSetting.
+  ///
+  /// In zh, this message translates to:
+  /// **'语言设置'**
+  String get languageSetting;
+
+  /// No description provided for @followSystem.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随系统'**
+  String get followSystem;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'注销后账号数据将永久删除且无法恢复。我们将向 {account} 发送验证码以确认操作。'**
+  String deleteAccountConfirm(Object account);
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认注销'**
+  String get confirmDelete;
+
+  /// No description provided for @logoutConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定要退出当前账号吗？'**
+  String get logoutConfirm;
+
+  /// No description provided for @officialEmailLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'电子邮箱: '**
+  String get officialEmailLabel;
+
+  /// No description provided for @officialWebsiteLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'官方网站: '**
+  String get officialWebsiteLabel;
+
+  /// No description provided for @contactUsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'如果您有任何问题或建议，欢迎随时与我们联系：'**
+  String get contactUsDesc;
+
+  /// No description provided for @avatarUploadFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'头像上传失败，请检查相机/相册权限及网络连接'**
+  String get avatarUploadFailed;
+
+  /// No description provided for @noCurrentAccount.
+  ///
+  /// In zh, this message translates to:
+  /// **'未获取到当前账号'**
+  String get noCurrentAccount;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'注销失败，请稍后重试'**
+  String get deleteAccountFailed;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

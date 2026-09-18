@@ -139,46 +139,129 @@ class SEn extends S {
   String get noMatchingRegion => 'No matching region found';
 
   @override
-  String get wifiConfigTitle => '配置设备网络';
+  String get wifiConfigTitle => 'Configure Network';
 
   @override
-  String get selectWifiTitle => '选择设备的 Wi-Fi';
+  String get selectWifiTitle => 'Select Device Wi-Fi';
 
   @override
-  String get wifiConfigDesc => '请选择 Wi-Fi 网络并输入密码。';
+  String get wifiConfigDesc =>
+      'Please select a Wi-Fi network and enter the password.';
 
   @override
-  String get wifiPasswordHint => '请输入 Wi-Fi 密码';
+  String get wifiPasswordHint => 'Please enter Wi-Fi password';
 
   @override
-  String get searchingLabel => '搜索设备';
+  String get searchingLabel => 'Search Device';
 
   @override
-  String get startConfig => '开始配网';
+  String get startConfig => 'Start Provisioning';
 
   @override
-  String get configProgress => '正在配网中...';
+  String get configProgress => 'Connecting device to network...';
 
   @override
-  String get configStep1 => '正在向设备下发网络信息';
+  String get configStep1 => 'Sending network configuration to device';
 
   @override
-  String get configStep2 => '设备正在连接路由器';
+  String get configStep2 => 'Device is connecting to router';
 
   @override
-  String get configStep3 => '正在向云端注册设备';
+  String get configStep3 => 'Registering device with cloud';
 
   @override
-  String get configSuccess => '设备添加成功！';
+  String get configSuccess => 'Device added successfully!';
 
   @override
-  String get autoSearching => '正在自动搜索可用设备...';
+  String get autoSearching => 'Searching for available devices...';
 
   @override
-  String get noDeviceFoundDesc => '当前未连接设备，请点击下方进行连接。';
+  String get noDeviceFoundDesc =>
+      'No device connected currently, please tap below to connect.';
 
   @override
-  String get searchingAvailable => '正在搜索可用设备';
+  String get searchingAvailable => 'Searching for available devices';
+
+  @override
+  String get networkSettings => 'Search & Provisioning Settings';
+
+  @override
+  String get filterUnknownDevices => 'Filter Unknown Devices';
+
+  @override
+  String get hideUnnamedDevices => 'Hide unnamed Bluetooth devices';
+
+  @override
+  String get autoFetchWifi => 'Auto Fetch Nearby Wi-Fi';
+
+  @override
+  String get autoFetchWifiDesc =>
+      'Disable to skip scan command and use phone\'s current Wi-Fi';
+
+  @override
+  String get exactFilter => 'Exact Filter';
+
+  @override
+  String get exactFilterHint =>
+      'Enter device names to include (leave empty for none)';
+
+  @override
+  String get saveAndResearch => 'Save and Rescan';
+
+  @override
+  String get searchAgain => 'Rescan';
+
+  @override
+  String get connect => 'Connect';
+
+  @override
+  String get preparingDeviceChannel => 'Preparing device channel';
+
+  @override
+  String get configError => 'Configuration error';
+
+  @override
+  String get reconfig => 'Reconfigure';
+
+  @override
+  String get deviceAddedDesc =>
+      'Your device has successfully connected to the network and bound.';
+
+  @override
+  String get manageDevice => 'Manage Device';
+
+  @override
+  String get backToHome => 'Return to Home';
+
+  @override
+  String get noBlePermission => 'Bluetooth permission not granted';
+
+  @override
+  String get ensureBleOn => 'Please ensure Bluetooth is enabled';
+
+  @override
+  String get bleScanFailed => 'Bluetooth scan failed';
+
+  @override
+  String get bleConnectFailed => 'Failed to connect via Bluetooth';
+
+  @override
+  String get wifiOrPwdEmpty => 'Wi-Fi SSID or password cannot be empty';
+
+  @override
+  String get getMqttFailed => 'Failed to obtain MQTT configuration';
+
+  @override
+  String get bindDeviceFailed => 'Failed to bind device, please try again';
+
+  @override
+  String get wifiPwdError => 'Wi-Fi password incorrect or signal too weak';
+
+  @override
+  String get networkInterrupted => 'Network connection interrupted';
+
+  @override
+  String get configTimeoutOrError => 'Provisioning exception or timeout';
 
   @override
   String get myDevices => 'My Devices';
@@ -461,6 +544,36 @@ class SEn extends S {
   String get latestVersion => 'Latest';
 
   @override
+  String get plasmaScheduleTitle => 'Plasma Deodorization Schedule';
+
+  @override
+  String get plasmaAlwaysOn => 'Always On';
+
+  @override
+  String get plasmaCycleMode => 'Cycle Mode';
+
+  @override
+  String get plasmaAlwaysOnDesc =>
+      'Continuous plasma deodorization throughout the day';
+
+  @override
+  String get plasmaCycleModeDesc =>
+      'Periodic activation based on set intervals';
+
+  @override
+  String get fineGrainedAdjust => 'Second-level Adjustment';
+
+  @override
+  String get runDuration => 'Run Time';
+
+  @override
+  String get intervalDuration => 'Interval Time';
+
+  @override
+  String get plasmaDurationWarning =>
+      'Run and interval times should not be less than 30s';
+
+  @override
   String get dataStatistics => 'Data Statistics';
 
   @override
@@ -549,4 +662,43 @@ class SEn extends S {
 
   @override
   String get aboutUs => 'About Us';
+
+  @override
+  String get languageSetting => 'Language';
+
+  @override
+  String get followSystem => 'System Default';
+
+  @override
+  String deleteAccountConfirm(Object account) {
+    return 'Account data will be permanently deleted and cannot be recovered. A verification code will be sent to $account.';
+  }
+
+  @override
+  String get confirmDelete => 'Confirm Delete';
+
+  @override
+  String get logoutConfirm =>
+      'Are you sure you want to log out of your account?';
+
+  @override
+  String get officialEmailLabel => 'Email: ';
+
+  @override
+  String get officialWebsiteLabel => 'Website: ';
+
+  @override
+  String get contactUsDesc =>
+      'If you have any questions or suggestions, please feel free to contact us:';
+
+  @override
+  String get avatarUploadFailed =>
+      'Failed to upload avatar, please check permissions and network';
+
+  @override
+  String get noCurrentAccount => 'Current account not found';
+
+  @override
+  String get deleteAccountFailed =>
+      'Failed to delete account, please try again later';
 }

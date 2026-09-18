@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
     //全局收起软键盘
     FocusManager.instance.primaryFocus?.unfocus();
 
-    final success = await vm.login(account, pwd, isEmail: true);
+    final success = await vm.login(account, pwd);
 
     if (!mounted) return;
 

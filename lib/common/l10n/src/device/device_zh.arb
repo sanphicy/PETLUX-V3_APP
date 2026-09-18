@@ -87,5 +87,14 @@
   "macAddress": "MAC 地址",
   "resetWifi": "重置 Wi-Fi",
   "resetWifiSuccess": "重置 Wi-Fi 指令已发送，设备即将重启配网模式",
-  "latestVersion":"最新"
+  "latestVersion":"最新",
+  "plasmaScheduleTitle": "等离子除臭计划",
+  "plasmaAlwaysOn": "常开模式",
+  "plasmaCycleMode": "循环计划模式",
+  "plasmaAlwaysOnDesc": "设备将全天持续开启等离子除臭",
+  "plasmaCycleModeDesc": "按设定时间循环启动和间隙释放",
+  "fineGrainedAdjust": "精确到秒调节",
+  "runDuration": "运行时间",
+  "intervalDuration": "间隙时间",
+  "plasmaDurationWarning": "建议运行和间隙时间不少于30秒"
 }

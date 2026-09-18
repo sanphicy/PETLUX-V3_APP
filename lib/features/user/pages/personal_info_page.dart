@@ -148,7 +148,7 @@ class _PersonalInfoView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '注销后账号数据将永久删除且无法恢复。我们将向 $account 发送验证码以确认操作。',
+                    s.deleteAccountConfirm(account),
                     style: const TextStyle(fontSize: 13, color: Color(0xFF666666), height: 1.4),
                   ),
                   const SizedBox(height: 16),
@@ -226,9 +226,9 @@ class _PersonalInfoView extends StatelessWidget {
                     Navigator.pop(ctx);
                     await vm.deleteAccount(code);
                   },
-                  child: const Text(
-                    "确认注销",
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  child: Text(
+                    s.confirmDelete,
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -341,28 +341,24 @@ class _PersonalInfoView extends StatelessWidget {
                       height: 48,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: brandYellow, // 👈 退出登录按钮统一为金色
+                          backgroundColor: brandYellow,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                           elevation: 0,
                         ),
                         onPressed: () async {
                           final bool? confirm = await context.showAppDialog(
                             title: s.logout,
-                            content: '确定要退出当前账号吗？',
+                            content: s.logoutConfirm,
                             confirmText: s.confirm,
                             cancelText: s.cancel,
                           );
-                          if (confirm == true) {
+                          if (confirm == true && context.mounted) {
                             await context.read<UserProvider>().logout();
                           }
                         },
                         child: Text(
                           s.logout,
-                          style: const TextStyle(
-                            color: Color(0xFF222222), // 👈 高对比度深色字
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: const TextStyle(color: Color(0xFF222222), fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
