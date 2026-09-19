@@ -18,7 +18,7 @@ class SEn extends S {
   String get createAccount => 'Create Account';
 
   @override
-  String get forgotPassword => 'Forgot Password';
+  String get forgotPassword => 'Forgot password';
 
   @override
   String get phoneLogin => 'Phone';
@@ -45,7 +45,7 @@ class SEn extends S {
   String get enterEmailCodeHint => 'Enter code from the email';
 
   @override
-  String get sendCode => 'Get Code';
+  String get sendCode => 'sent code';
 
   @override
   String get emptyAccountOrPassword => 'Please fill in all fields';
@@ -71,6 +71,9 @@ class SEn extends S {
 
   @override
   String get tokenParseError => 'Failed to parse login token, please try again';
+
+  @override
+  String get accountOrPasswordError => 'Incorrect account or password';
 
   @override
   String get confirm => 'Confirm';

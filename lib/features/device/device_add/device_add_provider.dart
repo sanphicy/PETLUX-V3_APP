@@ -1,25 +1,33 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // 新增持久化库
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:petlux/common/l10n/app_localizations.dart';
 import 'package:petlux/common/providers/base_provider.dart';
-import 'package:petlux/locator.dart';
 import 'package:petlux/core/hardware/bluetooth_manager.dart';
 import 'package:petlux/core/network/api_endpoints.dart';
 import 'package:petlux/core/network/http_client.dart';
+import 'package:petlux/core/services/nav_service.dart';
 import 'models/discovered_device.dart';
 import 'repositories/device_add_repository.dart';
 import 'package:petlux/features/device/repositories/device_repository.dart';
+import 'package:petlux/locator.dart';
 
 class DeviceAddProvider extends BaseProvider {
   final _bleManager = locator<BluetoothManager>();
   final DeviceAddRepository _repository = DeviceAddRepository();
 
+  S? get _s {
+    final BuildContext? ctx = NavService.rootNavigatorKey.currentContext;
+    return ctx != null ? S.of(ctx) : null;
+  }
+
   // ================= 设置项持久化 =================
   bool _hasLoadedSettings = false;
   bool _filterUnknown = true;
-  String _filterName = 'petlux, PETLUX';
+  String _filterName = 'PET';
   bool _autoFetchWifi = true;
 
   bool get filterUnknown => _filterUnknown;
@@ -161,7 +169,7 @@ class DeviceAddProvider extends BaseProvider {
   }
 
   Future<void> startSearchDevices() async {
-    await loadSettings(); // 确保开始扫描前设置已加载[cite: 2]
+    await loadSettings();
 
     clearError();
     _discoveredDevices.clear();
@@ -169,7 +177,7 @@ class DeviceAddProvider extends BaseProvider {
 
     final hasPermission = await _bleManager.checkAndRequestPermissions();
     if (!hasPermission) {
-      setError("未获取蓝牙权限");
+      setError(_s?.noBlePermission ?? "Bluetooth permission not granted"); // 👈 替换
       return;
     }
 
@@ -185,7 +193,7 @@ class DeviceAddProvider extends BaseProvider {
           .timeout(const Duration(seconds: 3));
       if (state != BluetoothAdapterState.on) throw Exception("Status is not on");
     } catch (e) {
-      setError("请确保已开启蓝牙");
+      setError(_s?.ensureBleOn ?? "Please ensure Bluetooth is enabled"); // 👈 替换
       return;
     }
 
@@ -195,7 +203,7 @@ class DeviceAddProvider extends BaseProvider {
     try {
       await _bleManager.startScan(targetChipType: '', timeout: const Duration(seconds: 15));
     } catch (e) {
-      setError("扫描失败");
+      setError(_s?.bleScanFailed ?? "Bluetooth scan failed"); // 👈 替换
       _isScanning = false;
       notifyListeners();
       return;
@@ -215,11 +223,9 @@ class DeviceAddProvider extends BaseProvider {
 
       // 应用动态过滤规则
       _discoveredDevices = map.values.where((d) {
-        // 规则1：过滤未知设备
         if (_filterUnknown && (d.name == "Unknown Device" || d.name.isEmpty)) {
           return false;
         }
-        // 规则2：精确名称过滤（包含即可）按名称列表过滤（支持英文逗号 , 和中文逗号 ，）
         if (_filterName.isNotEmpty) {
           final filterKeywords = _filterName
               .replaceAll('，', ',')
@@ -306,7 +312,7 @@ class DeviceAddProvider extends BaseProvider {
       _progress = 0.0;
       _addLog("设备状态变化: 断开", isError: true);
       _addLog("蓝牙连接失败，请靠近设备重试", isError: true);
-      setError("连接蓝牙失败");
+      setError(_s?.bleConnectFailed ?? "Bluetooth connection failed"); // 👈 替换
       notifyListeners();
       return false;
     }
@@ -385,7 +391,6 @@ class DeviceAddProvider extends BaseProvider {
         }
       });
 
-      // 根据设置动态决定是否下发周边Wi-Fi扫描指令[cite: 2]
       if (_autoFetchWifi) {
         _addLog("正在获取设备WiFi列表...");
         await _send0x86Data(_connectingDeviceId!, {"method": "devConfSsidGet"});
@@ -396,7 +401,7 @@ class DeviceAddProvider extends BaseProvider {
       } else {
         _progress = 0.35;
         _addLog("已关闭设备扫描，跳过获取，使用当前手机Wi-Fi", isHighlight: true);
-        await Future.delayed(const Duration(milliseconds: 500)); // 缓冲体验
+        await Future.delayed(const Duration(milliseconds: 500));
       }
       isSuccess = true;
     } catch (e) {
@@ -414,7 +419,7 @@ class DeviceAddProvider extends BaseProvider {
 
   Future<bool> startWifiProvisioning(String ssid, String password, DiscoveredDevice targetDevice) async {
     if (ssid.isEmpty || password.isEmpty) {
-      setError("Wi-Fi 或密码不能为空");
+      setError(_s?.wifiOrPwdEmpty ?? "Wi-Fi or password cannot be empty"); // 👈 替换
       return false;
     }
 
@@ -429,7 +434,7 @@ class DeviceAddProvider extends BaseProvider {
       _addLog("获取云端 MQTT 参数失败", isError: true);
       _configStep = 0;
       _isReadyForWifi = true;
-      setError("获取 MQTT 配置失败");
+      setError(_s?.getMqttFailed ?? "Failed to get MQTT configuration"); // 👈 替换
       return false;
     }
 
@@ -513,12 +518,18 @@ class DeviceAddProvider extends BaseProvider {
 
                       if (!completer.isCompleted) completer.complete(true);
                     } else {
-                      if (!completer.isCompleted) completer.completeError(Exception("绑定设备失败，请重试"));
+                      if (!completer.isCompleted) {
+                        completer.completeError(
+                          Exception(_s?.bindDeviceFailed ?? "Failed to bind device, please try again"),
+                        ); // 👈 替换
+                      }
                     }
                   });
                 } else if (stage == 2 && code != 0) {
                   if (!completer.isCompleted) {
-                    String errMsg = payload['msg'] == 'password_error' ? "Wi-Fi 密码错误或信号极弱" : "网络连接中断";
+                    String errMsg = payload['msg'] == 'password_error'
+                        ? (_s?.wifiPwdError ?? "Wi-Fi password incorrect or signal too weak") // 👈 替换
+                        : (_s?.networkInterrupted ?? "Network connection interrupted"); // 👈 替换
                     completer.completeError(Exception(errMsg));
                   }
                 }
@@ -552,7 +563,9 @@ class DeviceAddProvider extends BaseProvider {
     } catch (e) {
       _configStep = 0;
       _isReadyForWifi = true;
-      String errorMsg = e.toString().contains("Exception:") ? e.toString().split("Exception: ").last : "配网异常或超时";
+      String errorMsg = e.toString().contains("Exception:")
+          ? e.toString().split("Exception: ").last
+          : (_s?.configTimeoutOrError ?? "Provisioning timeout or error"); // 👈 替换
       _addLog("配网中断: $errorMsg", isError: true);
       setError(errorMsg);
       return false;

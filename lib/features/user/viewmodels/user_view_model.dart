@@ -61,6 +61,8 @@ class UserViewModel extends BaseProvider {
       }
     } catch (_) {
       setError(_s?.operationFailed ?? "Failed to update nickname");
+    } finally {
+      setLoading(false);
     }
     return false;
   }

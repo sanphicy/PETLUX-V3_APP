@@ -239,9 +239,9 @@ class DeviceSettingPage extends StatelessWidget {
                         return _buildSettingTile(
                           Icons.bubble_chart_rounded,
                           primaryGold,
-                          '等离子除臭计划',
+                          s.plasmaScheduleTitle,
                           showDivider: true,
-                          trailingText: isAlways ? '常开模式' : '循环模式',
+                          trailingText: isAlways ? s.plasmaAlwaysOn : s.plasmaCycleMode,
                           onTap: () => _showPlasmaScheduleSheet(context, provider, s),
                         );
                       },
@@ -526,9 +526,9 @@ void _showPlasmaScheduleSheet(BuildContext context, ActiveDeviceProvider provide
                         onPressed: () => Navigator.pop(ctx),
                         child: Text(s.cancel, style: const TextStyle(color: Colors.grey, fontSize: 15)),
                       ),
-                      const Text(
-                        '等离子除臭计划',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
+                      Text(
+                        s.plasmaScheduleTitle,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
                       ),
                       TextButton(
                         onPressed: () {
@@ -539,9 +539,9 @@ void _showPlasmaScheduleSheet(BuildContext context, ActiveDeviceProvider provide
                             provider.setPlasmaSchedule(runSeconds: currentRunTotalSec, outSeconds: currentOutTotalSec);
                           }
                         },
-                        child: const Text(
-                          '保存',
-                          style: TextStyle(color: primaryGold, fontWeight: FontWeight.bold, fontSize: 15),
+                        child: Text(
+                          s.save,
+                          style: const TextStyle(color: primaryGold, fontWeight: FontWeight.bold, fontSize: 15),
                         ),
                       ),
                     ],
@@ -555,8 +555,14 @@ void _showPlasmaScheduleSheet(BuildContext context, ActiveDeviceProvider provide
                           value: true,
                           groupValue: isAlwaysOn,
                           activeColor: primaryGold,
-                          title: const Text('常开模式', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                          subtitle: const Text('设备将全天持续开启等离子除臭', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          title: Text(
+                            s.plasmaAlwaysOn,
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            s.plasmaAlwaysOnDesc,
+                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
                           onChanged: (val) => setSheetState(() => isAlwaysOn = true),
                         ),
                         const Divider(height: 1, indent: 16, endIndent: 16, color: Color(0xFFEFEFEF)),
@@ -564,8 +570,14 @@ void _showPlasmaScheduleSheet(BuildContext context, ActiveDeviceProvider provide
                           value: false,
                           groupValue: isAlwaysOn,
                           activeColor: primaryGold,
-                          title: const Text('循环计划模式', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                          subtitle: const Text('按设定时间循环启动和间隙释放', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          title: Text(
+                            s.plasmaCycleMode,
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            s.plasmaCycleModeDesc,
+                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
                           onChanged: (val) => setSheetState(() => isAlwaysOn = false),
                         ),
                       ],
@@ -576,9 +588,9 @@ void _showPlasmaScheduleSheet(BuildContext context, ActiveDeviceProvider provide
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          '精确到秒调节',
-                          style: TextStyle(fontSize: 13, color: Color(0xFF666666), fontWeight: FontWeight.w500),
+                        Text(
+                          s.fineGrainedAdjust,
+                          style: const TextStyle(fontSize: 13, color: Color(0xFF666666), fontWeight: FontWeight.w500),
                         ),
                         Switch(
                           value: isFineGrained,
@@ -601,13 +613,15 @@ void _showPlasmaScheduleSheet(BuildContext context, ActiveDeviceProvider provide
                       children: [
                         Expanded(
                           child: _buildTimePickerColumn(
-                            title: '运行时间',
+                            title: s.runDuration,
                             minuteCtrl: runMinCtrl,
                             secondCtrl: runSecCtrl,
                             minList: currentRunMinList,
                             secList: secList,
                             showSeconds: isFineGrained,
                             primaryColor: primaryGold,
+                            minUnit: s.minutesUnit,
+                            secUnit: s.secondsUnit,
                             onMinChanged: (idx) => setSheetState(() => runMinutes = currentRunMinList[idx]),
                             onSecChanged: (idx) => setSheetState(() => runSeconds = secList[idx]),
                           ),
@@ -615,13 +629,15 @@ void _showPlasmaScheduleSheet(BuildContext context, ActiveDeviceProvider provide
                         const SizedBox(width: 12),
                         Expanded(
                           child: _buildTimePickerColumn(
-                            title: '间隙时间',
+                            title: s.intervalDuration,
                             minuteCtrl: outMinCtrl,
                             secondCtrl: outSecCtrl,
                             minList: currentOutMinList,
                             secList: secList,
                             showSeconds: isFineGrained,
                             primaryColor: primaryGold,
+                            minUnit: s.minutesUnit,
+                            secUnit: s.secondsUnit,
                             onMinChanged: (idx) => setSheetState(() => outMinutes = currentOutMinList[idx]),
                             onSecChanged: (idx) => setSheetState(() => outSeconds = secList[idx]),
                           ),
@@ -637,14 +653,18 @@ void _showPlasmaScheduleSheet(BuildContext context, ActiveDeviceProvider provide
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: const Color(0xFFFFE066)),
                         ),
-                        child: const Row(
+                        child: Row(
                           children: [
-                            Icon(Icons.warning_amber_rounded, size: 16, color: Color(0xFFE67700)),
-                            SizedBox(width: 6),
+                            const Icon(Icons.warning_amber_rounded, size: 16, color: Color(0xFFE67700)),
+                            const SizedBox(width: 6),
                             Expanded(
                               child: Text(
-                                '建议运行和间隙时间不少于30秒',
-                                style: TextStyle(fontSize: 11, color: Color(0xFFD9480F), fontWeight: FontWeight.w500),
+                                s.plasmaDurationWarning,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Color(0xFFD9480F),
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ],
@@ -671,6 +691,8 @@ Widget _buildTimePickerColumn({
   required List<int> secList,
   required bool showSeconds,
   required Color primaryColor,
+  required String minUnit,
+  required String secUnit,
   required ValueChanged<int> onMinChanged,
   required ValueChanged<int> onSecChanged,
 }) {
@@ -714,7 +736,7 @@ Widget _buildTimePickerColumn({
                         childCount: minList.length,
                         builder: (context, index) => Center(
                           child: Text(
-                            '${minList[index]}分',
+                            '${minList[index]}$minUnit',
                             style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
                           ),
                         ),
@@ -732,7 +754,7 @@ Widget _buildTimePickerColumn({
                           childCount: secList.length,
                           builder: (context, index) => Center(
                             child: Text(
-                              '${secList[index]}秒',
+                              '${secList[index]}$secUnit',
                               style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: primaryColor),
                             ),
                           ),

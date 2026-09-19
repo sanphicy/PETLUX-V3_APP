@@ -8,8 +8,8 @@ import 'package:petlux/common/l10n/app_localizations.dart';
 import 'package:petlux/common/models/country_dto.dart';
 import 'package:petlux/common/widgets/app_dialogs.dart';
 import 'package:petlux/features/auth/viewmodels/register_view_model.dart';
-import 'package:petlux/features/auth/widgets/country_picker_sheet.dart';
 import 'package:petlux/routes/app_router.dart';
+import 'package:petlux/features/auth/widgets/shake_widget.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -23,6 +23,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _pwdCtrl = TextEditingController();
   final TextEditingController _confirmPwdCtrl = TextEditingController();
   final TextEditingController _codeCtrl = TextEditingController();
+  final GlobalKey<ShakeWidgetState> _privacyShakeKey = GlobalKey<ShakeWidgetState>();
 
   bool _obscurePwd = true;
   bool _obscureConfirmPwd = true;
@@ -107,10 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     if (!_agreedPrivacy) {
-      context.showAppToast(
-        message: '${s.agreePrefix}${s.userAgreement} & ${s.privacyPolicy}',
-        type: AppToastType.warning,
-      );
+      _privacyShakeKey.currentState?.shake();
       return;
     }
 
@@ -217,8 +215,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         Selector<RegisterViewModel, CountryDto?>(
                           selector: (_, m) => m.currentCountry,
                           builder: (context, currentCountry, _) {
-                            final displayName = currentCountry?.name.isNotEmpty == true
-                                ? currentCountry!.name
+                            final displayName = currentCountry?.countryCode.isNotEmpty == true
+                                ? currentCountry!.countryCode
                                 : (currentCountry?.countryCode ?? 'US');
 
                             return GestureDetector(
@@ -358,8 +356,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             onTap: (_countdown > 0 || isSending) ? null : () => _handleSendCode(vm, s),
                             child: Container(
                               height: 52,
-                              constraints: const BoxConstraints(minWidth: 96),
-                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              constraints: const BoxConstraints(minWidth: 76),
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(16),
@@ -375,7 +373,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     : Text(
                                         _countdown > 0 ? '${_countdown}s' : s.sendCode,
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 13,
                                           fontWeight: FontWeight.w500,
                                           color: _countdown > 0 ? Colors.grey : const Color(0xFF333333),
                                         ),
@@ -385,7 +383,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           );
                         },
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: _buildCapsuleField(
                           child: TextField(
@@ -403,65 +401,68 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 20),
 
                   // 5. 协议勾选行
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => setState(() => _agreedPrivacy = !_agreedPrivacy),
-                        child: Container(
-                          width: 22,
-                          height: 22,
-                          margin: const EdgeInsets.only(top: 1, right: 12),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: _agreedPrivacy ? _btnYellow : const Color(0xFFC8CBD0),
-                              width: 1.5,
+                  ShakeWidget(
+                    key: _privacyShakeKey,
+
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => setState(() => _agreedPrivacy = !_agreedPrivacy),
+                          child: Container(
+                            width: 22,
+                            height: 22,
+                            margin: const EdgeInsets.only(top: 1, right: 12),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: _agreedPrivacy ? _btnYellow : const Color(0xFFC8CBD0),
+                                width: 1.5,
+                              ),
+                              color: _agreedPrivacy ? _btnYellow : Colors.white,
                             ),
-                            color: _agreedPrivacy ? _btnYellow : Colors.white,
-                          ),
-                          child: _agreedPrivacy ? const Icon(Icons.check, size: 15, color: Colors.white) : null,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text.rich(
-                          TextSpan(
-                            style: const TextStyle(fontSize: 12.5, color: Color(0xFF555555), height: 1.45),
-                            children: [
-                              TextSpan(text: s.agreePrefix),
-                              TextSpan(
-                                text: s.userAgreement,
-                                style: const TextStyle(color: Color(0xFF5394E8)),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    context.push(
-                                      AppRoutes.webView,
-                                      extra: {'title': s.userAgreement, 'url': AppConstants.userAgreementUrl},
-                                    );
-                                  },
-                              ),
-                              TextSpan(text: s.andText),
-                              TextSpan(
-                                text: s.privacyPolicy,
-                                style: const TextStyle(color: Color(0xFF5394E8)),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    context.push(
-                                      AppRoutes.webView,
-                                      extra: {'title': s.privacyPolicy, 'url': AppConstants.privacyPolicyUrl},
-                                    );
-                                  },
-                              ),
-                            ],
+                            child: _agreedPrivacy ? const Icon(Icons.check, size: 15, color: Colors.white) : null,
                           ),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          child: Text.rich(
+                            TextSpan(
+                              style: const TextStyle(fontSize: 12.5, color: Color(0xFF555555), height: 1.45),
+                              children: [
+                                TextSpan(text: s.agreePrefix),
+                                TextSpan(
+                                  text: s.userAgreement,
+                                  style: const TextStyle(color: Color(0xFF5394E8)),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      context.push(
+                                        AppRoutes.webView,
+                                        extra: {'title': s.userAgreement, 'url': AppConstants.userAgreementUrl},
+                                      );
+                                    },
+                                ),
+                                TextSpan(text: s.andText),
+                                TextSpan(
+                                  text: s.privacyPolicy,
+                                  style: const TextStyle(color: Color(0xFF5394E8)),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      context.push(
+                                        AppRoutes.webView,
+                                        extra: {'title': s.privacyPolicy, 'url': AppConstants.privacyPolicyUrl},
+                                      );
+                                    },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
                   const Spacer(),

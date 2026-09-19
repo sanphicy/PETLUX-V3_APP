@@ -31,35 +31,21 @@ class DeviceManagerPage extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Selector<ActiveDeviceProvider, (String, String)>(
-          selector: (_, vm) => (
-            vm.currentDevice?.deviceName ?? '',
-            vm.currentDevice?.displayId ?? '',
-          ),
+          selector: (_, vm) => (vm.currentDevice?.deviceName ?? '', vm.currentDevice?.displayId ?? ''),
           builder: (context, data, _) {
             return Column(
               children: [
                 Text(
                   data.$1.isNotEmpty ? data.$1 : 'petlux',
-                  style: const TextStyle(
-                    color: textColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: const TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  'ID: ${data.$2}',
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
+                Text('ID: ${data.$2}', style: const TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             );
           },
         ),
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: textColor,
-            size: 20,
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: textColor, size: 20),
           onPressed: () {
             if (context.canPop()) {
               context.pop();
@@ -85,10 +71,7 @@ class DeviceManagerPage extends StatelessWidget {
               children: [
                 // 1. 今日如厕与平均时长卡片
                 Selector<ActiveDeviceProvider, (String, String)>(
-                  selector: (_, vm) => (
-                    vm.currentDevice?.todayTimes ?? '0',
-                    vm.currentDevice?.averageSeconds ?? '0',
-                  ),
+                  selector: (_, vm) => (vm.currentDevice?.todayTimes ?? '0', vm.currentDevice?.averageSeconds ?? '0'),
                   builder: (context, stats, _) {
                     return Row(
                       children: [
@@ -109,9 +92,9 @@ class DeviceManagerPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  "今日如厕",
-                                  style: TextStyle(
+                                Text(
+                                  s.todayToilet,
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     color: darkGoldText,
                                     fontWeight: FontWeight.w500,
@@ -120,8 +103,7 @@ class DeviceManagerPage extends StatelessWidget {
                                 const SizedBox(height: 8),
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       stats.$1,
@@ -132,13 +114,7 @@ class DeviceManagerPage extends StatelessWidget {
                                         height: 1,
                                       ),
                                     ),
-                                    Text(
-                                      s.timesUnit,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: darkGoldText,
-                                      ),
-                                    ),
+                                    Text(s.timesUnit, style: const TextStyle(fontSize: 14, color: darkGoldText)),
                                   ],
                                 ),
                               ],
@@ -163,18 +139,11 @@ class DeviceManagerPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  s.averageDuration,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF666666),
-                                  ),
-                                ),
+                                Text(s.averageDuration, style: const TextStyle(fontSize: 14, color: Color(0xFF666666))),
                                 const SizedBox(height: 8),
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       stats.$2,
@@ -185,13 +154,7 @@ class DeviceManagerPage extends StatelessWidget {
                                         height: 1,
                                       ),
                                     ),
-                                    Text(
-                                      s.secondsUnit,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: textColor,
-                                      ),
-                                    ),
+                                    Text(s.secondsUnit, style: const TextStyle(fontSize: 14, color: textColor)),
                                   ],
                                 ),
                               ],
@@ -206,48 +169,30 @@ class DeviceManagerPage extends StatelessWidget {
 
                 // 2. 设备图与状态标签
                 Image.asset(
-                  provider.currentDevice?.displayImage ??
-                      'assets/images/product-pic.png',
+                  provider.currentDevice?.displayImage ?? 'assets/images/product-pic.png',
                   width: 110,
                   height: 110,
-                  errorBuilder: (_, __, ___) =>
-                      const Icon(Icons.devices, size: 90, color: Colors.grey),
+                  errorBuilder: (_, __, ___) => const Icon(Icons.devices, size: 90, color: Colors.grey),
                 ),
                 const SizedBox(height: 10),
                 Selector<ActiveDeviceProvider, (ExecuteAction, bool)>(
-                  selector: (_, vm) => (
-                    vm.currentDevice?.executeAction ?? ExecuteAction.idle,
-                    vm.currentDevice?.isOnline ?? false,
-                  ),
+                  selector: (_, vm) =>
+                      (vm.currentDevice?.executeAction ?? ExecuteAction.idle, vm.currentDevice?.isOnline ?? false),
                   builder: (context, data, _) {
                     final action = data.$1;
                     final isOnline = data.$2;
-                    final statusText = isOnline
-                        ? action.getLocalizedLabel(s)
-                        : s.offline;
+                    final statusText = isOnline ? action.getLocalizedLabel(s) : s.offline;
                     final tagBgColor = isOnline
                         ? primaryGold.withValues(alpha: 0.15)
                         : Colors.grey.withValues(alpha: 0.15);
-                    final tagTextColor = isOnline
-                        ? const Color(0xFFB88E14)
-                        : Colors.grey.shade600;
+                    final tagTextColor = isOnline ? const Color(0xFFB88E14) : Colors.grey.shade600;
 
                     return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: tagBgColor,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                      decoration: BoxDecoration(color: tagBgColor, borderRadius: BorderRadius.circular(12)),
                       child: Text(
                         statusText,
-                        style: TextStyle(
-                          color: tagTextColor,
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: tagTextColor, fontSize: 13, fontWeight: FontWeight.bold),
                       ),
                     );
                   },
@@ -274,10 +219,8 @@ class DeviceManagerPage extends StatelessWidget {
                     children: [
                       // 模式胶囊按钮
                       Selector<ActiveDeviceProvider, (WorkMode, bool)>(
-                        selector: (_, vm) => (
-                          vm.currentDevice?.workMode ?? WorkMode.auto,
-                          vm.currentDevice?.isDndEnabled ?? false,
-                        ),
+                        selector: (_, vm) =>
+                            (vm.currentDevice?.workMode ?? WorkMode.auto, vm.currentDevice?.isDndEnabled ?? false),
                         builder: (context, state, _) {
                           final workMode = state.$1;
                           final isDnd = state.$2;
@@ -338,10 +281,7 @@ class DeviceManagerPage extends StatelessWidget {
                           final isLock = state.$4;
 
                           return Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16,
-                              horizontal: 8,
-                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
                             decoration: BoxDecoration(
                               color: primaryGold,
                               borderRadius: BorderRadius.circular(20),
@@ -359,45 +299,29 @@ class DeviceManagerPage extends StatelessWidget {
                                 _buildActionButton(
                                   s.actionClean,
                                   Icons.cleaning_services_rounded,
-                                  isBusy
-                                      ? null
-                                      : () => provider.executeAction(
-                                          ExecuteAction.cleaning,
-                                        ),
+                                  isBusy ? null : () => provider.executeAction(ExecuteAction.cleaning),
                                   isLocked: isBusy,
                                   iconColor: primaryGold,
                                 ),
                                 _buildActionButton(
                                   s.actionSmooth,
                                   Icons.blur_on_rounded,
-                                  isBusy
-                                      ? null
-                                      : () => provider.executeAction(
-                                          ExecuteAction.smoothing,
-                                        ),
+                                  isBusy ? null : () => provider.executeAction(ExecuteAction.smoothing),
                                   isLocked: isBusy,
                                   iconColor: primaryGold,
                                 ),
                                 if (provider.currentDevice?.hasPlasma == true)
                                   _buildActionButton(
                                     s.actionDeodorize,
-                                    isPlasma
-                                        ? Icons.bubble_chart_rounded
-                                        : Icons.bubble_chart_outlined,
-                                    state.$1
-                                        ? null
-                                        : () => provider.togglePlasma(),
+                                    isPlasma ? Icons.bubble_chart_rounded : Icons.bubble_chart_outlined,
+                                    state.$1 ? null : () => provider.togglePlasma(),
                                     isLocked: state.$1,
                                     iconColor: primaryGold,
                                   ),
                                 _buildActionButton(
                                   s.actionChildLock,
-                                  isLock
-                                      ? Icons.lock_rounded
-                                      : Icons.lock_open_rounded,
-                                  state.$1
-                                      ? null
-                                      : () => provider.toggleChildLock(),
+                                  isLock ? Icons.lock_rounded : Icons.lock_open_rounded,
+                                  state.$1 ? null : () => provider.toggleChildLock(),
                                   isLocked: state.$1,
                                   iconColor: primaryGold,
                                 ),
@@ -422,31 +346,17 @@ class DeviceManagerPage extends StatelessWidget {
                           children: [
                             Text(
                               s.todayLogs,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: textColor,
-                              ),
+                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: textColor),
                             ),
                             const SizedBox(height: 12),
                             Selector<ActiveDeviceProvider, List<DeviceLog>>(
-                              selector: (_, vm) => List<DeviceLog>.from(
-                                vm.currentDevice?.logs ?? [],
-                              ),
+                              selector: (_, vm) => List<DeviceLog>.from(vm.currentDevice?.logs ?? []),
                               builder: (context, logs, _) {
                                 if (logs.isEmpty) {
                                   return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 24,
-                                    ),
+                                    padding: const EdgeInsets.symmetric(vertical: 24),
                                     child: Center(
-                                      child: Text(
-                                        s.noLogs,
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
+                                      child: Text(s.noLogs, style: const TextStyle(fontSize: 13, color: Colors.grey)),
                                     ),
                                   );
                                 }
@@ -462,40 +372,28 @@ class DeviceManagerPage extends StatelessWidget {
                                     String parsedContent = '';
                                     if (log.isAction) {
                                       try {
-                                        final action = ExecuteAction.values
-                                            .byName(log.content);
-                                        parsedContent = action
-                                            .getLocalizedLabel(s);
+                                        final action = ExecuteAction.values.byName(log.content);
+                                        parsedContent = action.getLocalizedLabel(s);
                                       } catch (_) {
                                         parsedContent = log.content;
                                       }
                                     } else {
-                                      final seconds =
-                                          int.tryParse(log.content) ??
-                                          log.content;
+                                      final seconds = int.tryParse(log.content) ?? log.content;
                                       parsedContent = s.catToiletLog(seconds);
                                     }
                                     return Padding(
-                                      padding: const EdgeInsets.only(
-                                        bottom: 10.0,
-                                      ),
+                                      padding: const EdgeInsets.only(bottom: 10.0),
                                       child: Row(
                                         children: [
                                           Container(
                                             width: 6,
                                             height: 6,
-                                            decoration: const BoxDecoration(
-                                              color: primaryGold, // 小圆点同步金色
-                                              shape: BoxShape.circle,
-                                            ),
+                                            decoration: const BoxDecoration(color: primaryGold, shape: BoxShape.circle),
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
                                             '$timeStr  $parsedContent',
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                              color: Color(0xFF555555),
-                                            ),
+                                            style: const TextStyle(fontSize: 13, color: Color(0xFF555555)),
                                           ),
                                         ],
                                       ),
@@ -542,26 +440,15 @@ class DeviceManagerPage extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.all(5),
                 height: 50,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Icon(
-                    icon,
-                    color: isActive ? const Color(0xFFB88E14) : Colors.grey,
-                    size: 24,
-                  ),
-                ),
+                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                child: Center(child: Icon(icon, color: isActive ? const Color(0xFFB88E14) : Colors.grey, size: 24)),
               ),
               const Spacer(),
               Text(
                 title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: isActive
-                      ? const Color(0xFF222222)
-                      : const Color(0xFF666666),
+                  color: isActive ? const Color(0xFF222222) : const Color(0xFF666666),
                   fontSize: 12,
                   fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
                   height: 1.2,
@@ -594,20 +481,13 @@ class DeviceManagerPage extends StatelessWidget {
             Container(
               width: 48,
               height: 48,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
+              decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
               child: Icon(icon, color: const Color(0xFFB88E14), size: 24),
             ),
             const SizedBox(height: 6),
             Text(
               title,
-              style: const TextStyle(
-                color: Color(0xFF222222),
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(color: Color(0xFF222222), fontSize: 13, fontWeight: FontWeight.bold),
             ),
           ],
         ),

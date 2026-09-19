@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 
 class DeviceBatchHelper {
   static final DeviceBatchHelper _instance = DeviceBatchHelper._internal();
@@ -18,7 +19,7 @@ class DeviceBatchHelper {
       // 转为 Map<String, String>
       _mappingMap = rawMap.map((key, value) => MapEntry(key.toString(), value.toString()));
     } catch (e) {
-      print("⚠️ 加载批次映射表失败: $e");
+      debugPrint("⚠️ 加载批次映射表失败: $e");
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:petlux/core/network/api_exception.dart';
 import 'package:petlux/core/services/nav_service.dart';
 import 'package:petlux/routes/app_router.dart';
 import 'package:petlux/core/storage/token_manager.dart';
+import 'package:flutter/material.dart';
 
 class HttpClient {
   static final HttpClient _instance = HttpClient._internal();
@@ -37,22 +38,22 @@ class HttpClient {
     try {
       final options = Options(method: method, headers: headers);
 
-      print('\n================== API REQUEST ==================');
-      print('URL    : ${dio.options.baseUrl}$path');
-      print('METHOD : $method');
-      if (queryParameters != null) print('QUERY  : $queryParameters');
-      if (data != null) print('BODY   : $data');
-      print('=================================================\n');
+      debugPrint('\n================== API REQUEST ==================');
+      debugPrint('URL    : ${dio.options.baseUrl}$path');
+      debugPrint('METHOD : $method');
+      if (queryParameters != null) debugPrint('QUERY  : $queryParameters');
+      if (data != null) debugPrint('BODY   : $data');
+      debugPrint('=================================================\n');
 
       final response = await dio.request(path, data: data, queryParameters: queryParameters, options: options);
       final resData = response.data;
 
       // 打印成功的响应数据
-      print('\n================== API RESPONSE =================');
-      print('URL    : ${dio.options.baseUrl}$path');
-      print('STATUS : ${response.statusCode}');
-      print('DATA   : $resData');
-      print('=================================================\n');
+      debugPrint('\n================== API RESPONSE =================');
+      debugPrint('URL    : ${dio.options.baseUrl}$path');
+      debugPrint('STATUS : ${response.statusCode}');
+      debugPrint('DATA   : $resData');
+      debugPrint('=================================================\n');
 
       if (resData is Map<String, dynamic>) {
         final dynamic rawCode = resData['code'];
@@ -76,12 +77,12 @@ class HttpClient {
 
       if (e is DioException) {
         // 打印异常的响应数据（HTTP 错误状态码，比如 400, 401, 500 等）
-        print('\n================== API ERROR ====================');
-        print('URL    : ${dio.options.baseUrl}$path');
-        print('STATUS : ${e.response?.statusCode}');
-        print('ERROR  : ${e.type}');
-        print('DATA   : ${e.response?.data}');
-        print('=================================================\n');
+        debugPrint('\n================== API ERROR ====================');
+        debugPrint('URL    : ${dio.options.baseUrl}$path');
+        debugPrint('STATUS : ${e.response?.statusCode}');
+        debugPrint('ERROR  : ${e.type}');
+        debugPrint('DATA   : ${e.response?.data}');
+        debugPrint('=================================================\n');
 
         if (e.type == DioExceptionType.badResponse) {
           final resData = e.response?.data;

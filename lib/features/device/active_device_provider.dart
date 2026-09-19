@@ -65,18 +65,17 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     }
   }
 
-  //检查设备是否在线
+  // 检查设备是否在线
   bool _checkOffline() {
     if (_currentDevice == null) return false;
     if (!_currentDevice!.isOnline) {
-      setError(_s?.offline ?? '离线');
+      setError(_s?.offline ?? 'Offline');
       return false;
     }
     return true;
   }
 
-  //异步执行超时包装器
-  //为下发硬件指令等异步操作设置 3 秒超时上限，防止因网络阻塞或硬件未响应导致程序无限等待卡死。
+  // 异步执行超时包装器
   Future<bool> _executeWithTimeout(Future<bool> Function() action) async {
     try {
       return await action().timeout(const Duration(seconds: 3));
@@ -85,7 +84,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     }
   }
 
-  //乐观更新UI
+  // 乐观更新UI
   Future<void> _executeOptimistic({
     required Map<String, dynamic> newAttrs,
     required Map<String, dynamic> oldAttrs,
@@ -98,7 +97,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     final success = await _executeWithTimeout(apiCall);
     if (!success) {
       _currentDevice!.updateAttributesFromMap(oldAttrs);
-      setError(errorMsg ?? _s?.operationFailed ?? '操作失败');
+      setError(errorMsg ?? _s?.operationFailed ?? 'Operation failed');
       notifyListeners();
     }
   }
@@ -128,7 +127,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       final otaData = await _deviceRepo.checkPendingFirmware(id);
       if (otaData != null && otaData['recordId'] != null) {
         _currentDevice!.hasNewFirmware = true;
-        _currentDevice!.newFirmwareVersion = otaData['version']?.toString() ?? (_s?.latestVersion ?? '最新');
+        _currentDevice!.newFirmwareVersion = otaData['version']?.toString() ?? (_s?.latestVersion ?? 'Latest');
         _currentDevice!.pendingOtaRecordId = otaData['recordId'].toString();
       } else {
         _currentDevice!.hasNewFirmware = false;
@@ -168,7 +167,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       newAttrs: {DeviceThingModel.deviceMode.dpid: mode.value.toString()},
       oldAttrs: {DeviceThingModel.deviceMode.dpid: previousMode.value.toString()},
       apiCall: () => _deviceRepo.sendDeviceCommand(_currentDevice!.deviceId, attrs),
-      errorMsg: _s?.operationFailed ?? '切换模式失败',
+      errorMsg: _s?.operationFailed ?? 'Failed to switch mode',
     );
   }
 
@@ -189,7 +188,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       apiCall: () => _deviceRepo.sendDeviceCommand(_currentDevice!.deviceId, [
         {'dpid': DeviceThingModel.notdisturbModeStatus.dpid, 'value': targetState},
       ]),
-      errorMsg: _s?.operationFailed ?? '切换勿扰状态失败',
+      errorMsg: _s?.operationFailed ?? 'Failed to toggle DND',
     );
   }
 
@@ -212,7 +211,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       apiCall: () => _deviceRepo.sendDeviceCommand(_currentDevice!.deviceId, [
         {'dpid': targetDpid!, 'value': true},
       ]),
-      errorMsg: _s?.operationFailed ?? '执行动作失败',
+      errorMsg: _s?.operationFailed ?? 'Failed to execute action',
     );
   }
 
@@ -229,7 +228,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       apiCall: () => _deviceRepo.sendDeviceCommand(_currentDevice!.deviceId, [
         {'dpid': DeviceThingModel.childLockSwitch.dpid, 'value': targetState},
       ]),
-      errorMsg: _s?.operationFailed ?? '切换童锁状态失败',
+      errorMsg: _s?.operationFailed ?? 'Failed to toggle child lock',
     );
   }
 
@@ -246,7 +245,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       apiCall: () => _deviceRepo.sendDeviceCommand(_currentDevice!.deviceId, [
         {'dpid': DeviceThingModel.palsmaState.dpid, 'value': targetState},
       ]),
-      errorMsg: _s?.operationFailed ?? '切换等离子状态失败',
+      errorMsg: _s?.operationFailed ?? 'Failed to toggle plasma',
     );
   }
 
@@ -264,7 +263,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       apiCall: () => _deviceRepo.sendDeviceCommand(_currentDevice!.deviceId, [
         {'dpid': DeviceThingModel.autoModeDelay.dpid, 'value': seconds.toString()},
       ]),
-      errorMsg: _s?.operationFailed ?? '自动模式清理计划设置失败',
+      errorMsg: _s?.operationFailed ?? 'Failed to set auto delay',
     );
   }
 
@@ -288,7 +287,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       apiCall: () => _deviceRepo.sendDeviceCommand(_currentDevice!.deviceId, [
         {'dpid': DeviceThingModel.notdisturbModeSchedule.dpid, 'value': newJsonStr},
       ]),
-      errorMsg: _s?.operationFailed ?? '设置勿扰时间段失败',
+      errorMsg: _s?.operationFailed ?? 'Failed to set DND time',
     );
   }
 
@@ -348,7 +347,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       apiCall: () => _deviceRepo.sendDeviceCommand(_currentDevice!.deviceId, [
         {'dpid': DeviceThingModel.plasmaSchedule.dpid, 'value': newJsonStr},
       ]),
-      errorMsg: _s?.operationFailed ?? '设置除臭模式失败',
+      errorMsg: _s?.operationFailed ?? 'Failed to set plasma schedule',
     );
   }
 
@@ -368,7 +367,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     );
 
     setLoading(false);
-    if (!success) setError(_s?.operationFailed ?? '定时列表设置失败');
+    if (!success) setError(_s?.operationFailed ?? 'Failed to set timer schedule');
   }
 
   // 称重校准第 1 步
@@ -381,7 +380,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       ]),
     );
     setLoading(false);
-    if (!success) setError(_s?.operationFailed ?? '校准启动失败');
+    if (!success) setError(_s?.operationFailed ?? 'Failed to start calibration');
     return success;
   }
 
@@ -402,7 +401,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       ]),
     );
     setLoading(false);
-    if (!success) setError(_s?.operationFailed ?? '校准失败');
+    if (!success) setError(_s?.operationFailed ?? 'Calibration failed');
     return success;
   }
 
@@ -416,14 +415,14 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       ]),
     );
     setLoading(false);
-    if (!success) setError(_s?.operationFailed ?? '重置WiFi失败');
+    if (!success) setError(_s?.operationFailed ?? 'Failed to reset Wi-Fi');
   }
 
   // 固件升级
   Future<bool> startFirmwareUpgrade({int timeoutSeconds = 120}) async {
     if (!_checkOffline()) return false;
     if (_currentDevice!.pendingOtaRecordId.isEmpty) {
-      setError(_s?.operationFailed ?? '没有要升级的固件');
+      setError(_s?.operationFailed ?? 'No firmware to upgrade');
       return false;
     }
 
@@ -442,12 +441,12 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
       _startOtaPolling(_currentDevice!.deviceId, targetVersion, timeoutSeconds);
       return true;
     } else {
-      setError(_s?.operationFailed ?? '分发固件失败');
+      setError(_s?.operationFailed ?? 'Failed to dispatch firmware');
       return false;
     }
   }
 
-  //固件升级轮询定时器
+  // 固件升级轮询定时器
   void _startOtaPolling(String deviceId, String targetVersion, int timeoutSeconds) {
     _otaPollingTimer?.cancel();
     final startTime = DateTime.now();
@@ -455,7 +454,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     _otaPollingTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
       if (DateTime.now().difference(startTime).inSeconds >= timeoutSeconds) {
         stopOtaPolling();
-        setError(_s?.operationFailed ?? 'OTA 超时');
+        setError(_s?.operationFailed ?? 'OTA timed out');
         notifyListeners();
         return;
       }
@@ -472,7 +471,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     });
   }
 
-  //停止固件升级轮询
+  // 停止固件升级轮询
   void stopOtaPolling() {
     _otaPollingTimer?.cancel();
     _otaPollingTimer = null;
@@ -487,7 +486,7 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     setLoading(true);
     final success = await _deviceRepo.renameDevice(_currentDevice!.deviceId, newName);
     setLoading(false);
-    if (!success) setError(_s?.operationFailed ?? '重命名失败');
+    if (!success) setError(_s?.operationFailed ?? 'Failed to rename device');
     return success;
   }
 }

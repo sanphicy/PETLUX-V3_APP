@@ -2,7 +2,7 @@
   "login": "log on",
   "register": "Register",
   "createAccount": "Create Account",
-  "forgotPassword": "Forgot Password",
+  "forgotPassword": "Forgot password",
   "phoneLogin": "Phone",
   "emailLogin": "Email",
   "emailTitle": "E-mail",
@@ -11,7 +11,7 @@
   "newPasswordHint": "Set new password",
   "confirmPasswordHint": "Confirm password",
   "enterEmailCodeHint": "Enter code from the email",
-  "sendCode": "Get Code",
+  "sendCode": "sent code",
   "emptyAccountOrPassword": "Please fill in all fields",
   "invalidAccountFormat": "Please enter a valid email address",
   "passwordMismatch": "Passwords do not match",
@@ -19,5 +19,6 @@
   "hasAccountGoLogin": "Already have an account? Log In",
   "rememberPasswordGoLogin": "Remember password? Log In",
   "submitAndRegister": "Submit and register",
-  "tokenParseError": "Failed to parse login token, please try again"
+  "tokenParseError": "Failed to parse login token, please try again",
+  "accountOrPasswordError": "Incorrect account or password"
 }

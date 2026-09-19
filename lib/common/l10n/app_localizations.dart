@@ -223,6 +223,12 @@ abstract class S {
   /// **'登录凭证解析失败，请重试'**
   String get tokenParseError;
 
+  /// No description provided for @accountOrPasswordError.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号或密码错误'**
+  String get accountOrPasswordError;
+
   /// No description provided for @confirm.
   ///
   /// In zh, this message translates to:

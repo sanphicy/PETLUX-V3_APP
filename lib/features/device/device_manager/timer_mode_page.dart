@@ -56,11 +56,7 @@ class TimerModePage extends StatelessWidget {
             },
             child: Text(
               s.save,
-              style: const TextStyle(
-                color: brandYellow, // 👈 保存按钮对齐金色
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: const TextStyle(color: brandYellow, fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
         ],
@@ -141,7 +137,7 @@ class TimerModePage extends StatelessWidget {
           s.addTimer,
           style: const TextStyle(color: Color(0xFF222222), fontWeight: FontWeight.bold),
         ),
-        backgroundColor: brandYellow, // 👈 悬浮操作按钮对齐品牌金色
+        backgroundColor: brandYellow,
       ),
     );
   }

@@ -34,7 +34,7 @@ class DeviceCard extends StatelessWidget {
         key: ValueKey(deviceId),
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
-          extentRatio: 0.38,
+          extentRatio: 0.42,
           children: [
             const SizedBox(width: 8),
             // 重命名按钮
@@ -46,7 +46,7 @@ class DeviceCard extends StatelessWidget {
                   decoration: BoxDecoration(color: const Color(0xFFEFF5E8), borderRadius: BorderRadius.circular(15)),
                   alignment: Alignment.center,
                   child: Text(
-                    s.renameDevice,
+                    s.rename, //
                     maxLines: 1,
                     overflow: TextOverflow.visible,
                     style: const TextStyle(color: Colors.black87, fontSize: 13, fontWeight: FontWeight.bold),

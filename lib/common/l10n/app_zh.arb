@@ -21,6 +21,7 @@
   "rememberPasswordGoLogin": "想起密码？去登录",
   "submitAndRegister": "提交并注册",
   "tokenParseError": "登录凭证解析失败，请重试",
+  "accountOrPasswordError": "账号或密码错误",
   "confirm": "确认",
   "cancel": "取消",
   "save": "保存",

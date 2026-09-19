@@ -76,7 +76,7 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
     return Scaffold(
       backgroundColor: _bgColor,
       appBar: AppBar(
-        title: const Text("网络配置", style: TextStyle(color: Color(0xFF333333))),
+        title: Text(s.wifiConfigTitle, style: const TextStyle(color: Color(0xFF333333))),
         elevation: 0,
         backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Color(0xFF333333)),
@@ -86,11 +86,11 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
   }
 
   Widget _buildMainView(S s, DeviceAddProvider provider) {
-    final stepTexts = ["正在准备设备通道", s.configStep1, s.configStep2, s.configStep3];
+    final stepTexts = [s.preparingDeviceChannel, s.configStep1, s.configStep2, s.configStep3];
     String currentText = provider.configStep <= 3 ? stepTexts[provider.configStep] : s.configProgress;
 
     if (provider.hasError) {
-      currentText = provider.errorMsg.isNotEmpty ? provider.errorMsg : "配置发生异常";
+      currentText = provider.errorMsg.isNotEmpty ? provider.errorMsg : s.configError;
     }
 
     return Column(
@@ -156,10 +156,7 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
                             Expanded(
                               child: TextField(
                                 controller: _ssidCtrl,
-                                decoration: const InputDecoration(
-                                  hintText: "Wi-Fi 名称 (SSID)",
-                                  border: InputBorder.none,
-                                ),
+                                decoration: InputDecoration(hintText: s.wlanName, border: InputBorder.none),
                               ),
                             ),
                             if (provider.deviceWifiList.isNotEmpty)
@@ -203,7 +200,7 @@ class _DeviceAddWifiPageState extends State<DeviceAddWifiPage> {
                           await provider.startWifiProvisioning(targetSsid, pwd, widget.targetDevice);
                         },
                         child: Text(
-                          provider.hasError ? "重新配置" : s.startConfig,
+                          provider.hasError ? s.reconfig : s.startConfig,
                           style: const TextStyle(color: Color(0xFF222222), fontWeight: FontWeight.bold),
                         ),
                       ),

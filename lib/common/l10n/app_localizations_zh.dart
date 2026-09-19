@@ -72,6 +72,9 @@ class SZh extends S {
   String get tokenParseError => '登录凭证解析失败，请重试';
 
   @override
+  String get accountOrPasswordError => '账号或密码错误';
+
+  @override
   String get confirm => '确认';
 
   @override

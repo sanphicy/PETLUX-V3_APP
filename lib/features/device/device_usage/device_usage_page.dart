@@ -35,20 +35,13 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
   }
 
   // 底部弹窗：切换设备清单
-  void _showDeviceSwitchSheet(
-    BuildContext context,
-    List<DeviceDto> devices,
-    int currentIndex,
-    S s,
-  ) {
+  void _showDeviceSwitchSheet(BuildContext context, List<DeviceDto> devices, int currentIndex, S s) {
     final usageVm = context.read<DeviceUsageProvider>();
 
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (ctx) {
         return SafeArea(
           child: Column(
@@ -62,32 +55,20 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                   children: [
                     Text(
                       s.myDevices,
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF222222),
-                      ),
+                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Color(0xFF222222)),
                     ),
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(ctx);
-                        context.push(AppRoutes.deviceAddSearch);
+                        context.push(AppRoutes.deviceAddSearch); // 👈 原汁原味的路由调用
                       },
                       child: Row(
                         children: [
-                          Icon(
-                            Icons.add_circle_outline_rounded,
-                            size: 18,
-                            color: _primaryGold,
-                          ),
+                          Icon(Icons.add_circle_outline_rounded, size: 18, color: _primaryGold),
                           const SizedBox(width: 4),
                           Text(
                             s.addDevice,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: _primaryGold,
-                            ),
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: _primaryGold),
                           ),
                         ],
                       ),
@@ -106,10 +87,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                     final isSelected = index == currentIndex;
 
                     return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 4,
-                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
                       leading: Container(
                         width: 44,
                         height: 44,
@@ -118,21 +96,14 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                           color: const Color(0xFFF8F9FA),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Image.asset(
-                          item.displayImage,
-                          fit: BoxFit.contain,
-                        ),
+                        child: Image.asset(item.displayImage, fit: BoxFit.contain),
                       ),
                       title: Text(
                         item.deviceName,
                         style: TextStyle(
                           fontSize: 15,
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: isSelected
-                              ? _primaryGold
-                              : const Color(0xFF222222),
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          color: isSelected ? _primaryGold : const Color(0xFF222222),
                         ),
                       ),
                       subtitle: Row(
@@ -141,29 +112,18 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                             width: 6,
                             height: 6,
                             decoration: BoxDecoration(
-                              color: item.isOnline
-                                  ? const Color(0xFF8CC152)
-                                  : const Color(0xFFD0D0D4),
+                              color: item.isOnline ? const Color(0xFF8CC152) : const Color(0xFFD0D0D4),
                               shape: BoxShape.circle,
                             ),
                           ),
                           const SizedBox(width: 4),
                           Text(
                             item.isOnline ? s.online : s.offline,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey.shade600,
-                            ),
+                            style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
                           ),
                         ],
                       ),
-                      trailing: isSelected
-                          ? Icon(
-                              Icons.check_rounded,
-                              color: _primaryGold,
-                              size: 22,
-                            )
-                          : null,
+                      trailing: isSelected ? Icon(Icons.check_rounded, color: _primaryGold, size: 22) : null,
                       onTap: () {
                         usageVm.selectDevice(index);
                         Navigator.pop(ctx);
@@ -199,43 +159,25 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        // 顶部集成设备下拉切换胶囊
         title: Selector<DeviceUsageProvider, (List<DeviceDto>, int)>(
           selector: (_, vm) => (vm.deviceList, vm.selectedDeviceIndex),
           builder: (context, data, _) {
             final devices = data.$1;
             final selectedIndex = data.$2;
-            final currentDevice =
-                devices.isNotEmpty && selectedIndex < devices.length
-                ? devices[selectedIndex]
-                : null;
+            final currentDevice = devices.isNotEmpty && selectedIndex < devices.length ? devices[selectedIndex] : null;
 
             final displayName = currentDevice?.deviceName ?? s.tabDevice;
 
             return GestureDetector(
-              onTap: devices.isEmpty
-                  ? null
-                  : () => _showDeviceSwitchSheet(
-                      context,
-                      devices,
-                      selectedIndex,
-                      s,
-                    ),
+              onTap: devices.isEmpty ? null : () => _showDeviceSwitchSheet(context, devices, selectedIndex, s),
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: const Color(0xFFE5E5EA)),
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
+                    BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 6, offset: const Offset(0, 2)),
                   ],
                 ),
                 child: Row(
@@ -245,9 +187,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                       width: 7,
                       height: 7,
                       decoration: BoxDecoration(
-                        color: (currentDevice?.isOnline ?? false)
-                            ? const Color(0xFF8CC152)
-                            : Colors.grey.shade400,
+                        color: (currentDevice?.isOnline ?? false) ? const Color(0xFF8CC152) : Colors.grey.shade400,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -256,21 +196,13 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                       constraints: const BoxConstraints(maxWidth: 160),
                       child: Text(
                         displayName,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF222222),
-                        ),
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF222222)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     const SizedBox(width: 4),
-                    const Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      size: 18,
-                      color: Color(0xFF666666),
-                    ),
+                    const Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: Color(0xFF666666)),
                   ],
                 ),
               ),
@@ -290,10 +222,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                 // 1. 7天选择卡片
                 Container(
                   height: 64,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 4,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                   decoration: BoxDecoration(
                     color: _cardColor,
                     borderRadius: BorderRadius.circular(20),
@@ -305,76 +234,58 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                       ),
                     ],
                   ),
-                  child:
-                      Selector<
-                        DeviceUsageProvider,
-                        (List<DailyUsageData>, int)
-                      >(
-                        selector: (_, vm) => (vm.weekDays, vm.selectedDayIndex),
-                        builder: (context, data, _) {
-                          final weekDays = data.$1;
-                          final selectedDayIdx = data.$2;
+                  child: Selector<DeviceUsageProvider, (List<DailyUsageData>, int)>(
+                    selector: (_, vm) => (vm.weekDays, vm.selectedDayIndex),
+                    builder: (context, data, _) {
+                      final weekDays = data.$1;
+                      final selectedDayIdx = data.$2;
 
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: List.generate(weekDays.length, (index) {
-                              final isSelected = selectedDayIdx == index;
-                              final dayData = weekDays[index];
-                              return GestureDetector(
-                                onTap: () => usageProvider.selectDay(index),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 180),
-                                  curve: Curves.easeInOut,
-                                  width: 42,
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? _primaryGold
-                                        : Colors.white,
-                                    borderRadius: BorderRadius.circular(16),
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: List.generate(weekDays.length, (index) {
+                          final isSelected = selectedDayIdx == index;
+                          final dayData = weekDays[index];
+                          return GestureDetector(
+                            onTap: () => usageProvider.selectDay(index),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 180),
+                              curve: Curves.easeInOut,
+                              width: 42,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: isSelected ? _primaryGold : Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  AnimatedDefaultTextStyle(
+                                    duration: const Duration(milliseconds: 180),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                      color: isSelected ? const Color(0xFF222222) : _subTextColor,
+                                    ),
+                                    child: Text(dayData.getWeekdayName(s)),
                                   ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      AnimatedDefaultTextStyle(
-                                        duration: const Duration(
-                                          milliseconds: 180,
-                                        ),
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: isSelected
-                                              ? FontWeight.bold
-                                              : FontWeight.normal,
-                                          color: isSelected
-                                              ? const Color(0xFF222222)
-                                              : _subTextColor,
-                                        ),
-                                        child: Text(dayData.getWeekdayName(s)),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      AnimatedDefaultTextStyle(
-                                        duration: const Duration(
-                                          milliseconds: 180,
-                                        ),
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: isSelected
-                                              ? const Color(0xFF222222)
-                                              : _textColor,
-                                          fontWeight: isSelected
-                                              ? FontWeight.bold
-                                              : FontWeight.w500,
-                                        ),
-                                        child: Text(dayData.dayStr),
-                                      ),
-                                    ],
+                                  const SizedBox(height: 2),
+                                  AnimatedDefaultTextStyle(
+                                    duration: const Duration(milliseconds: 180),
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: isSelected ? const Color(0xFF222222) : _textColor,
+                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                    ),
+                                    child: Text(dayData.dayStr),
                                   ),
-                                ),
-                              );
-                            }),
+                                ],
+                              ),
+                            ),
                           );
-                        },
-                      ),
+                        }),
+                      );
+                    },
+                  ),
                 ),
                 const SizedBox(height: 20),
 
@@ -384,12 +295,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                   builder: (context, selectedData, _) {
                     return Row(
                       children: [
-                        _buildStatCard(
-                          s.toiletTimes,
-                          '${selectedData?.times ?? 0}',
-                          s.timesUnit,
-                          Icons.pets_rounded,
-                        ),
+                        _buildStatCard(s.toiletTimes, '${selectedData?.times ?? 0}', s.timesUnit, Icons.pets_rounded),
                         const SizedBox(width: 15),
                         _buildStatCard(
                           s.toiletDuration,
@@ -411,38 +317,20 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                       Expanded(
                         child: _buildChartSection(
                           title: s.timesTrend,
-                          chart:
-                              Selector<
-                                DeviceUsageProvider,
-                                List<DailyUsageData>
-                              >(
-                                selector: (_, vm) => vm.weekDays,
-                                builder: (context, weekDays, _) =>
-                                    _buildLineChart(
-                                      weekDays,
-                                      isTimes: true,
-                                      s: s,
-                                    ),
-                              ),
+                          chart: Selector<DeviceUsageProvider, List<DailyUsageData>>(
+                            selector: (_, vm) => vm.weekDays,
+                            builder: (context, weekDays, _) => _buildLineChart(weekDays, isTimes: true, s: s),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 20),
                       Expanded(
                         child: _buildChartSection(
                           title: s.durationTrend,
-                          chart:
-                              Selector<
-                                DeviceUsageProvider,
-                                List<DailyUsageData>
-                              >(
-                                selector: (_, vm) => vm.weekDays,
-                                builder: (context, weekDays, _) =>
-                                    _buildLineChart(
-                                      weekDays,
-                                      isTimes: false,
-                                      s: s,
-                                    ),
-                              ),
+                          chart: Selector<DeviceUsageProvider, List<DailyUsageData>>(
+                            selector: (_, vm) => vm.weekDays,
+                            builder: (context, weekDays, _) => _buildLineChart(weekDays, isTimes: false, s: s),
+                          ),
                         ),
                       ),
                     ],
@@ -452,8 +340,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                     title: s.timesTrend,
                     chart: Selector<DeviceUsageProvider, List<DailyUsageData>>(
                       selector: (_, vm) => vm.weekDays,
-                      builder: (context, weekDays, _) =>
-                          _buildLineChart(weekDays, isTimes: true, s: s),
+                      builder: (context, weekDays, _) => _buildLineChart(weekDays, isTimes: true, s: s),
                     ),
                   ),
                   const SizedBox(height: 25),
@@ -461,8 +348,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                     title: s.durationTrend,
                     chart: Selector<DeviceUsageProvider, List<DailyUsageData>>(
                       selector: (_, vm) => vm.weekDays,
-                      builder: (context, weekDays, _) =>
-                          _buildLineChart(weekDays, isTimes: false, s: s),
+                      builder: (context, weekDays, _) => _buildLineChart(weekDays, isTimes: false, s: s),
                     ),
                   ),
                 ],
@@ -481,11 +367,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
       children: [
         Text(
           title,
-          style: TextStyle(
-            fontSize: 16,
-            color: _textColor,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 16, color: _textColor, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         Container(
@@ -495,11 +377,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
             color: _cardColor,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.02),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
+              BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
             ],
           ),
           child: chart,
@@ -508,12 +386,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
     );
   }
 
-  Widget _buildStatCard(
-    String title,
-    String value,
-    String unit,
-    IconData icon,
-  ) {
+  Widget _buildStatCard(String title, String value, String unit, IconData icon) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -521,11 +394,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
           color: _cardColor,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
           ],
         ),
         child: Column(
@@ -536,18 +405,11 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: _subTextColor,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(fontSize: 13, color: _subTextColor, fontWeight: FontWeight.w500),
                 ),
                 Container(
                   padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: _primaryGold.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
+                  decoration: BoxDecoration(color: _primaryGold.withValues(alpha: 0.15), shape: BoxShape.circle),
                   child: Icon(icon, size: 16, color: _primaryGold),
                 ),
               ],
@@ -559,18 +421,10 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
               children: [
                 Text(
                   value,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: _textColor,
-                    height: 1,
-                  ),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: _textColor, height: 1),
                 ),
                 const SizedBox(width: 4),
-                Text(
-                  unit,
-                  style: TextStyle(fontSize: 12, color: _subTextColor),
-                ),
+                Text(unit, style: TextStyle(fontSize: 12, color: _subTextColor)),
               ],
             ),
           ],
@@ -579,11 +433,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
     );
   }
 
-  Widget _buildLineChart(
-    List<DailyUsageData> weekDays, {
-    required bool isTimes,
-    required S s,
-  }) {
+  Widget _buildLineChart(List<DailyUsageData> weekDays, {required bool isTimes, required S s}) {
     final List<FlSpot> spots = weekDays.asMap().entries.map((e) {
       final val = isTimes ? e.value.times : e.value.duration;
       return FlSpot(e.key.toDouble(), val.toDouble());
@@ -594,17 +444,12 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
-          getDrawingHorizontalLine: (_) =>
-              const FlLine(color: Color(0xFFF0EFF5), strokeWidth: 1),
+          getDrawingHorizontalLine: (_) => const FlLine(color: Color(0xFFF0EFF5), strokeWidth: 1),
         ),
         titlesData: FlTitlesData(
           show: true,
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
@@ -615,10 +460,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                 if (idx >= 0 && idx < weekDays.length) {
                   return Padding(
                     padding: const EdgeInsets.only(top: 6.0),
-                    child: Text(
-                      weekDays[idx].getWeekdayName(s),
-                      style: TextStyle(fontSize: 11, color: _subTextColor),
-                    ),
+                    child: Text(weekDays[idx].getWeekdayName(s), style: TextStyle(fontSize: 11, color: _subTextColor)),
                   );
                 }
                 return const Text('');
@@ -643,9 +485,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
         ),
         borderData: FlBorderData(
           show: true,
-          border: const Border(
-            bottom: BorderSide(color: Color(0xFFE5E5EE), width: 1),
-          ),
+          border: const Border(bottom: BorderSide(color: Color(0xFFE5E5EE), width: 1)),
         ),
         minX: 0,
         maxX: 6,
@@ -660,17 +500,9 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
             dotData: FlDotData(
               show: true,
               getDotPainter: (spot, percent, barData, index) =>
-                  FlDotCirclePainter(
-                    radius: 4,
-                    color: Colors.white,
-                    strokeWidth: 2.5,
-                    strokeColor: _primaryGold,
-                  ),
+                  FlDotCirclePainter(radius: 4, color: Colors.white, strokeWidth: 2.5, strokeColor: _primaryGold),
             ),
-            belowBarData: BarAreaData(
-              show: true,
-              color: _primaryGold.withValues(alpha: 0.12),
-            ),
+            belowBarData: BarAreaData(show: true, color: _primaryGold.withValues(alpha: 0.12)),
           ),
         ],
       ),

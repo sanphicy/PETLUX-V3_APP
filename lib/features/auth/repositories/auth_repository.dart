@@ -19,7 +19,19 @@ class AuthRepository {
         return s.tokenParseError;
       }
     }
-    return "登录凭证解析失败，请重试";
+    return "Failed to parse login credentials, please try again";
+  }
+
+  // 账号或密码错误文案（英文兜底）
+  String get _accountOrPasswordErrorMsg {
+    final BuildContext? ctx = NavService.rootNavigatorKey.currentContext;
+    if (ctx != null) {
+      final s = S.of(ctx);
+      if (s != null) {
+        return s.accountOrPasswordError;
+      }
+    }
+    return "Incorrect account or password";
   }
 
   //手机号登录
@@ -46,6 +58,9 @@ class AuthRepository {
         return ResultEntity.success(true);
       }
       return ResultEntity.error(_tokenParseErrorMsg);
+    }
+    if (response.code == 40101) {
+      return ResultEntity.error(_accountOrPasswordErrorMsg);
     }
     return ResultEntity.error(response.message);
   }

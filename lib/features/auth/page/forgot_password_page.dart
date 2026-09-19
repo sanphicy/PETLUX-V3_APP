@@ -202,8 +202,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         Selector<ForgotPasswordViewModel, CountryDto?>(
                           selector: (_, m) => m.currentCountry,
                           builder: (context, currentCountry, _) {
-                            final displayName = currentCountry?.name.isNotEmpty == true
-                                ? currentCountry!.name
+                            final displayName = currentCountry?.countryCode.isNotEmpty == true
+                                ? currentCountry!.countryCode
                                 : (currentCountry?.countryCode ?? 'US');
 
                             return GestureDetector(
@@ -343,8 +343,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             onTap: (_countdown > 0 || isSending) ? null : () => _handleSendCode(vm, s),
                             child: Container(
                               height: 52,
-                              constraints: const BoxConstraints(minWidth: 96),
-                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              constraints: const BoxConstraints(minWidth: 76),
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(16),
@@ -360,7 +360,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                     : Text(
                                         _countdown > 0 ? '${_countdown}s' : s.sendCode,
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 13,
                                           fontWeight: FontWeight.w500,
                                           color: _countdown > 0 ? Colors.grey : const Color(0xFF333333),
                                         ),
@@ -370,7 +370,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           );
                         },
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: _buildCapsuleField(
                           child: TextField(

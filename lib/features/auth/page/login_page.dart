@@ -8,7 +8,7 @@ import 'package:petlux/common/l10n/app_localizations.dart';
 import 'package:petlux/common/widgets/app_dialogs.dart';
 import 'package:petlux/features/auth/viewmodels/login_view_model.dart';
 import 'package:petlux/routes/app_router.dart';
-
+import 'package:petlux/features/auth/widgets/shake_widget.dart';
 import 'package:petlux/common/models/country_dto.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,7 +21,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _accountCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
-
+  final GlobalKey<ShakeWidgetState> _privacyShakeKey = GlobalKey<ShakeWidgetState>();
   bool _obscurePassword = true;
   bool _agreedPrivacy = false;
 
@@ -58,10 +58,7 @@ class _LoginPageState extends State<LoginPage> {
     }
     //隐私政策是否勾选
     if (!_agreedPrivacy) {
-      context.showAppToast(
-        message: '${s.agreePrefix}${s.userAgreement} & ${s.privacyPolicy}',
-        type: AppToastType.warning,
-      );
+      _privacyShakeKey.currentState?.shake();
       return;
     }
     //全局收起软键盘
@@ -138,8 +135,8 @@ class _LoginPageState extends State<LoginPage> {
                         Selector<LoginViewModel, CountryDto?>(
                           selector: (_, m) => m.currentCountry,
                           builder: (context, currentCountry, _) {
-                            final displayName = currentCountry?.name.isNotEmpty == true
-                                ? currentCountry!.name
+                            final displayName = currentCountry?.countryCode.isNotEmpty == true
+                                ? currentCountry!.countryCode
                                 : (currentCountry?.countryCode ?? 'US');
 
                             return GestureDetector(
@@ -254,61 +251,64 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 6),
 
                   // 协议勾选行
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => setState(() => _agreedPrivacy = !_agreedPrivacy),
-                        child: Container(
-                          width: 20,
-                          height: 20,
-                          margin: const EdgeInsets.only(top: 1, right: 10),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: _agreedPrivacy ? _brandYellow : const Color(0xFFC8C8C8),
-                              width: 1.5,
+                  ShakeWidget(
+                    key: _privacyShakeKey, // 👈 绑定 Key
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => setState(() => _agreedPrivacy = !_agreedPrivacy),
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            margin: const EdgeInsets.only(top: 1, right: 10),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: _agreedPrivacy ? _brandYellow : const Color(0xFFC8C8C8),
+                                width: 1.5,
+                              ),
+                              color: _agreedPrivacy ? _brandYellow : Colors.white,
                             ),
-                            color: _agreedPrivacy ? _brandYellow : Colors.white,
-                          ),
-                          child: _agreedPrivacy ? const Icon(Icons.check, size: 14, color: Colors.white) : null,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text.rich(
-                          TextSpan(
-                            style: const TextStyle(fontSize: 12, color: Color(0xFF666666), height: 1.4),
-                            children: [
-                              TextSpan(text: s.agreePrefix),
-                              TextSpan(
-                                text: s.userAgreement,
-                                style: const TextStyle(color: Color(0xFF5B9BF3)),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    context.push(
-                                      AppRoutes.webView,
-                                      extra: {'title': s.userAgreement, 'url': AppConstants.userAgreementUrl},
-                                    );
-                                  },
-                              ),
-                              TextSpan(text: s.andText),
-                              TextSpan(
-                                text: s.privacyPolicy,
-                                style: const TextStyle(color: Color(0xFF5B9BF3)),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    context.push(
-                                      AppRoutes.webView,
-                                      extra: {'title': s.privacyPolicy, 'url': AppConstants.privacyPolicyUrl},
-                                    );
-                                  },
-                              ),
-                            ],
+                            child: _agreedPrivacy ? const Icon(Icons.check, size: 14, color: Colors.white) : null,
                           ),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          child: Text.rich(
+                            TextSpan(
+                              style: const TextStyle(fontSize: 12, color: Color(0xFF666666), height: 1.4),
+                              children: [
+                                TextSpan(text: s.agreePrefix),
+                                TextSpan(
+                                  text: s.userAgreement,
+                                  style: const TextStyle(color: Color(0xFF5B9BF3)),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      context.push(
+                                        AppRoutes.webView,
+                                        extra: {'title': s.userAgreement, 'url': AppConstants.userAgreementUrl},
+                                      );
+                                    },
+                                ),
+                                TextSpan(text: s.andText),
+                                TextSpan(
+                                  text: s.privacyPolicy,
+                                  style: const TextStyle(color: Color(0xFF5B9BF3)),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      context.push(
+                                        AppRoutes.webView,
+                                        extra: {'title': s.privacyPolicy, 'url': AppConstants.privacyPolicyUrl},
+                                      );
+                                    },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
                   const Spacer(),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 
 void main() {
   final supportedLocales = ['en', 'zh'];
@@ -8,7 +9,7 @@ void main() {
   final targetDir = Directory('lib/common/l10n');
 
   if (!srcDir.existsSync()) {
-    print('❌ 源文件夹不存在: ${srcDir.path}');
+    debugPrint('❌ 源文件夹不存在: ${srcDir.path}');
     return;
   }
 
@@ -29,13 +30,13 @@ void main() {
         // 检查是否有重复的 Key
         for (var key in map.keys) {
           if (mergedMap.containsKey(key)) {
-            print('⚠️ 警告: 发现重复的 Key [$key] 在文件 ${file.path} 中，将会被覆盖！');
+            debugPrint('⚠️ 警告: 发现重复的 Key [$key] 在文件 ${file.path} 中，将会被覆盖！');
           }
         }
 
         mergedMap.addAll(map);
       } catch (e) {
-        print('❌ 解析文件失败 ${file.path}: $e');
+        debugPrint('❌ 解析文件失败 ${file.path}: $e');
       }
     }
 
@@ -43,6 +44,6 @@ void main() {
     const encoder = JsonEncoder.withIndent('  ');
     targetFile.writeAsStringSync(encoder.convert(mergedMap));
 
-    print('✅ 成功合并 $locale 语言包，共 ${mergedMap.length - 1} 个词条 -> ${targetFile.path}');
+    debugPrint('✅ 成功合并 $locale 语言包，共 ${mergedMap.length - 1} 个词条 -> ${targetFile.path}');
   }
 }
