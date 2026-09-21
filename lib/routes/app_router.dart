@@ -202,7 +202,10 @@ class AppRouter {
   static final List<GoRoute> _userRoutes = [
     GoRoute(path: AppRoutes.personalInfo, builder: (context, state) => const PersonalInfoPage()),
     GoRoute(path: AppRoutes.aboutUs, builder: (context, state) => const AboutUsPage()),
-    GoRoute(path: AppRoutes.feedback, builder: (context, state) => const FeedbackPage()),
+    GoRoute(
+      path: AppRoutes.feedback,
+      builder: (context, state) => ChangeNotifierProvider(create: (_) => UserViewModel(), child: const FeedbackPage()),
+    ),
   ];
 
   static final List<GoRoute> _commonRoutes = [

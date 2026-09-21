@@ -234,7 +234,6 @@ class UserPage extends StatelessWidget {
                             const Color(0xFFEEA27C),
                             s.appVersion,
                             trailingText: version,
-                            onTap: () {},
                           );
                         },
                       ),
@@ -284,6 +283,7 @@ class UserPage extends StatelessWidget {
   }
 
   Widget _buildListTile(IconData icon, Color iconColor, String title, {String? trailingText, VoidCallback? onTap}) {
+    final bool isClickable = onTap != null;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -304,8 +304,10 @@ class UserPage extends StatelessWidget {
             const Spacer(),
             if (trailingText != null && trailingText.isNotEmpty)
               Text(trailingText, style: const TextStyle(fontSize: 13, color: Color(0xFF999999))),
-            const SizedBox(width: 4),
-            const Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey, size: 14),
+            if (isClickable) ...[
+              const SizedBox(width: 4),
+              const Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey, size: 14),
+            ],
           ],
         ),
       ),

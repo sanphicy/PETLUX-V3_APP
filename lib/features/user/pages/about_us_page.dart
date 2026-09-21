@@ -48,7 +48,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
         centerTitle: true,
         scrolledUnderElevation: 0,
         title: const Text(
-          '关于我们',
+          'About Us',
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
@@ -63,35 +63,31 @@ class _AboutUsPageState extends State<AboutUsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildParagraph(
-              "我们是一家专注于智能宠物产品设计与创新的公司，致力于通过前沿科技提升宠物及其主人的生活质量。"
-              "我们的产品线涵盖宠物健康监测设备、智能喂食器、自动猫砂盆、宠物可穿戴设备等，旨在为全球宠物家庭提供便捷、舒适与安心的体验。",
+              "We are an innovative company specializing in intelligent pet care products, committed to elevating the quality of life for pets and their companions through cutting-edge technology. Our product line includes pet health monitoring systems, smart feeders, automated litter boxes, and wearable devices, all engineered to bring convenience, comfort, and peace of mind to pet families worldwide.",
             ),
-            _buildSectionTitle("我们的使命"),
+            _buildSectionTitle("Our Mission"),
             _buildParagraph(
-              "我们相信，利用先进的 AI 技术可以为宠物和主人创造更加和谐的共居环境。"
-              "我们的产品能够实时分析宠物的行为和健康状况，帮助主人尽早发现异常并及时采取措施。"
-              "从根据区域气候定制的空调宠舍，到个性化的宠物护理方案，我们努力让科技成为连接宠物与家庭的桥梁。",
+              "We believe advanced AI technology can create a more harmonious living space for pets and their owners. Our devices analyze pet behavior and wellness metrics in real time, helping owners detect anomalies early and take prompt action. From climate-adaptive shelters to personalized care insights, we strive to make technology the ultimate bridge connecting pets with their families.",
             ),
-            _buildSectionTitle("为什么选择我们？"),
+            _buildSectionTitle("Why Choose Us?"),
             _buildBulletPoint(
-              "全品类产品线",
-              "我们的产品覆盖宠物生活的方方面面，包括饮食、健康、清洁与娱乐。"
-                  "例如，我们的智能喂食器可以在定时定量喂食的同时监测饮食习惯；自动猫砂盆可分析排泄数据并提供早期健康预警。",
+              "Comprehensive Ecosystem",
+              "Our product ecosystem covers every aspect of pet life—nutrition, health, hygiene, and recreation. For instance, our smart feeders track eating patterns alongside scheduled feeding, while our automatic litter boxes log visit data to offer proactive wellness insights.",
             ),
             _buildBulletPoint(
-              "立足全球，贴近本地",
-              "服务超过 40 个国家和地区，我们根据不同市场的需求定制产品。"
-                  "无论是针对泰国的极高美学设计，还是全球首款宠物智能手机（PetPhone）等创新功能，我们都确保方案能引起全球用户的共鸣。",
+              "Global Reach, Local Adaptation",
+              "Serving users across more than 40 countries and regions, we tailor products to meet diverse global needs. Whether it's high-aesthetic industrial design or groundbreaking mobile pet companions, we ensure our solutions resonate with families everywhere.",
             ),
-            _buildBulletPoint("持续创新", "我们融合人工智能、机器学习和云技术，重新定义宠物护理标准。我们的目标是让养宠变得更智能、更轻松、更有趣。"),
-            _buildSectionTitle("与我们携手共创未来"),
+            _buildBulletPoint(
+              "Continuous Innovation",
+              "We integrate artificial intelligence, IoT, and cloud computing to redefine standards in pet care, making pet parenting smarter, effortless, and more rewarding.",
+            ),
+            _buildSectionTitle("Shape the Future with Us"),
             _buildParagraph(
-              "随着对智能宠物产品需求的不断增长，预计到 2028 年全球市场规模将达到 107.3 亿美元，我们已准备好引领这一变革性行业。"
-              "让我们携手共进，为宠物和它们的家庭创造更美好的未来！",
+              "With the pet tech market expanding rapidly, we are dedicated to leading this transformative journey. Let's work together to create a brighter, healthier future for pets and their homes.",
             ),
             const SizedBox(height: 10),
-            _buildParagraph("如果您对我们的产品或服务有任何疑问，请随时与我们联系。期待与您的合作！"),
-            _buildParagraph("如果您有任何问题或建议，欢迎随时联系我们："),
+            _buildParagraph("If you have any questions or feedback, please feel free to contact us:"),
             const SizedBox(height: 15),
             Container(
               width: double.infinity,
@@ -115,7 +111,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                             style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
                             children: const [
                               TextSpan(
-                                text: "电子邮箱: ",
+                                text: "Email: ",
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
                               TextSpan(text: AppConstants.officialEmail),
@@ -137,7 +133,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                             style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
                             children: const [
                               TextSpan(
-                                text: "官方网站: ",
+                                text: "Website: ",
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
                               TextSpan(text: AppConstants.officialWebsite),
@@ -160,11 +156,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
   Widget _buildParagraph(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        "\u3000\u3000$text",
-        softWrap: true,
-        style: const TextStyle(fontSize: 14, color: Color(0xFF444444), height: 1.6),
-      ),
+      child: Text(text, softWrap: true, style: const TextStyle(fontSize: 14, color: Color(0xFF444444), height: 1.6)),
     );
   }
 
@@ -189,7 +181,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
           children: [
             const TextSpan(text: "• "),
             TextSpan(
-              text: "$boldTitle：",
+              text: "$boldTitle: ",
               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
             ),
             TextSpan(text: text),

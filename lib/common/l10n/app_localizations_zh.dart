@@ -261,6 +261,18 @@ class SZh extends S {
   String get configTimeoutOrError => '配网异常或超时';
 
   @override
+  String get bleConnectedLog => '蓝牙底层连接成功';
+
+  @override
+  String get bleSubscribedLog => '特征值订阅成功';
+
+  @override
+  String get wifiScanSuccessLog => '周边网络列表获取成功，等待确认';
+
+  @override
+  String get wifiSkipScanLog => '已关闭设备扫描，跳过获取，使用当前手机Wi-Fi';
+
+  @override
   String get myDevices => '我的设备';
 
   @override
@@ -686,4 +698,13 @@ class SZh extends S {
 
   @override
   String get deleteAccountFailed => '注销失败，请稍后重试';
+
+  @override
+  String get feedbackTitleHint => '请输入反馈标题（选填）';
+
+  @override
+  String get feedbackContentHint => '请详细描述您遇到的问题或建议...';
+
+  @override
+  String get submitSuccess => '反馈提交成功，感谢您的支持！';
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:petlux/common/l10n/app_localizations.dart';
 import 'package:petlux/common/providers/base_provider.dart';
 import 'package:petlux/core/network/api_endpoints.dart';

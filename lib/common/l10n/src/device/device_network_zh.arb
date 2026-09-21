@@ -38,5 +38,9 @@
   "bindDeviceFailed": "绑定设备失败，请重试",
   "wifiPwdError": "Wi-Fi 密码错误或信号极弱",
   "networkInterrupted": "网络连接中断",
-  "configTimeoutOrError": "配网异常或超时"
+  "configTimeoutOrError": "配网异常或超时",
+  "bleConnectedLog": "蓝牙底层连接成功",
+  "bleSubscribedLog": "特征值订阅成功",
+  "wifiScanSuccessLog": "周边网络列表获取成功，等待确认",
+  "wifiSkipScanLog": "已关闭设备扫描，跳过获取，使用当前手机Wi-Fi"
 }

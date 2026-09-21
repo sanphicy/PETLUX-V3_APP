@@ -36,7 +36,8 @@ class DeviceAddSuccessPage extends StatelessWidget {
                 SizedBox(height: Dimens.spacingXLarge),
                 Text(
                   s.configSuccess,
-                  style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold, color: const Color(0xFF333333)),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: const Color(0xFF333333)),
                 ),
                 SizedBox(height: Dimens.spacingSmall),
                 Text(

@@ -21,6 +21,7 @@ class ApiEndpoints {
   static const String userInfo = "$_apiV1/auth/me";
   static const String uploadAvatar = "$_apiV1/auth/me/avatar";
   static const String countries = "$_apiV1Byplatform/countries";
+  static const String feedbacks = "$_apiV1/me/feedbacks";
 
   // --- 设备相关 ---
   static const String devices = '$_apiV1/me/devices';

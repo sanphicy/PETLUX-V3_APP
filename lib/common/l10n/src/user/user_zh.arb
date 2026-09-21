@@ -27,5 +27,8 @@
   "contactUsDesc": "如果您有任何问题或建议，欢迎随时与我们联系：",
   "avatarUploadFailed": "头像上传失败，请检查相机/相册权限及网络连接",
   "noCurrentAccount": "未获取到当前账号",
-  "deleteAccountFailed": "注销失败，请稍后重试"
+  "deleteAccountFailed": "注销失败，请稍后重试",
+  "feedbackTitleHint": "请输入反馈标题（选填）",
+  "feedbackContentHint": "请详细描述您遇到的问题或建议...",
+  "submitSuccess": "反馈提交成功，感谢您的支持！"
 }

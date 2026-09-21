@@ -319,8 +319,7 @@ class DeviceAddProvider extends BaseProvider {
 
     _progress = 0.15;
     _addLog("设备状态变化: 已连接");
-    _addLog("蓝牙底层连接成功", isHighlight: true);
-
+    _addLog(_s?.bleConnectedLog ?? "Bluetooth low-level connected", isHighlight: true);
     StreamSubscription<List<int>>? notifySub;
     bool isSuccess = false;
 
@@ -339,8 +338,7 @@ class DeviceAddProvider extends BaseProvider {
       final stream = await _bleManager.subscribeToNotifications(deviceId: _connectingDeviceId!);
 
       _progress = 0.25;
-      _addLog("特征值订阅成功", isHighlight: true);
-
+      _addLog(_s?.bleSubscribedLog ?? "Characteristic subscribed successfully", isHighlight: true);
       Completer<void> completer = Completer();
       List<int> receiveBuffer = [];
       int expectedLength = 0;
@@ -397,10 +395,10 @@ class DeviceAddProvider extends BaseProvider {
 
         await completer.future.timeout(const Duration(seconds: 30));
         _progress = 0.35;
-        _addLog("周边网络列表获取成功，等待确认", isHighlight: true);
+        _addLog(_s?.wifiScanSuccessLog ?? "Nearby Wi-Fi list retrieved, waiting for confirmation", isHighlight: true);
       } else {
         _progress = 0.35;
-        _addLog("已关闭设备扫描，跳过获取，使用当前手机Wi-Fi", isHighlight: true);
+        _addLog(_s?.wifiSkipScanLog ?? "Device Wi-Fi scan disabled, using phone's current Wi-Fi", isHighlight: true);
         await Future.delayed(const Duration(milliseconds: 500));
       }
       isSuccess = true;
@@ -489,13 +487,13 @@ class DeviceAddProvider extends BaseProvider {
                 if (stage == 1 && code == 0) {
                   _progress = 0.6;
                   _addLog("Bk7238NoticeEnum.WIFICONNECTING");
-                  _addLog("设备正在尝试连接路由器", isHighlight: true);
+                  _addLog(_s?.configStep2 ?? "Device is connecting to router", isHighlight: true);
                   _configStep = 2;
                   notifyListeners();
                 } else if (stage == 2 && code == 0) {
                   _progress = 0.8;
                   _addLog("Bk7238NoticeEnum.WIFICONNECTED");
-                  _addLog("路由器连接成功！正在向云端注册设备", isHighlight: true);
+                  _addLog(_s?.configStep3 ?? "Registering device with cloud", isHighlight: true);
                   _configStep = 3;
                   notifyListeners();
 
@@ -510,8 +508,7 @@ class DeviceAddProvider extends BaseProvider {
                   _bindDeviceToCloud(mac, pid, defaultNickname).then((isBindSuccess) {
                     if (isBindSuccess) {
                       _progress = 1.0;
-                      _addLog("设备云端注册完成！", isHighlight: true);
-
+                      _addLog(_s?.configSuccess ?? "Device added successfully!", isHighlight: true);
                       final device = locator<DeviceRepository>().getDevice(realDeviceId);
                       device.productId = pid;
                       device.deviceName = defaultNickname;

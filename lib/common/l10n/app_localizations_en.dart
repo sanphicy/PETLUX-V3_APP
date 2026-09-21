@@ -267,6 +267,20 @@ class SEn extends S {
   String get configTimeoutOrError => 'Provisioning exception or timeout';
 
   @override
+  String get bleConnectedLog => 'Bluetooth low-level connected';
+
+  @override
+  String get bleSubscribedLog => 'Characteristic subscribed successfully';
+
+  @override
+  String get wifiScanSuccessLog =>
+      'Nearby Wi-Fi list retrieved, waiting for confirmation';
+
+  @override
+  String get wifiSkipScanLog =>
+      'Device Wi-Fi scan disabled, using phone\'s current Wi-Fi';
+
+  @override
   String get myDevices => 'My Devices';
 
   @override
@@ -704,4 +718,14 @@ class SEn extends S {
   @override
   String get deleteAccountFailed =>
       'Failed to delete account, please try again later';
+
+  @override
+  String get feedbackTitleHint => 'Enter feedback title (Optional)';
+
+  @override
+  String get feedbackContentHint =>
+      'Please describe your issue or suggestion in detail...';
+
+  @override
+  String get submitSuccess => 'Feedback submitted successfully, thank you!';
 }

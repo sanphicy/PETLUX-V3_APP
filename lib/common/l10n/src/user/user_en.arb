@@ -27,5 +27,8 @@
   "contactUsDesc": "If you have any questions or suggestions, please feel free to contact us:",
   "avatarUploadFailed": "Failed to upload avatar, please check permissions and network",
   "noCurrentAccount": "Current account not found",
-  "deleteAccountFailed": "Failed to delete account, please try again later"
+  "deleteAccountFailed": "Failed to delete account, please try again later",
+  "feedbackTitleHint": "Enter feedback title (Optional)",
+  "feedbackContentHint": "Please describe your issue or suggestion in detail...",
+  "submitSuccess": "Feedback submitted successfully, thank you!"
 }

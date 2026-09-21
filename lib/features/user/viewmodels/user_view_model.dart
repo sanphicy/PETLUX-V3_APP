@@ -13,6 +13,7 @@ import 'package:petlux/core/services/nav_service.dart';
 import 'package:petlux/features/auth/models/auth_request.dart';
 import 'package:petlux/features/auth/repositories/auth_repository.dart';
 import 'package:petlux/locator.dart';
+import 'package:petlux/features/device/active_device_provider.dart';
 
 class UserViewModel extends BaseProvider {
   final UserProvider _userProvider = locator<UserProvider>();
@@ -121,6 +122,72 @@ class UserViewModel extends BaseProvider {
     } else {
       setError(result.message);
       return 0;
+    }
+  }
+
+  // 1. 上传反馈附件图片，返回服务端的图片地址或对象
+  Future<String?> uploadFeedbackImage(XFile file) async {
+    try {
+      final formData = FormData.fromMap({'file': await MultipartFile.fromFile(file.path, filename: file.name)});
+      // 使用项目通用的上传端点
+      final result = await _httpClient.post<Map<String, dynamic>>(ApiEndpoints.uploadAvatar, data: formData);
+      if (result.data != null && (result.code == 0 || result.code == 200)) {
+        final data = result.data!;
+        return data['avatarDisplay']?.toString() ?? data['avatar']?.toString() ?? data['url']?.toString();
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // 提交意见反馈（支持 attachments 字段）
+  Future<bool> submitFeedback({
+    required String title,
+    required String body,
+    String? deviceId,
+    String? productId,
+    List<Map<String, dynamic>> attachments = const [],
+    String kind = 'general',
+  }) async {
+    final trimmedTitle = title.trim();
+    final trimmedBody = body.trim();
+
+    if (trimmedBody.isEmpty) {
+      setError(_s?.emptyAccountOrPassword ?? "Please enter feedback content");
+      return false;
+    }
+
+    setLoading(true);
+    clearError();
+
+    try {
+      final Map<String, dynamic> payload = {
+        "kind": kind,
+        "title": trimmedTitle.isNotEmpty ? trimmedTitle : "App Feedback",
+        "body": trimmedBody,
+        "priority": "normal",
+        "attachments": attachments,
+      };
+
+      if (deviceId != null && deviceId.isNotEmpty) {
+        payload["deviceId"] = deviceId;
+        payload["productId"] = productId ?? "";
+      }
+
+      final result = await _httpClient.post<Map<String, dynamic>>(ApiEndpoints.feedbacks, data: payload);
+
+      if (result.code == 0 || result.code == 200) {
+        return true;
+      } else {
+        setError(result.message);
+        return false;
+      }
+    } catch (_) {
+      setError(_s?.operationFailed ?? "Failed to submit feedback");
+      return false;
+    } finally {
+      setLoading(false);
     }
   }
 

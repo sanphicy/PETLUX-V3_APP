@@ -38,5 +38,9 @@
   "bindDeviceFailed": "Failed to bind device, please try again",
   "wifiPwdError": "Wi-Fi password incorrect or signal too weak",
   "networkInterrupted": "Network connection interrupted",
-  "configTimeoutOrError": "Provisioning exception or timeout"
+  "configTimeoutOrError": "Provisioning exception or timeout",
+  "bleConnectedLog": "Bluetooth low-level connected",
+  "bleSubscribedLog": "Characteristic subscribed successfully",
+  "wifiScanSuccessLog": "Nearby Wi-Fi list retrieved, waiting for confirmation",
+  "wifiSkipScanLog": "Device Wi-Fi scan disabled, using phone's current Wi-Fi"
 }

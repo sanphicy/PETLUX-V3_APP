@@ -182,6 +182,10 @@
   "wifiPwdError": "Wi-Fi password incorrect or signal too weak",
   "networkInterrupted": "Network connection interrupted",
   "configTimeoutOrError": "Provisioning exception or timeout",
+  "bleConnectedLog": "Bluetooth low-level connected",
+  "bleSubscribedLog": "Characteristic subscribed successfully",
+  "wifiScanSuccessLog": "Nearby Wi-Fi list retrieved, waiting for confirmation",
+  "wifiSkipScanLog": "Device Wi-Fi scan disabled, using phone's current Wi-Fi",
   "dataStatistics": "Data Statistics",
   "toiletTimes": "Toilet Visits",
   "toiletDuration": "Toilet Duration",
@@ -222,5 +226,8 @@
   "contactUsDesc": "If you have any questions or suggestions, please feel free to contact us:",
   "avatarUploadFailed": "Failed to upload avatar, please check permissions and network",
   "noCurrentAccount": "Current account not found",
-  "deleteAccountFailed": "Failed to delete account, please try again later"
+  "deleteAccountFailed": "Failed to delete account, please try again later",
+  "feedbackTitleHint": "Enter feedback title (Optional)",
+  "feedbackContentHint": "Please describe your issue or suggestion in detail...",
+  "submitSuccess": "Feedback submitted successfully, thank you!"
 }

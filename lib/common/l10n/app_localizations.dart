@@ -601,6 +601,30 @@ abstract class S {
   /// **'配网异常或超时'**
   String get configTimeoutOrError;
 
+  /// No description provided for @bleConnectedLog.
+  ///
+  /// In zh, this message translates to:
+  /// **'蓝牙底层连接成功'**
+  String get bleConnectedLog;
+
+  /// No description provided for @bleSubscribedLog.
+  ///
+  /// In zh, this message translates to:
+  /// **'特征值订阅成功'**
+  String get bleSubscribedLog;
+
+  /// No description provided for @wifiScanSuccessLog.
+  ///
+  /// In zh, this message translates to:
+  /// **'周边网络列表获取成功，等待确认'**
+  String get wifiScanSuccessLog;
+
+  /// No description provided for @wifiSkipScanLog.
+  ///
+  /// In zh, this message translates to:
+  /// **'已关闭设备扫描，跳过获取，使用当前手机Wi-Fi'**
+  String get wifiSkipScanLog;
+
   /// No description provided for @myDevices.
   ///
   /// In zh, this message translates to:
@@ -1434,6 +1458,24 @@ abstract class S {
   /// In zh, this message translates to:
   /// **'注销失败，请稍后重试'**
   String get deleteAccountFailed;
+
+  /// No description provided for @feedbackTitleHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入反馈标题（选填）'**
+  String get feedbackTitleHint;
+
+  /// No description provided for @feedbackContentHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'请详细描述您遇到的问题或建议...'**
+  String get feedbackContentHint;
+
+  /// No description provided for @submitSuccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'反馈提交成功，感谢您的支持！'**
+  String get submitSuccess;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

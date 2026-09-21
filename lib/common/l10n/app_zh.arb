@@ -84,6 +84,10 @@
   "wifiPwdError": "Wi-Fi 密码错误或信号极弱",
   "networkInterrupted": "网络连接中断",
   "configTimeoutOrError": "配网异常或超时",
+  "bleConnectedLog": "蓝牙底层连接成功",
+  "bleSubscribedLog": "特征值订阅成功",
+  "wifiScanSuccessLog": "周边网络列表获取成功，等待确认",
+  "wifiSkipScanLog": "已关闭设备扫描，跳过获取，使用当前手机Wi-Fi",
   "myDevices": "我的设备",
   "addDevice": "添加设备",
   "online": "在线",
@@ -222,5 +226,8 @@
   "contactUsDesc": "如果您有任何问题或建议，欢迎随时与我们联系：",
   "avatarUploadFailed": "头像上传失败，请检查相机/相册权限及网络连接",
   "noCurrentAccount": "未获取到当前账号",
-  "deleteAccountFailed": "注销失败，请稍后重试"
+  "deleteAccountFailed": "注销失败，请稍后重试",
+  "feedbackTitleHint": "请输入反馈标题（选填）",
+  "feedbackContentHint": "请详细描述您遇到的问题或建议...",
+  "submitSuccess": "反馈提交成功，感谢您的支持！"
 }
