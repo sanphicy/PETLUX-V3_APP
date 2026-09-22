@@ -24,6 +24,10 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
   final Color _textColor = const Color(0xFF333333);
   final Color _subTextColor = const Color(0xFF666666);
   final Color _cardColor = Colors.white;
+  String _formatTimesUnit(int count, S s) {
+    if (s.timesUnit == '次') return s.timesUnit;
+    return count == 1 ? 'time' : 'times';
+  }
 
   @override
   void initState() {

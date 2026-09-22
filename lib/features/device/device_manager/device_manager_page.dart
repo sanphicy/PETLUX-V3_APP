@@ -23,6 +23,10 @@ class DeviceManagerPage extends StatelessWidget {
     const Color bgColor = Color(0xFFF9F9FC);
     const Color textColor = Color(0xFF333333);
     const Color pillGray = Color(0xFFF0EFF5);
+    String _formatTimesUnit(int count, S s) {
+      if (s.timesUnit == '次') return s.timesUnit;
+      return count == 1 ? 'time' : 'times';
+    }
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -114,7 +118,10 @@ class DeviceManagerPage extends StatelessWidget {
                                         height: 1,
                                       ),
                                     ),
-                                    Text(s.timesUnit, style: const TextStyle(fontSize: 14, color: darkGoldText)),
+                                    Text(
+                                      _formatTimesUnit(int.tryParse(stats.$1) ?? 0, s),
+                                      style: const TextStyle(fontSize: 14, color: darkGoldText),
+                                    ),
                                   ],
                                 ),
                               ],
