@@ -105,13 +105,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
     FocusManager.instance.primaryFocus?.unfocus();
 
-    // 依次上传附件图片
+    // 上传附件
     List<Map<String, dynamic>> attachmentPayloads = [];
     if (_selectedImages.isNotEmpty) {
       for (var img in _selectedImages) {
-        final uploadedUrl = await vm.uploadFeedbackImage(img);
-        if (uploadedUrl != null && uploadedUrl.isNotEmpty) {
-          attachmentPayloads.add({"url": uploadedUrl, "filename": img.name});
+        final uploadedData = await vm.uploadFeedbackImage(img);
+        if (uploadedData != null) {
+          attachmentPayloads.add(uploadedData);
         }
       }
     }

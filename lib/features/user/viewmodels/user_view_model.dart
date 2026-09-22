@@ -125,15 +125,22 @@ class UserViewModel extends BaseProvider {
     }
   }
 
-  // 1. 上传反馈附件图片，返回服务端的图片地址或对象
-  Future<String?> uploadFeedbackImage(XFile file) async {
+  // 上传反馈附件图片
+  Future<Map<String, dynamic>?> uploadFeedbackImage(XFile file) async {
     try {
       final formData = FormData.fromMap({'file': await MultipartFile.fromFile(file.path, filename: file.name)});
-      // 使用项目通用的上传端点
-      final result = await _httpClient.post<Map<String, dynamic>>(ApiEndpoints.uploadAvatar, data: formData);
+
+      final result = await _httpClient.post<Map<String, dynamic>>(ApiEndpoints.feedbackImages, data: formData);
+
       if (result.data != null && (result.code == 0 || result.code == 200)) {
-        final data = result.data!;
-        return data['avatarDisplay']?.toString() ?? data['avatar']?.toString() ?? data['url']?.toString();
+        final rawData = result.data!;
+        final Map<String, dynamic>? itemData = rawData['data'] is Map<String, dynamic>
+            ? rawData['data'] as Map<String, dynamic>
+            : (rawData['key'] != null ? rawData : null);
+
+        if (itemData != null) {
+          return {"key": itemData['key'], "url": itemData['url'], "mime": itemData['mime'], "size": itemData['size']};
+        }
       }
       return null;
     } catch (_) {
