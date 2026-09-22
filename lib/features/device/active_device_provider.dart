@@ -489,4 +489,46 @@ class ActiveDeviceProvider extends BaseProvider with WidgetsBindingObserver {
     if (!success) setError(_s?.operationFailed ?? 'Failed to rename device');
     return success;
   }
+
+  /// 版本号大小对比辅助方法：判断 currentVer 是否 >= minVer
+  bool _isVersionAtLeast(String currentVer, String minVer) {
+    if (currentVer.isEmpty) return false;
+
+    // 1. 去掉首字母 'v' 或 'V' 并去掉首尾空格
+    String cleanVer = currentVer.trim();
+    if (cleanVer.toLowerCase().startsWith('v')) {
+      cleanVer = cleanVer.substring(1);
+    }
+
+    String cleanMin = minVer.trim();
+    if (cleanMin.toLowerCase().startsWith('v')) {
+      cleanMin = cleanMin.substring(1);
+    }
+
+    // 2. 按 '.' 拆分为列表
+    List<int> currentParts = cleanVer.split('.').map((e) => int.tryParse(e) ?? 0).toList();
+    List<int> minParts = cleanMin.split('.').map((e) => int.tryParse(e) ?? 0).toList();
+
+    // 补齐为等长（防止只有两段如 1.2）
+    while (currentParts.length < 3) currentParts.add(0);
+    while (minParts.length < 3) minParts.add(0);
+
+    // 3. 逐位对比
+    for (int i = 0; i < 3; i++) {
+      if (currentParts[i] > minParts[i]) return true;
+      if (currentParts[i] < minParts[i]) return false;
+      // 相等则继续循环比下一位
+    }
+
+    // 三位完全相等，满足 >=
+    return true;
+  }
+
+  // 是否支持等离子功能
+  bool get canShowPlasma {
+    if (_currentDevice == null) return false;
+    if (!_currentDevice!.hasPlasma) return false;
+    final fwVersion = _currentDevice!.firmwareVersion;
+    return _isVersionAtLeast(fwVersion, '1.1.5');
+  }
 }

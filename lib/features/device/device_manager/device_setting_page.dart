@@ -232,7 +232,7 @@ class DeviceSettingPage extends StatelessWidget {
                       );
                     },
                   ),
-                  if (provider.currentDevice?.hasPlasma == true)
+                  if (provider.canShowPlasma)
                     Selector<ActiveDeviceProvider, bool>(
                       selector: (_, vm) => vm.isPlasmaAlwaysOn,
                       builder: (context, isAlways, _) {

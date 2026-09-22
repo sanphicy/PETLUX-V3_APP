@@ -275,17 +275,20 @@ class DeviceManagerPage extends StatelessWidget {
                       const SizedBox(height: 20),
 
                       // 动作执行卡片区
-                      Selector<ActiveDeviceProvider, (bool, bool, bool, bool)>(
+                      // 动作执行卡片区
+                      Selector<ActiveDeviceProvider, (bool, bool, bool, bool, bool)>(
                         selector: (_, vm) => (
                           vm.isLoading,
                           vm.currentDevice?.isOperating ?? false,
                           vm.currentDevice?.isPlasmaEnabled ?? false,
                           vm.currentDevice?.isChildLockEnabled ?? false,
+                          vm.canShowPlasma,
                         ),
                         builder: (context, state, _) {
                           final isBusy = state.$1 || state.$2;
                           final isPlasma = state.$3;
                           final isLock = state.$4;
+                          final canShowPlasma = state.$5;
 
                           return Container(
                             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
@@ -317,7 +320,7 @@ class DeviceManagerPage extends StatelessWidget {
                                   isLocked: isBusy,
                                   iconColor: primaryGold,
                                 ),
-                                if (provider.currentDevice?.hasPlasma == true)
+                                if (canShowPlasma)
                                   _buildActionButton(
                                     s.actionDeodorize,
                                     isPlasma ? Icons.bubble_chart_rounded : Icons.bubble_chart_outlined,
