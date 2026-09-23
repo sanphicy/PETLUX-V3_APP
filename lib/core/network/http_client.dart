@@ -20,7 +20,7 @@ class HttpClient {
         baseUrl: baseUrl,
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
-        headers: {"X-Client-App": "fullxpet"},
+        headers: {"X-Client-App": "petlux"},
       ),
     );
     dio.interceptors.add(AuthInterceptor(dio));

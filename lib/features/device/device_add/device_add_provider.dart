@@ -39,7 +39,7 @@ class DeviceAddProvider extends BaseProvider {
     if (_hasLoadedSettings) return;
     final prefs = await SharedPreferences.getInstance();
     _filterUnknown = prefs.getBool('pref_filter_unknown') ?? true;
-    _filterName = prefs.getString('pref_filter_name') ?? 'petlux';
+    _filterName = prefs.getString('pref_filter_name') ?? 'pet';
     _autoFetchWifi = prefs.getBool('pref_auto_fetch_wifi') ?? true;
     _hasLoadedSettings = true;
   }

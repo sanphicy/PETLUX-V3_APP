@@ -7,6 +7,7 @@ import 'package:petlux/features/auth/models/auth_request.dart';
 import 'package:petlux/common/l10n/app_localizations.dart';
 import 'package:petlux/core/services/nav_service.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 class AuthRepository {
   final HttpClient _httpClient = locator<HttpClient>();
@@ -124,7 +125,11 @@ class AuthRepository {
 
   //邮箱发送验证码
   Future<ResultEntity<int>> sendEmailVerifyCode(SendEmailCodeRequest request) async {
-    final response = await _httpClient.post<Map<String, dynamic>>(ApiEndpoints.emailCode, data: request.toJson());
+    final response = await _httpClient.post<Map<String, dynamic>>(
+      ApiEndpoints.emailCode,
+      data: request.toJson(),
+      headers: {'Accept-Language': 'en'},
+    );
     if (response.data != null && (response.code == 0 || response.code == 200)) {
       final cooldown = response.data!['cooldownSeconds'] as int? ?? 60;
       return ResultEntity.success(cooldown);
