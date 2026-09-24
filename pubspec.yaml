@@ -1,9 +1,9 @@
 name: petlux
-description: "PETLUX-5G 客户端应用程序"
+description: "PETLUX-5G"
 publish_to: 'none'
 
 # 应用版本号与构建号
-version: 1.0.0+3
+version: 1.0.0+4
 
 environment:
   sdk: ^3.11.1
