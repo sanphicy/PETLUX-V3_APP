@@ -10,21 +10,25 @@ import 'package:flutter/material.dart';
 class HttpClient {
   static final HttpClient _instance = HttpClient._internal();
   factory HttpClient() => _instance;
-  late Dio dio;
 
-  HttpClient._internal();
+  // 🟢 保持 final，Dio 实例终生唯一
+  late final Dio dio;
 
-  void init({required String baseUrl}) {
+  HttpClient._internal() {
     dio = Dio(
       BaseOptions(
-        baseUrl: baseUrl,
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
         headers: {"X-Client-App": "petlux"},
       ),
     );
     dio.interceptors.add(AuthInterceptor(dio));
+  }
+
+  void init({required String baseUrl}) {
+    // 🟢 仅动态修改 options.baseUrl，绝不重新 new Dio，拦截器不重复挂载
     dio.options.baseUrl = baseUrl;
+    debugPrint(">> 🚀 [HttpClient] baseUrl 动态更新为: ${dio.options.baseUrl}");
   }
 
   Future<ResultEntity<T>> request<T>(
@@ -48,7 +52,6 @@ class HttpClient {
       final response = await dio.request(path, data: data, queryParameters: queryParameters, options: options);
       final resData = response.data;
 
-      // 打印成功的响应数据
       debugPrint('\n================== API RESPONSE =================');
       debugPrint('URL    : ${dio.options.baseUrl}$path');
       debugPrint('STATUS : ${response.statusCode}');
@@ -76,7 +79,6 @@ class HttpClient {
       }
 
       if (e is DioException) {
-        // 打印异常的响应数据（HTTP 错误状态码，比如 400, 401, 500 等）
         debugPrint('\n================== API ERROR ====================');
         debugPrint('URL    : ${dio.options.baseUrl}$path');
         debugPrint('STATUS : ${e.response?.statusCode}');
@@ -99,10 +101,8 @@ class HttpClient {
     }
   }
 
-  /// 处理登录失效逻辑
   void _handleUnauthorized() async {
     await TokenManager.clearToken();
-    // 使用 NavService 全局导航回登录页
     NavService.go(AppRoutes.login);
   }
 
@@ -112,6 +112,7 @@ class HttpClient {
     Map<String, dynamic>? headers,
     T Function(dynamic)? fromJson,
   }) => request<T>(path, method: 'PATCH', data: data, headers: headers, fromJson: fromJson);
+
   Future<ResultEntity<T>> get<T>(String path, {Map<String, dynamic>? query, T Function(dynamic)? fromJson}) =>
       request<T>(path, method: 'GET', queryParameters: query, fromJson: fromJson);
 

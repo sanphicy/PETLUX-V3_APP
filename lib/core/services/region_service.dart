@@ -7,6 +7,7 @@ import 'package:petlux/common/models/country_dto.dart';
 import 'package:petlux/core/network/api_endpoints.dart';
 import 'package:petlux/core/network/http_client.dart';
 import 'package:petlux/locator.dart';
+import 'package:dio/dio.dart';
 
 // 区域/国家服务 - 多国家、多数据中心切换
 class RegionService {
@@ -114,19 +115,26 @@ class RegionService {
 
     try {
       final config = AppConfig.prod();
-      final tempClient = HttpClient();
-      tempClient.init(baseUrl: config.baseUrl);
+      // 🟢 改用原生局部 Dio，绝不影响全局 HttpClient
+      final tempDio = Dio(
+        BaseOptions(
+          baseUrl: config.baseUrl,
+          connectTimeout: const Duration(seconds: 15),
+          receiveTimeout: const Duration(seconds: 15),
+        ),
+      );
 
       final currentLocale = ui.PlatformDispatcher.instance.locale;
       final localeParam = currentLocale.languageCode.toLowerCase() == 'zh' ? 'zh-CN' : 'en-US';
 
-      final res = await tempClient.get<Map<String, dynamic>>(
+      final response = await tempDio.get<Map<String, dynamic>>(
         ApiEndpoints.countries,
-        query: {'locale': localeParam, 'clientAppId': 'petlux'},
+        queryParameters: {'locale': localeParam, 'clientAppId': 'petlux'},
       );
 
-      if (res.data != null && (res.code == 0 || res.code == 200)) {
-        final List<dynamic> items = res.data!['items'] ?? [];
+      final resData = response.data;
+      if (resData != null && (resData['code'] == 0 || resData['code'] == 200)) {
+        final List<dynamic> items = resData['items'] ?? [];
         if (items.isNotEmpty) {
           _countries = items.map((e) => CountryDto.fromJson(e)).toList();
           await prefs.setString(_keyCountryList, jsonEncode(items));
@@ -208,7 +216,6 @@ class RegionService {
     }
   }
 
-  // 根据国家代码请求机房引导接口（ApiEndpoints.mqttUri），切换 BaseUrl
   Future<bool> switchCountryByCode(String countryCode) async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -221,14 +228,21 @@ class RegionService {
 
     final config = AppConfig.prod();
     try {
-      final tempClient = HttpClient();
-      tempClient.init(baseUrl: config.baseUrl);
+      // 🟢 改用原生局部 Dio
+      final tempDio = Dio(
+        BaseOptions(
+          baseUrl: config.baseUrl,
+          connectTimeout: const Duration(seconds: 15),
+          receiveTimeout: const Duration(seconds: 15),
+        ),
+      );
 
       final payload = {"countryCode": countryCode, "clientAppId": "petlux"};
-      final res = await tempClient.get<Map<String, dynamic>>(ApiEndpoints.mqttUri, query: payload);
+      final response = await tempDio.get<Map<String, dynamic>>(ApiEndpoints.mqttUri, queryParameters: payload);
 
-      if (res.code == 0 || res.code == 200) {
-        final data = res.data;
+      final resData = response.data;
+      if (resData != null && (resData['code'] == 0 || resData['code'] == 200)) {
+        final data = resData['data'];
         if (data != null && data['apiBaseUrl'] != null) {
           String apiBaseUrl = data['apiBaseUrl'].toString();
           if (apiBaseUrl.endsWith('/app')) {
@@ -236,6 +250,8 @@ class RegionService {
           }
           _currentApiBaseUrl = apiBaseUrl;
           _dcUrlCache[countryCode] = _currentApiBaseUrl;
+
+          // 仅在这里更新全局 HttpClient 并落盘
           locator<HttpClient>().init(baseUrl: _currentApiBaseUrl);
           await prefs.setString(_keyCurrentBaseUrl, _currentApiBaseUrl);
           return true;
