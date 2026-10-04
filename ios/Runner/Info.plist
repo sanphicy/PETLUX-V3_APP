@@ -3,26 +3,21 @@
 <plist version="1.0">
 	<dict>
 		<!-- PETLUX-V3 IOS所需权限声明 start-->
-		<key>NSBluetoothAlwaysUsageDescription</key>
-		<string>App需要您的同意，才能始终访问蓝牙，以便扫描、连接和管理设备。</string>
-		<key>NSBluetoothPeripheralUsageDescription</key>
-		<string>App需要您的同意，才能访问蓝牙外设，以便连接和管理设备。</string>
-		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>App需要您的同意，才能在使用期间访问位置信息，以便在配网时为您自动获取当前连接的Wi-Fi名称。</string>
-		<key>NSLocationAlwaysUsageDescription</key>
-		<string>App需要您的同意，才能始终访问位置信息，以便为您自动获取当前Wi-Fi名称。</string>
-		<key>NSLocalNetworkUsageDescription</key>
-		<string>App需要您的同意，才能访问本地网络，以便发现、连接和控制局域网内的设备。</string>
-		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>App需要您的同意，才能始终访问位置信息，以便为您自动获取当前Wi-Fi名称并配网。</string>
-		<key>NSLocalNetworkUsageDescription</key>
-		<string>App需要您的同意，才能访问本地网络，以便发现、连接和控制局域网内的设备。</string>
-		<!-- 相册访问权限 -->
-		<key>NSPhotoLibraryUsageDescription</key>
-		<string>We need access to your photo library to allow you to select a profile avatar.</string>
-		<!-- 相机访问权限 -->
-		<key>NSCameraUsageDescription</key>
-		<string>We need access to your camera to allow you to take a photo for your avatar.</string>
+		<!-- 蓝牙权限（设备扫描、连接与配网必须） -->
+        <key>NSBluetoothAlwaysUsageDescription</key>
+        <string>We need access to Bluetooth to discover, connect to, and manage smart devices.</string>
+        <key>NSBluetoothPeripheralUsageDescription</key>
+        <string>We need access to Bluetooth peripherals to connect to and manage smart devices.</string>
+
+        <!-- 前台定位权限（仅在配网时获取当前连接的 Wi-Fi 名称，绝不可申请 Always 定位） -->
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>We need your location access while using the app to retrieve the current Wi-Fi name for device setup.</string>
+
+        <!-- 相机与相册权限（头像与反馈功能） -->
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>We need access to your photo library to allow you to select a profile avatar and feedback attachments.</string>
+        <key>NSCameraUsageDescription</key>
+        <string>We need access to your camera to allow you to take photos for your avatar and feedback attachments.</string>
 		<!-- PETLUX-V3 IOS所需权限声明 end-->
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
