@@ -115,17 +115,20 @@ class RegionService {
 
     try {
       final config = AppConfig.prod();
-      // 🟢 改用原生局部 Dio，绝不影响全局 HttpClient
+      // 🟢 独立的临时 Dio 实例，带齐默认 header，绝不污染全局单例
       final tempDio = Dio(
         BaseOptions(
           baseUrl: config.baseUrl,
           connectTimeout: const Duration(seconds: 15),
           receiveTimeout: const Duration(seconds: 15),
+          headers: {"X-Client-App": "petlux"},
         ),
       );
 
       final currentLocale = ui.PlatformDispatcher.instance.locale;
       final localeParam = currentLocale.languageCode.toLowerCase() == 'zh' ? 'zh-CN' : 'en-US';
+
+      debugPrint(">> 正在请求国家列表接口: ${config.baseUrl}${ApiEndpoints.countries}");
 
       final response = await tempDio.get<Map<String, dynamic>>(
         ApiEndpoints.countries,
@@ -133,23 +136,36 @@ class RegionService {
       );
 
       final resData = response.data;
-      if (resData != null && (resData['code'] == 0 || resData['code'] == 200)) {
-        final List<dynamic> items = resData['items'] ?? [];
-        if (items.isNotEmpty) {
+      debugPrint(">> 国家列表接口返回: $resData");
+
+      if (resData != null) {
+        // 兼容处理：无论 items 在根层还是在 data 字段下，都能正确提取
+        List<dynamic>? items;
+        if (resData['items'] is List) {
+          items = resData['items'] as List<dynamic>;
+        } else if (resData['data'] is Map && resData['data']['items'] is List) {
+          items = resData['data']['items'] as List<dynamic>;
+        } else if (resData['data'] is List) {
+          items = resData['data'] as List<dynamic>;
+        }
+
+        if (items != null && items.isNotEmpty) {
           _countries = items.map((e) => CountryDto.fromJson(e)).toList();
           await prefs.setString(_keyCountryList, jsonEncode(items));
+          debugPrint(">> 🟢 成功获取并缓存了 ${_countries.length} 个国家");
 
           // 刷新当前选中的国家对象
           if (_currentCountry != null) {
             _currentCountry = _countries.firstWhere(
-              (c) => c.countryCode == _currentCountry!.countryCode,
+              (c) => c.countryCode.toUpperCase() == _currentCountry!.countryCode.toUpperCase(),
               orElse: () => _currentCountry!,
             );
           }
+          return _countries;
         }
       }
     } catch (e) {
-      debugPrint("Fetch Country List Error: $e");
+      debugPrint(">> 🔴 Fetch Country List Error: $e");
     }
 
     if (_countries.isEmpty) {
