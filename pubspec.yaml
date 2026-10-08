@@ -3,7 +3,7 @@ description: "PETLUX-5G"
 publish_to: 'none'
 
 # 应用版本号与构建号
-version: 1.0.0+5
+version: 1.0.0+6
 
 environment:
   sdk: ^3.11.1
